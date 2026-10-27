@@ -1,0 +1,1059 @@
+{
+  "common": {
+    "appName": "PathAble",
+    "skipToContent": "Skip to main content",
+    "skipToMap": "Skip to route options",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saved": "Saved",
+    "retry": "Try again",
+    "edit": "Edit",
+    "done": "Done",
+    "skip": "Skip for now",
+    "learnMore": "Learn more",
+    "loading": "Loading…",
+    "optional": "optional",
+    "remove": "Remove",
+    "undo": "Undo",
+    "copy": "Copy",
+    "copied": "Copied",
+    "yes": "Yes",
+    "no": "No",
+    "on": "On",
+    "off": "Off",
+    "new": "New",
+    "or": "or",
+    "source": "Source",
+    "updated": "Updated {when}",
+    "observed": "Observed {when}",
+    "noData": "No data",
+    "externalLink": "(opens in a new tab)"
+  },
+  "brand": {
+    "statement": "Every route should be possible.",
+    "statementNote": "This is our mission, not a promise about any particular sidewalk. Conditions change — always use your own judgement.",
+    "logoLabel": "PathAble home"
+  },
+  "meta": {
+    "titleTemplate": "%s · PathAble",
+    "defaultTitle": "PathAble — Accessible pedestrian navigation",
+    "description": "PathAble helps people who use wheelchairs, scooters, walkers, canes and strollers compare pedestrian routes by known sidewalk conditions, barriers and community reports. Toronto pilot in development.",
+    "navigate": "Plan a route",
+    "onboarding": "Set up your mobility profile",
+    "report": "Report a barrier",
+    "settings": "Settings & privacy",
+    "coverage": "Coverage & status",
+    "accessibility": "Accessibility statement",
+    "help": "Help centre",
+    "contact": "Contact & support",
+    "privacy": "Privacy",
+    "terms": "Terms of use",
+    "ai": "How PathAble uses AI",
+    "notFound": "Page not found"
+  },
+  "nav": {
+    "primaryLabel": "Main",
+    "footerLabel": "Footer",
+    "home": "Home",
+    "navigate": "Plan a route",
+    "report": "Report a barrier",
+    "coverage": "Coverage",
+    "help": "Help",
+    "accessibility": "Accessibility",
+    "settings": "Settings",
+    "contact": "Contact",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "ai": "AI transparency",
+    "openMenu": "Open menu",
+    "menuTitle": "Menu",
+    "openApp": "Open PathAble",
+    "product": "Product",
+    "trust": "Trust",
+    "support": "Support",
+    "commandPalette": "Search actions",
+    "commandShortcut": "Press {shortcut} to search actions"
+  },
+  "backend": {
+    "fixturesTitle": "Sample data",
+    "fixturesBody": "The PathAble routing service isn't connected yet. Routes and hazards here are generated samples for testing the interface — they don't follow real sidewalks and must not be used to navigate.",
+    "fixturesShort": "Sample data, not for navigation",
+    "unavailableTitle": "Routing isn't available here",
+    "unavailableBody": "This build isn't connected to the PathAble service, so no routes can be shown. Address search and the map still work.",
+    "liveBadge": "Live data",
+    "sampleBadge": "Sample",
+    "details": "What does this mean?"
+  },
+  "language": {
+    "label": "Language",
+    "change": "Change language",
+    "current": "Current language: {language}",
+    "inProgress": "Translation in progress",
+    "planned": "Coming later",
+    "unavailableNote": "{count, plural, one {# more language is} other {# more languages are}} being translated and reviewed. They'll appear here once complete.",
+    "preserved": "Your route and settings stay as they are."
+  },
+  "theme": {
+    "label": "Appearance",
+    "system": "Match device",
+    "light": "Light",
+    "dark": "Dark",
+    "toggle": "Change appearance"
+  },
+  "landing": {
+    "eyebrow": "Accessible pedestrian navigation, piloting in Toronto",
+    "headline": "A city without limits begins with a better route.",
+    "lede": "Discover routes built around your mobility. Explore accessible pathways, avoid reported barriers, and navigate your city with greater confidence.",
+    "searchLabel": "Where would you like to go?",
+    "searchPlaceholder": "Search a place or address in Toronto",
+    "primaryCta": "Find your route",
+    "secondaryCta": "Explore how it works",
+    "devNote": "PathAble is in development. Address search uses live OpenStreetMap data; route conditions are sample data until the routing service launches.",
+    "visual": {
+      "label": "Interactive illustration: how PathAble compares routes",
+      "caption": "Illustration, not a real map.",
+      "chooseProfile": "Show the route for",
+      "recommended": "Suggested route",
+      "alternative": "Alternative",
+      "stairs": "Stairs",
+      "noRamp": "No curb ramp",
+      "unknown": "No data yet",
+      "start": "Start",
+      "destination": "Destination",
+      "explainWheelchair": "Avoids the stairs and the corner without a curb ramp. A little longer, but every section has been checked.",
+      "explainWalker": "Avoids the stairs. Uses a corner with a missing curb ramp, which your settings allow, and flags one section with no data.",
+      "explainCane": "Stairs are fine with your settings, so the shortest path is suggested. The stairs are still marked on the route.",
+      "routeA": "Shortest route, with stairs",
+      "routeB": "Middle route, with a missing curb ramp and a section without data",
+      "routeC": "Longest route, fully verified",
+      "summary": "Illustration of a street grid with three routes from a start point to a destination. Selected profile: {profile}. Suggested: {route}."
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "title": "Built around how you move — not an average pedestrian.",
+      "steps": {
+        "profile": {
+          "title": "Tell us what matters",
+          "body": "Choose a starting profile — or none — and adjust slope, stairs, curb ramps and surface preferences. You can change them any time."
+        },
+        "compare": {
+          "title": "Compare honest routes",
+          "body": "See each option's known barriers, unverified reports, missing data and how fresh the information is — side by side, in words and on the map."
+        },
+        "go": {
+          "title": "Go with clear directions",
+          "body": "Large-text, step-by-step directions with optional voice guidance. Every map detail has a text alternative."
+        },
+        "report": {
+          "title": "Report what you find",
+          "body": "Snap a photo of a barrier. AI can suggest what it sees; you confirm or correct it before anything is shared."
+        }
+      }
+    },
+    "profiles": {
+      "eyebrow": "Personal mobility profiles",
+      "title": "Starting points, never assumptions.",
+      "body": "Profiles pre-fill sensible preferences. Every setting stays yours to change, and you never have to tell us why.",
+      "cta": "Set up your profile"
+    },
+    "states": {
+      "eyebrow": "Accessibility-aware navigation",
+      "title": "Four kinds of knowledge. Never blurred together.",
+      "body": "Most maps treat “no data” as “fine”. PathAble shows exactly what is known, what is reported, and what nobody has checked yet.",
+      "explore": "Select a state to highlight it in the illustration.",
+      "verified": {
+        "title": "Known accessible",
+        "body": "A trusted source has checked this stretch against your preferences: slope, width, surface, curb ramps."
+      },
+      "barrier": {
+        "title": "Known barrier",
+        "body": "A verified obstacle, such as stairs or a missing curb ramp. Routes that avoid it rank higher if it conflicts with your profile."
+      },
+      "reported": {
+        "title": "Reported, not yet verified",
+        "body": "Someone in the community flagged a problem. We show it with its age and number of confirmations until it's verified or expires."
+      },
+      "unknown": {
+        "title": "Missing information",
+        "body": "Nobody has surveyed this section yet. It is never presented as accessible — it lowers a route's confidence instead."
+      }
+    },
+    "ai": {
+      "eyebrow": "AI sidewalk analysis",
+      "title": "The model suggests. People decide.",
+      "body": "Upload a photo and a computer-vision model can point out curb ramps, obstructions and damaged surfaces it thinks it sees. You review every suggestion, correct mistakes, and only then submit.",
+      "point1": "Every suggestion shows the model's confidence.",
+      "point2": "Your corrections are kept with the report and help improve future versions.",
+      "point3": "If the model isn't available, reporting still works — you just describe it yourself.",
+      "status": "The analysis service is not connected in this preview."
+    },
+    "community": {
+      "eyebrow": "Community reporting",
+      "title": "Local knowledge, carefully handled.",
+      "body": "Reports start as unverified, show how many people confirmed them, and expire when conditions are temporary. You can withdraw or correct your own reports at any time.",
+      "cta": "Report a barrier"
+    },
+    "winter": {
+      "eyebrow": "Built for Canadian winters",
+      "title": "A cleared road isn't a cleared sidewalk.",
+      "body": "Snowbanks over curb ramps, ice on a slope, a windrow at the crossing. Winter reports get their own markers, timestamps and short expiry times — because conditions change overnight.",
+      "snow": "Snow-blocked sidewalk",
+      "ice": "Ice reported",
+      "ramp": "Buried curb ramp",
+      "weatherNote": "Weather forecasts are never shown as sidewalk conditions. Only on-the-ground reports are."
+    },
+    "trust": {
+      "eyebrow": "Transparency & trust",
+      "title": "We'd rather say “we don't know” than guess.",
+      "principles": {
+        "safe": {
+          "title": "No “100% safe” routes",
+          "body": "We describe what is known. We never promise a route is safe or fully accessible."
+        },
+        "sources": {
+          "title": "Every fact has a source and a date",
+          "body": "Municipal open data, field surveys, community reports or model assistance — always labelled, always timestamped."
+        },
+        "explain": {
+          "title": "Recommendations come with reasons",
+          "body": "When one route is suggested over another, we tell you why in plain language."
+        },
+        "correct": {
+          "title": "You can correct us",
+          "body": "Spot something wrong? Report it. Corrections are part of the product, not an afterthought."
+        }
+      }
+    },
+    "inclusive": {
+      "eyebrow": "Inclusive by design",
+      "title": "Accessibility isn't a feature. It's the foundation.",
+      "body": "PathAble is built toward WCAG 2.2 AA, tested with keyboards and screen readers, and set in Atkinson Hyperlegible — a typeface designed for low-vision readers.",
+      "items": {
+        "keyboard": "Full keyboard access, including the map",
+        "screenReader": "Screen-reader announcements for route changes",
+        "contrast": "High-contrast and dark modes",
+        "text": "Text sizes up to 150%",
+        "motion": "Reduced-motion support",
+        "languages": "English and French today; 10 more languages in progress"
+      },
+      "cta": "Read our accessibility statement"
+    },
+    "faq": {
+      "title": "Questions, answered",
+      "more": "Visit the help centre"
+    },
+    "availability": {
+      "eyebrow": "Availability",
+      "title": "Starting in Toronto. Built for Canada.",
+      "body": "PathAble is in active development. The interface you see is real; the routing and analysis services are being built. Toronto is our first planned coverage area.",
+      "statusLabel": "Current status",
+      "status": "Interface preview",
+      "cta": "See coverage details",
+      "tryCta": "Try the preview"
+    }
+  },
+  "profiles": {
+    "manual_wheelchair": {
+      "name": "Manual wheelchair",
+      "short": "Manual chair"
+    },
+    "powered_wheelchair": {
+      "name": "Powered wheelchair",
+      "short": "Power chair"
+    },
+    "mobility_scooter": {
+      "name": "Mobility scooter",
+      "short": "Scooter"
+    },
+    "walker": {
+      "name": "Walker or rollator",
+      "short": "Walker"
+    },
+    "cane": {
+      "name": "Cane or crutches",
+      "short": "Cane"
+    },
+    "reduced_mobility": {
+      "name": "Reduced mobility",
+      "short": "Reduced mobility"
+    },
+    "stroller": {
+      "name": "Stroller or pram",
+      "short": "Stroller"
+    },
+    "custom": {
+      "name": "Custom",
+      "short": "Custom"
+    },
+    "startingPoint": "Starting point — adjust anything"
+  },
+  "preferences": {
+    "title": "Route preferences",
+    "intro": "These guide how routes are ranked. Nothing here is shared with anyone else.",
+    "maxSlope": "Steepest slope you're comfortable with",
+    "maxSlopeHint": "Running slope along the sidewalk. 5% is a rise of 5 cm per metre.",
+    "maxSlopeValue": "{value}%",
+    "noLimit": "No limit",
+    "setLimit": "Set a limit",
+    "minWidth": "Narrowest path you need",
+    "minWidthHint": "Clear width between obstacles, in centimetres.",
+    "minWidthValue": "{value} cm",
+    "flags": {
+      "avoidStairs": {
+        "label": "Avoid stairs",
+        "hint": "Rank routes with any steps lower."
+      },
+      "avoidSteepCurbs": {
+        "label": "Avoid steep or missing curb ramps",
+        "hint": "Crossings without a usable ramp count as barriers."
+      },
+      "avoidDamagedSurfaces": {
+        "label": "Avoid damaged surfaces",
+        "hint": "Broken pavement, large cracks, uneven bricks."
+      },
+      "avoidReportedObstacles": {
+        "label": "Avoid reported obstacles",
+        "hint": "Treat unverified community reports as barriers."
+      },
+      "avoidNarrowPassages": {
+        "label": "Avoid narrow passages",
+        "hint": "Sections narrower than your width setting."
+      },
+      "preferVerifiedRoutes": {
+        "label": "Prefer verified routes",
+        "hint": "Favour sidewalks that have actually been checked."
+      },
+      "preferShorterRoutes": {
+        "label": "Prefer shorter routes",
+        "hint": "Give distance more weight when comparing options."
+      }
+    },
+    "notes": "Personal notes",
+    "notesHint": "Anything you want to remember about your needs. Stays on this device and is never sent to PathAble.",
+    "profile": "Starting profile",
+    "profileHint": "Changing this resets the preferences below to the profile's starting point.",
+    "saved": "Preferences saved",
+    "summary": "{profile} · max slope {slope}",
+    "summaryNoSlope": "{profile} · no slope limit"
+  },
+  "onboarding": {
+    "title": "Let's set up your routes",
+    "intro": "A minute now makes every route suggestion more useful. Skip anything you like — you can change it all later in Settings.",
+    "progress": "Step {current} of {total}",
+    "steps": {
+      "profile": {
+        "title": "How do you usually get around?",
+        "body": "Pick what's closest. It only pre-fills preferences — it doesn't label you, and you can mix and match next."
+      },
+      "preferences": {
+        "title": "Fine-tune what matters",
+        "body": "Adjust the starting point to fit you."
+      },
+      "display": {
+        "title": "Make it comfortable to read",
+        "body": "These apply across PathAble right away."
+      },
+      "done": {
+        "title": "You're all set",
+        "body": "Your preferences are saved on this device. Routes will be ranked with them in mind."
+      }
+    },
+    "skipAll": "Skip setup",
+    "finish": "Start planning",
+    "skippedToast": "Setup skipped. You can set preferences any time in Settings.",
+    "privacy": "Stored only on this device. No account needed."
+  },
+  "search": {
+    "from": "From",
+    "to": "To",
+    "fromPlaceholder": "Starting point",
+    "toPlaceholder": "Destination",
+    "useMyLocation": "Use my location",
+    "locating": "Finding your location…",
+    "myLocation": "My location",
+    "swap": "Swap start and destination",
+    "clear": "Clear",
+    "pickOnMap": "Choose on map",
+    "pickingOnMap": "Select a point on the map, or press Escape to cancel.",
+    "pickedPoint": "Selected point",
+    "suggestions": "{count, plural, =0 {No suggestions} one {# suggestion} other {# suggestions}}",
+    "noResults": "No places found for “{query}”. Try a street address, or choose a point on the map.",
+    "minChars": "Type at least 3 characters to search.",
+    "searchError": "Address search is unavailable right now. You can still choose a point on the map or use your location.",
+    "outsideArea": "Search is limited to the Greater Toronto Area during the pilot.",
+    "locationDenied": "Location access is off. You can allow it in your browser settings, or search for a place instead.",
+    "locationUnavailable": "We couldn't get your location. Try searching for a place instead.",
+    "coordinatesHint": "You can also paste coordinates, like 43.6453, -79.3806",
+    "recent": "Recent",
+    "attribution": "Search data © OpenStreetMap contributors"
+  },
+  "navigate": {
+    "title": "Plan a route",
+    "panelLabel": "Route planner",
+    "emptyTitle": "Where to?",
+    "emptyBody": "Choose a starting point and destination. We'll compare routes using your preferences.",
+    "profileLine": "Planning for: {profile}",
+    "changePreferences": "Change preferences",
+    "finding": "Comparing routes…",
+    "found": "{count, plural, =0 {No routes found} one {# route found} other {# routes found}}",
+    "foundAnnouncement": "{count, plural, one {# route found} other {# routes found}}. Suggested route: {distance}, about {duration}.",
+    "selectedAnnouncement": "Route {rank} selected: {distance}, about {duration}. {barriers}",
+    "collapse": "Collapse panel",
+    "expand": "Expand panel",
+    "sheetLabel": "Route panel",
+    "sheetPeek": "Show less",
+    "sheetFull": "Show more",
+    "startGuidance": "Start directions",
+    "viewDetails": "Details",
+    "backToRoutes": "All routes",
+    "offline": "You're offline. Routes and search need a connection; anything already loaded stays visible.",
+    "share": "Copy link to this route",
+    "shared": "Link copied"
+  },
+  "routes": {
+    "listLabel": "Route options",
+    "option": "Option {rank}",
+    "suggested": "Suggested",
+    "select": "Select route {rank}",
+    "selected": "Selected",
+    "distance": "Distance",
+    "duration": "Time",
+    "durationApprox": "about {duration}",
+    "barriers": "{count, plural, =0 {No known barriers} one {# known barrier} other {# known barriers}}",
+    "unverified": "{count, plural, =0 {No unverified reports} one {# unverified report} other {# unverified reports}}",
+    "verifiedShare": "{percent} verified",
+    "unknownShare": "{percent} no data",
+    "coverageLabel": "What we know about this route",
+    "freshness": "Data from {oldest} to {newest}",
+    "freshnessSingle": "Data from {date}",
+    "freshnessNone": "No dated observations",
+    "compatibility": {
+      "meets": "No known conflicts with your preferences",
+      "partial": "Some sections may not match your preferences",
+      "conflicts": "Has a barrier that conflicts with your preferences",
+      "insufficient_data": "Not enough data to judge"
+    },
+    "compatibilityShort": {
+      "meets": "Matches preferences",
+      "partial": "Partly matches",
+      "conflicts": "Conflicts",
+      "insufficient_data": "Mostly unknown"
+    },
+    "unknownCaveat": "Sections without data are not confirmed accessible.",
+    "why": "Why this route?",
+    "reasons": {
+      "fewest_known_barriers": "fewest known barriers",
+      "highest_verified_coverage": "most verified sidewalk",
+      "avoids_stairs": "no stairs",
+      "within_slope_preference": "staying within your slope limit",
+      "fewest_unverified_reports": "fewest unverified reports",
+      "shortest_distance": "shortest distance",
+      "most_recent_data": "most recent information"
+    },
+    "explanation": {
+      "suggested": "Suggested for: {reasons}.",
+      "suggestedNoReasons": "Suggested as the best overall balance of your preferences.",
+      "only": "This is the only route found.",
+      "longer": "It is {difference} longer than the shortest option.",
+      "shortest": "It is also the shortest option.",
+      "alternative": "Ranked {rank}: {summary}",
+      "comparedBarriers": "{count, plural, =0 {no known barriers} one {# known barrier} other {# known barriers}}",
+      "comparedVerified": "{percent} verified",
+      "conflictsWith": "Conflicts with: {preferences}"
+    },
+    "conflicts": {
+      "avoidStairs": "avoid stairs",
+      "avoidSteepCurbs": "avoid steep curb ramps",
+      "avoidDamagedSurfaces": "avoid damaged surfaces",
+      "avoidReportedObstacles": "avoid reported obstacles",
+      "avoidNarrowPassages": "avoid narrow passages",
+      "preferVerifiedRoutes": "prefer verified routes",
+      "preferShorterRoutes": "prefer shorter routes",
+      "maxSlopePercent": "maximum slope",
+      "minWidthCm": "minimum width"
+    },
+    "segments": {
+      "verified_accessible": "Known accessible",
+      "known_barrier": "Known barrier",
+      "reported_unverified": "Reported, unverified",
+      "unknown": "No data"
+    },
+    "legend": "Map legend",
+    "legendNote": "Line patterns match the labels, so colour isn't needed to tell them apart.",
+    "noRoutesTitle": "No routes found",
+    "noRoutesBody": "We couldn't find a route between these points. Try a nearby destination or adjust your preferences.",
+    "never100": "PathAble never labels a route as 100% safe. Always use your own judgement.",
+    "details": {
+      "title": "Route details",
+      "tabs": {
+        "directions": "Directions",
+        "sections": "Sections",
+        "hazards": "Hazards"
+      },
+      "sectionLine": "{status} · {length}",
+      "slope": "Max slope {value}%",
+      "width": "Min width {value} cm",
+      "surface": {
+        "smooth": "Smooth surface",
+        "uneven": "Uneven surface",
+        "damaged": "Damaged surface",
+        "unknown": "Surface unknown"
+      },
+      "noHazards": "No hazards are recorded along this route. That doesn't guarantee there are none.",
+      "showOnMap": "Show on map"
+    }
+  },
+  "directions": {
+    "title": "Directions",
+    "listLabel": "Step-by-step directions",
+    "step": "Step {current} of {total}",
+    "maneuver": {
+      "depart": "Head out",
+      "continue": "Continue",
+      "turn_left": "Turn left",
+      "turn_right": "Turn right",
+      "turn_slight_left": "Bear left",
+      "turn_slight_right": "Bear right",
+      "turn_straight": "Continue straight",
+      "cross": "Cross the street",
+      "use_curb_ramp": "Use the curb ramp",
+      "use_ramp": "Take the ramp",
+      "use_elevator": "Take the elevator",
+      "arrive": "Arrive at your destination"
+    },
+    "onto": "{maneuver} onto {street}",
+    "forDistance": "{instruction}, then continue for {distance}",
+    "notes": {
+      "signalized_crossing": "Signalized crossing",
+      "accessible_pedestrian_signal": "Accessible pedestrian signal",
+      "curb_ramp_both_sides": "Curb ramps reported on both sides",
+      "unverified_section": "Includes a section without verified data",
+      "known_barrier_ahead": "Known barrier on this stretch",
+      "steep_section": "Includes a steeper section"
+    },
+    "guidance": {
+      "title": "Directions",
+      "exit": "End directions",
+      "previous": "Previous step",
+      "next": "Next step",
+      "repeat": "Read aloud",
+      "voiceOn": "Voice guidance on",
+      "voiceOff": "Voice guidance off",
+      "voiceUnsupported": "Voice guidance isn't supported in this browser.",
+      "progress": "{completed} of {total} steps",
+      "sampleWarning": "These are sample directions. Don't follow them outdoors.",
+      "arrived": "You've reached the last step."
+    }
+  },
+  "hazards": {
+    "types": {
+      "stairs": "Stairs",
+      "missing_curb_ramp": "Missing curb ramp",
+      "blocked_curb_ramp": "Blocked curb ramp",
+      "steep_slope": "Steep slope",
+      "damaged_surface": "Damaged surface",
+      "narrow_passage": "Narrow passage",
+      "construction": "Construction",
+      "obstruction": "Obstruction",
+      "snow_blocked": "Snow-blocked sidewalk",
+      "ice": "Ice",
+      "flooding": "Flooding or large puddle",
+      "other": "Other barrier"
+    },
+    "status": {
+      "verified": "Verified",
+      "reported": "Reported, unverified",
+      "resolved": "Resolved"
+    },
+    "severity": {
+      "blocking": "May block passage",
+      "caution": "Use caution"
+    },
+    "sources": {
+      "municipal_open_data": "City open data",
+      "field_survey": "Field survey",
+      "community_report": "Community report",
+      "community_verified": "Community-verified",
+      "model_assisted": "AI-assisted report",
+      "openstreetmap": "OpenStreetMap",
+      "development_fixture": "Development sample"
+    },
+    "confirmations": "{count, plural, one {# confirmation} other {# confirmations}}",
+    "reported": "Reported {when}",
+    "verified": "Verified {when}",
+    "expires": "Expires {when}",
+    "markerLabel": "{type}, {status}. {when}",
+    "nearby": "Nearby reports",
+    "nearbyCount": "{count, plural, =0 {No reports in view} one {# report in view} other {# reports in view}}",
+    "winterBadge": "Winter"
+  },
+  "winter": {
+    "advisoryTitle": "Winter conditions reported along this route",
+    "advisoryBody": "{count, plural, one {# winter report} other {# winter reports}} — snow and ice change quickly. Reports expire automatically after a short time.",
+    "seasonalNote": "Winter reports come from people on the ground, not weather forecasts.",
+    "freshness": "Newest winter report: {when}"
+  },
+  "map": {
+    "label": "Map of routes and reported conditions",
+    "keyboardHint": "Map focused. Use arrow keys to pan and plus or minus to zoom. All route information is also listed in the panel.",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "locate": "Show my location",
+    "fitRoute": "Fit route on screen",
+    "showHazards": "Show nearby reports",
+    "hideHazards": "Hide nearby reports",
+    "loading": "Loading map…",
+    "tilesError": "Map tiles couldn't load. Directions and route details are still available in the panel.",
+    "webglError": "The interactive map isn't supported on this device or browser. All route information is still available as text.",
+    "offlineMap": "Map unavailable offline",
+    "origin": "Starting point",
+    "destination": "Destination",
+    "you": "Your location",
+    "attributionNote": "Map data © OpenStreetMap contributors"
+  },
+  "report": {
+    "title": "Report a barrier",
+    "intro": "Help others plan around problems you find. Reports start as unverified and show their age.",
+    "stepsLabel": "Report steps",
+    "steps": {
+      "photo": "Photo",
+      "location": "Location",
+      "analysis": "Review",
+      "details": "Details",
+      "submit": "Send"
+    },
+    "photo": {
+      "title": "Add a photo",
+      "body": "A clear photo helps others understand the problem. Avoid capturing faces or licence plates.",
+      "take": "Take a photo",
+      "choose": "Choose a photo",
+      "drop": "or drag an image here",
+      "replace": "Replace photo",
+      "remove": "Remove photo",
+      "preview": "Photo preview",
+      "skip": "Continue without a photo",
+      "invalidType": "Please choose a JPEG, PNG, WebP or HEIC image.",
+      "tooLarge": "That image is larger than 15 MB. Please choose a smaller one.",
+      "processing": "Preparing image…",
+      "privacy": "Location data inside the photo file (EXIF) is removed before upload."
+    },
+    "location": {
+      "title": "Where is it?",
+      "body": "Confirm where the barrier is. You can use your current location, search, or pick a point on the map.",
+      "current": "Use my current location",
+      "selected": "Selected location",
+      "pick": "Pick on map",
+      "accuracy": "Accuracy about {meters} m",
+      "none": "No location selected yet.",
+      "required": "Choose a location to continue.",
+      "search": "Search for an address",
+      "searchPlaceholder": "Street address or place"
+    },
+    "analysis": {
+      "title": "Review what the AI sees",
+      "run": "Analyze photo",
+      "running": "Analyzing photo…",
+      "uploading": "Uploading…",
+      "noPhoto": "No photo added, so there's nothing to analyze. Describe the barrier on the next step.",
+      "unavailableTitle": "Photo analysis isn't available",
+      "unavailableBody": "The PathAble analysis service isn't connected in this build. Nothing has been guessed — please describe the barrier yourself on the next step.",
+      "errorTitle": "Analysis didn't work",
+      "noDetections": "The model didn't find a recognizable barrier. That's fine — describe it yourself on the next step.",
+      "detectionsTitle": "{count, plural, one {# possible barrier found} other {# possible barriers found}}",
+      "confidence": "{percent} confidence",
+      "keep": "Correct",
+      "reject": "Not right",
+      "kept": "Marked correct",
+      "rejected": "Marked wrong",
+      "modelInfo": "Model {name} {version} · {when}",
+      "quality": {
+        "image_too_dark": "The photo is quite dark, which may affect results.",
+        "image_blurry": "The photo looks blurry, which may affect results.",
+        "no_sidewalk_visible": "The model couldn't find a sidewalk in this photo.",
+        "faces_blurred": "Faces in the photo were blurred for privacy."
+      },
+      "disclaimer": "Suggestions can be wrong. You decide what's reported."
+    },
+    "details": {
+      "title": "Describe the barrier",
+      "type": "What kind of barrier is it?",
+      "typeFromAi": "Pre-selected from your reviewed AI suggestion — change it if it's wrong.",
+      "severity": "How much does it affect passage?",
+      "description": "Description",
+      "descriptionHint": "Optional. For example: “Ramp blocked by a parked e-scooter on the north side.”",
+      "temporary": "This is temporary (snow, ice, construction, a parked object)",
+      "temporaryHint": "Temporary reports expire automatically so old conditions don't linger.",
+      "typeRequired": "Choose the kind of barrier."
+    },
+    "review": {
+      "title": "Check and send",
+      "photo": "Photo",
+      "noPhoto": "No photo",
+      "location": "Location",
+      "type": "Barrier",
+      "aiReviewed": "AI suggestions reviewed: {kept} kept, {rejected} rejected",
+      "aiNotUsed": "No AI analysis",
+      "submit": "Send report",
+      "submitting": "Sending…",
+      "saveDraft": "Save on this device",
+      "ai": "AI analysis"
+    },
+    "success": {
+      "title": "Thank you — report received",
+      "body": "Your report is now visible as unverified. It will be verified, confirmed by others, or expire.",
+      "another": "Report another barrier",
+      "viewMine": "View my reports"
+    },
+    "draftSaved": {
+      "title": "Saved on this device — not sent",
+      "body": "The PathAble service isn't connected in this build, so your report hasn't been shared with anyone. It's saved in your browser and can be sent once the service is available."
+    },
+    "mine": {
+      "title": "My reports",
+      "empty": "You haven't made any reports on this device.",
+      "draft": "Not sent",
+      "sent": "Sent",
+      "withdraw": "Withdraw",
+      "withdrawn": "Withdrawn",
+      "delete": "Delete from this device",
+      "correct": "Correct",
+      "confirmWithdraw": "Withdraw this report? It will no longer be shown to others.",
+      "createdAt": "Created {when}"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "intro": "Everything here is stored on this device. PathAble doesn't require an account.",
+    "sections": {
+      "mobility": "Mobility & routes",
+      "display": "Display & reading",
+      "language": "Language",
+      "guidance": "Guidance",
+      "reports": "My reports",
+      "privacy": "Privacy & data",
+      "account": "Account"
+    },
+    "display": {
+      "contrast": "Contrast",
+      "contrastSystem": "Match device",
+      "contrastStandard": "Standard",
+      "contrastHigh": "High",
+      "textSize": "Text size",
+      "textSizeValue": "{percent}",
+      "motion": "Motion",
+      "motionSystem": "Match device",
+      "motionReduce": "Reduce motion",
+      "preview": "Preview: The suggested route avoids two known barriers."
+    },
+    "guidance": {
+      "voice": "Voice guidance",
+      "voiceHint": "Reads each step aloud when you use step-by-step directions. Uses your device's speech voices.",
+      "test": "Test voice",
+      "testPhrase": "In 120 metres, turn right. Curb ramps are reported on both sides."
+    },
+    "privacy": {
+      "location": "Location",
+      "locationBody": "Your location is only used when you press “Use my location”, and it's never stored by PathAble in this preview.",
+      "export": "Download my data",
+      "exportHint": "A JSON file with your preferences and saved reports.",
+      "clear": "Delete all data on this device",
+      "clearHint": "Removes preferences, onboarding status and saved reports from this browser.",
+      "clearConfirmTitle": "Delete all PathAble data on this device?",
+      "clearConfirmBody": "This can't be undone. Reports already sent to PathAble aren't affected.",
+      "clearConfirm": "Delete everything",
+      "cleared": "All PathAble data on this device was deleted.",
+      "policy": "Read the privacy page"
+    },
+    "account": {
+      "title": "Local profile",
+      "body": "Sign-in isn't available yet. When accounts launch, you'll be able to sync preferences across devices — opting in, never by default."
+    },
+    "redoOnboarding": "Run setup again"
+  },
+  "command": {
+    "title": "Search actions",
+    "placeholder": "Type a command or page…",
+    "empty": "No matching actions.",
+    "groups": {
+      "go": "Go to",
+      "profile": "Mobility profile",
+      "display": "Display",
+      "language": "Language"
+    },
+    "actions": {
+      "toggleDark": "Switch to dark mode",
+      "toggleLight": "Switch to light mode",
+      "highContrastOn": "Turn on high contrast",
+      "highContrastOff": "Turn off high contrast",
+      "biggerText": "Increase text size",
+      "smallerText": "Decrease text size",
+      "useProfile": "Use {profile} profile"
+    }
+  },
+  "errors": {
+    "invalid_request": "Something about that request wasn't valid. Check the start and destination and try again.",
+    "outside_coverage": "That location is outside the area PathAble covers right now (the Greater Toronto Area).",
+    "no_route_found": "No route was found between these points.",
+    "rate_limited": "Too many requests in a short time. Please wait a moment and try again.",
+    "unavailable": "The PathAble service is temporarily unavailable.",
+    "image_rejected": "That image couldn't be processed. Try a different photo.",
+    "internal": "Something went wrong on our side.",
+    "network": "We couldn't reach the server. Check your connection and try again.",
+    "timeout": "The server took too long to respond.",
+    "contract_mismatch": "We received data we couldn't verify, so we're not showing it. Please try again later.",
+    "backend_not_configured": "The PathAble service isn't connected in this build.",
+    "aborted": "The request was cancelled.",
+    "boundaryTitle": "Something went wrong",
+    "boundaryBody": "This part of PathAble hit an unexpected error. Your settings are safe.",
+    "boundaryRetry": "Try again",
+    "boundaryHome": "Go to home"
+  },
+  "notFound": {
+    "title": "This path doesn't lead anywhere",
+    "body": "The page you're looking for doesn't exist or has moved.",
+    "home": "Back to home",
+    "navigate": "Plan a route"
+  },
+  "footer": {
+    "mission": "Accessible pedestrian navigation, starting in Toronto.",
+    "status": "In development. Not yet for real-world navigation.",
+    "builtIn": "Made in Toronto, Canada",
+    "mapData": "Map data © OpenStreetMap contributors",
+    "rights": "© {year} PathAble"
+  },
+  "pages": {
+    "coverage": {
+      "title": "Coverage & status",
+      "lede": "An honest snapshot of what works today and what's being built.",
+      "statusTitle": "What's live in this preview",
+      "rows": {
+        "interface": {
+          "name": "Interface, preferences and settings",
+          "state": "Working"
+        },
+        "search": {
+          "name": "Address search (Photon / OpenStreetMap)",
+          "state": "Working — live data"
+        },
+        "map": {
+          "name": "Map (MapLibre + OpenFreeMap tiles)",
+          "state": "Working — live data"
+        },
+        "routing": {
+          "name": "Accessibility-aware routing",
+          "state": "Not connected — sample data only"
+        },
+        "hazards": {
+          "name": "Hazard and winter reports",
+          "state": "Not connected — sample data only"
+        },
+        "analysis": {
+          "name": "AI photo analysis",
+          "state": "Not connected — shows an unavailable state"
+        },
+        "reports": {
+          "name": "Report submission",
+          "state": "Saved on this device until the service launches"
+        }
+      },
+      "stateLabel": "State",
+      "areaTitle": "Planned first coverage area",
+      "areaBody": "The City of Toronto, with address search across the Greater Toronto Area. Expansion to other Canadian cities will follow once the data and verification processes are proven here.",
+      "dataTitle": "Planned data sources",
+      "dataBody": "Municipal open data (such as sidewalk inventories), field surveys, OpenStreetMap, and community reports. Each item on the map will show which source it came from and when it was last observed.",
+      "notTitle": "What PathAble is not",
+      "notBody": "PathAble is not an emergency service, doesn't replace orientation and mobility training, and can't guarantee any route's condition."
+    },
+    "accessibility": {
+      "title": "Accessibility statement",
+      "lede": "Accessibility is PathAble's purpose, so we hold ourselves to a high standard — and we're explicit about what's been tested.",
+      "targetTitle": "Our target",
+      "targetBody": "PathAble is built to conform to the Web Content Accessibility Guidelines (WCAG) 2.2 at level AA. We have not yet had an independent audit, so we don't claim conformance.",
+      "doneTitle": "What we do today",
+      "done": {
+        "semantic": "Semantic HTML landmarks, headings and form labels",
+        "keyboard": "Every control works with a keyboard, with a visible focus outline",
+        "map": "Every map detail is also available as text: route summaries, sections, hazards and directions",
+        "color": "Status is never shown by colour alone — lines have patterns and every state has a label and icon",
+        "contrast": "Colour tokens are checked against WCAG contrast ratios in our build pipeline",
+        "motion": "Animations respect reduced-motion settings, with an in-app override",
+        "text": "Text can be scaled to 150% without loss of content",
+        "touch": "Touch targets are at least 44 by 44 CSS pixels",
+        "announce": "Route results and changes are announced to screen readers"
+      },
+      "testingTitle": "How we test",
+      "testingBody": "Automated checks run axe-core on every page in our end-to-end test suite, alongside keyboard-only interaction tests. Manual testing guidance for screen readers (VoiceOver, NVDA, TalkBack) is documented in the project repository.",
+      "knownTitle": "Known limitations",
+      "known": {
+        "map": "The map canvas itself is visual; we provide equivalent information in the panel rather than describing the canvas.",
+        "translation": "Only English and French are available while other translations are completed and reviewed.",
+        "audit": "No independent audit or testing with disabled participants has been completed yet."
+      },
+      "feedbackTitle": "Tell us about barriers in PathAble itself",
+      "feedbackBody": "If anything in PathAble is hard to use with your setup, please let us know through the contact page."
+    },
+    "help": {
+      "title": "Help centre",
+      "lede": "Answers about routes, data, reporting and privacy.",
+      "searchLabel": "Search help",
+      "searchPlaceholder": "Search questions",
+      "noMatches": "No questions match “{query}”.",
+      "categories": {
+        "routes": "Routes & data",
+        "reporting": "Reporting",
+        "privacy": "Privacy",
+        "access": "Using PathAble"
+      },
+      "contactPrompt": "Didn't find your answer?",
+      "contactCta": "Contact us"
+    },
+    "faq": {
+      "safe": {
+        "q": "Does PathAble guarantee a route is accessible?",
+        "a": "No. PathAble shows what is known about a route — verified conditions, known barriers, unverified reports and missing information — and ranks options using your preferences. Conditions change, so always use your own judgement."
+      },
+      "unknown": {
+        "q": "What does “no data” mean on a route?",
+        "a": "Nobody has surveyed that section yet. We never treat missing information as accessible. Routes with more unknown sections rank lower when you prefer verified routes."
+      },
+      "sample": {
+        "q": "Why does the app say “sample data”?",
+        "a": "The routing service is still being built. Until it's connected, routes and hazards are generated samples so the interface can be tested. They don't follow real sidewalks and must not be used to navigate."
+      },
+      "profile": {
+        "q": "Do I have to tell PathAble about my disability?",
+        "a": "No. Profiles are optional shortcuts that pre-fill preferences. You can skip them, use Custom, and change any setting. Preferences are stored on your device."
+      },
+      "ai": {
+        "q": "How is AI used in reporting?",
+        "a": "When available, a computer-vision model suggests what barriers might be in your photo, with a confidence level. You confirm or reject each suggestion. Nothing is reported without your review."
+      },
+      "winter": {
+        "q": "Do you use weather forecasts to predict snow on sidewalks?",
+        "a": "No. Weather isn't sidewalk condition. Winter markers only come from on-the-ground reports, and they expire quickly."
+      },
+      "photos": {
+        "q": "What happens to my photos?",
+        "a": "Location metadata in the file is removed before upload. Photos are only sent when you submit a report, and the planned service will blur faces and licence plates. In this preview, reports stay on your device."
+      },
+      "keyboard": {
+        "q": "Can I use PathAble without a mouse or touchscreen?",
+        "a": "Yes. Everything works with a keyboard. Press {shortcut} anywhere to search actions, and use Tab to move between route options. The map can be panned with arrow keys once focused."
+      },
+      "languages": {
+        "q": "Which languages are supported?",
+        "a": "English and French today. Spanish, Arabic, Simplified and Traditional Chinese, Hindi, Urdu, Bengali, Punjabi, Tamil and Portuguese will be added once each translation is complete and reviewed."
+      },
+      "data": {
+        "q": "Can I delete my data?",
+        "a": "Yes. Settings → Privacy & data lets you download or delete everything PathAble stores on your device."
+      }
+    },
+    "contact": {
+      "title": "Contact & support",
+      "lede": "PathAble is an early-stage project. Here's how to reach the people building it.",
+      "issuesTitle": "Report a problem or suggest an idea",
+      "issuesBody": "Bugs, accessibility issues and feature ideas are tracked publicly.",
+      "issuesCta": "Open an issue",
+      "noChannel": "A public support channel hasn't been set up for this deployment yet.",
+      "responseTitle": "What to expect",
+      "responseBody": "There's no staffed support line or guaranteed response time yet. For anything urgent or safety-related, contact local services — PathAble is not an emergency service.",
+      "barrierTitle": "Found a barrier on a sidewalk?",
+      "barrierBody": "Use the report flow so it can be shown to others.",
+      "cityTitle": "Need it fixed?",
+      "cityBody": "PathAble doesn't repair sidewalks. In Toronto, you can report sidewalk and snow-clearing problems to the City through 311."
+    },
+    "privacy": {
+      "title": "Privacy",
+      "lede": "Plain-language overview of how PathAble handles data in this preview.",
+      "draftNotice": "This page describes the preview's behaviour and the intended structure of a future privacy policy. It is not a legal policy and has not been reviewed by a lawyer.",
+      "sections": {
+        "device": {
+          "title": "Stored on your device",
+          "body": "Preferences, display settings, onboarding status and saved reports are kept in your browser's local storage. They don't leave your device unless you send a report once the service is live."
+        },
+        "location": {
+          "title": "Location",
+          "body": "Your location is requested only when you choose “Use my location”. It's used to set a starting point or report location and isn't stored by PathAble in this preview."
+        },
+        "search": {
+          "title": "Address search",
+          "body": "What you type into search is sent to the geocoding service (Photon, operated by Komoot, using OpenStreetMap data) to find matching places."
+        },
+        "map": {
+          "title": "Map tiles",
+          "body": "Map images are loaded from OpenFreeMap. Like any web request, this reveals your IP address and the map area you view to that provider."
+        },
+        "photos": {
+          "title": "Photos",
+          "body": "Photos stay on your device until you submit a report. Location metadata is stripped before upload."
+        },
+        "analytics": {
+          "title": "Analytics and tracking",
+          "body": "This preview contains no analytics, advertising or tracking scripts."
+        },
+        "rights": {
+          "title": "Your choices",
+          "body": "You can download or delete everything PathAble stores on your device from Settings at any time."
+        },
+        "future": {
+          "title": "Before launch",
+          "body": "A full privacy policy covering accounts, report storage, retention periods and your rights under Canadian privacy law (PIPEDA) will be published before any personal data is collected on a server."
+        }
+      }
+    },
+    "terms": {
+      "title": "Terms of use",
+      "lede": "The intended structure of PathAble's terms, shared early for transparency.",
+      "draftNotice": "Draft structure only — not a binding agreement and not legal advice.",
+      "sections": {
+        "preview": {
+          "title": "Preview software",
+          "body": "PathAble is in development. Route information in this preview is sample data and must not be used for real-world navigation."
+        },
+        "judgement": {
+          "title": "Use your own judgement",
+          "body": "Route information can be incomplete or out of date. PathAble doesn't guarantee that any route is safe, accessible or passable."
+        },
+        "reports": {
+          "title": "Community reports",
+          "body": "Reports should describe real conditions, avoid identifying people, and not include harmful or misleading content."
+        },
+        "data": {
+          "title": "Map and data attribution",
+          "body": "Map data is © OpenStreetMap contributors, available under the Open Database License. Other sources are credited where they appear."
+        }
+      }
+    },
+    "ai": {
+      "title": "How PathAble uses AI",
+      "lede": "Where AI is used, where it isn't, and the limits we design around.",
+      "usedTitle": "Where AI is planned to be used",
+      "used": {
+        "photos": "Suggesting barrier types and locations in photos you submit.",
+        "triage": "Helping reviewers prioritize reports that may affect many routes."
+      },
+      "notTitle": "Where AI is not used",
+      "not": {
+        "routing": "Deciding on its own whether a sidewalk is accessible. Model-assisted information is always labelled and reviewed by a person.",
+        "profiles": "Inferring anything about you from your preferences or behaviour.",
+        "weather": "Predicting sidewalk conditions from weather."
+      },
+      "limitsTitle": "Known limitations",
+      "limits": {
+        "accuracy": "Models make mistakes, especially in snow, low light, or with unusual infrastructure.",
+        "bias": "Training images may under-represent some neighbourhoods or seasons. We plan to measure accuracy by area and season and publish the results.",
+        "confidence": "Confidence scores are estimates, not guarantees."
+      },
+      "statusTitle": "Status in this preview",
+      "statusBody": "No AI model is connected. The reporting flow shows an “unavailable” state instead of inventing results."
+    }
+  },
+  "units": {
+    "percent": "{value}%"
+  }
+}

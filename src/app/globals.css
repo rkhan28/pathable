@@ -1,0 +1,453 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/*
+ * PathAble design tokens
+ * ----------------------
+ * Raw tokens live on :root as CSS custom properties so they can be themed
+ * (light / dark / high contrast) and read by MapLibre at runtime.
+ * `@theme inline` maps them into Tailwind utilities (bg-surface, text-fg ...).
+ * Every text/background pair below is checked by `npm run tokens:check`
+ * (scripts/check-contrast.mjs) against WCAG 2.2 AA.
+ */
+
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant hc (&:where([data-contrast="high"], [data-contrast="high"] *));
+
+:root {
+  /* Surfaces */
+  --bg: #faf7f0; /* warm ivory */
+  --bg-subtle: #f2ede1; /* paper */
+  --surface: #fffdf8;
+  --surface-raised: #ffffff;
+  --surface-sunken: #ece6d8;
+  --overlay: rgb(17 24 20 / 0.42);
+
+  /* Text */
+  --fg: #181c19; /* rich charcoal */
+  --fg-muted: #4a514b;
+  --fg-subtle: #5f665f;
+  --fg-inverse: #faf7f0;
+
+  /* Lines */
+  --border: #e0d9c8;
+  --border-strong: #8a8270;
+
+  /* Brand */
+  --forest: #12372a;
+  --forest-2: #1c4a39;
+  --emerald: #0a6a4b;
+  --emerald-bright: #14a06f;
+  --teal: #2c6b70;
+  --mint: #dcefe4;
+  --sand: #efe4cc;
+
+  --primary: var(--forest);
+  --primary-hover: #0c2a1f;
+  --primary-fg: #faf7f0;
+  --accent: var(--emerald);
+  --accent-soft: #e2f1e8;
+  --accent-fg: #ffffff;
+
+  /* Semantic route & hazard states (never used without a matching icon/pattern) */
+  --verified: #0a6a4b;
+  --verified-soft: #e0f1e7;
+  --barrier: #b42318;
+  --barrier-soft: #fbe7e4;
+  --unverified: #8a5300;
+  --unverified-soft: #fbefd8;
+  --unknown: #5f665f;
+  --unknown-soft: #ebe8e0;
+  --winter: #1f5a8a;
+  --winter-soft: #e3eef8;
+  --info: #2c6b70;
+  --info-soft: #e1eff0;
+
+  /* Focus */
+  --focus: #0a6a4b;
+  --focus-halo: rgb(10 106 75 / 0.22);
+
+  /* Map */
+  --map-route-selected: #0a6a4b;
+  --map-route-casing: #ffffff;
+  --map-route-alt: #7c8f87;
+  --map-user: #1f5a8a;
+
+  /* Radius */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  /* Elevation — warm, low-spread shadows */
+  --shadow-1: 0 1px 2px rgb(40 33 20 / 0.06), 0 1px 1px rgb(40 33 20 / 0.04);
+  --shadow-2: 0 4px 12px -2px rgb(40 33 20 / 0.08), 0 2px 4px rgb(40 33 20 / 0.05);
+  --shadow-3: 0 12px 32px -8px rgb(40 33 20 / 0.16), 0 4px 8px rgb(40 33 20 / 0.06);
+  --shadow-4: 0 28px 64px -16px rgb(30 25 15 / 0.28), 0 8px 16px rgb(30 25 15 / 0.08);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 320ms;
+  --dur-4: 560ms;
+
+  /* Sizing */
+  --touch: 44px; /* WCAG 2.5.8 asks for 24px; we target 44px for motor accessibility */
+  --text-scale: 1;
+
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0d1210;
+  --bg-subtle: #121916;
+  --surface: #151d19;
+  --surface-raised: #1b2520;
+  --surface-sunken: #0a0e0c;
+  --overlay: rgb(0 0 0 / 0.6);
+
+  --fg: #ede9df;
+  --fg-muted: #bcc1b7;
+  --fg-subtle: #a2a89f;
+  --fg-inverse: #0d1210;
+
+  --border: #26322c;
+  --border-strong: #66776f;
+
+  --primary: #6fdcab;
+  --primary-hover: #8be6bd;
+  --primary-fg: #08160f;
+  --accent: #6fdcab;
+  --accent-soft: #163428;
+  --accent-fg: #08160f;
+  --mint: #163428;
+  --sand: #2a261c;
+
+  --verified: #6fdcab;
+  --verified-soft: #12302a;
+  --barrier: #ff8f7f;
+  --barrier-soft: #3a1915;
+  --unverified: #f3b955;
+  --unverified-soft: #352710;
+  --unknown: #a8aea5;
+  --unknown-soft: #232b27;
+  --winter: #92c6f2;
+  --winter-soft: #14263a;
+  --info: #84cbd0;
+  --info-soft: #132d30;
+
+  --focus: #8be6bd;
+  --focus-halo: rgb(139 230 189 / 0.25);
+
+  --map-route-selected: #6fdcab;
+  --map-route-casing: #0d1210;
+  --map-route-alt: #6f817a;
+  --map-user: #92c6f2;
+
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-2: 0 4px 12px -2px rgb(0 0 0 / 0.5);
+  --shadow-3: 0 12px 32px -8px rgb(0 0 0 / 0.6);
+  --shadow-4: 0 28px 64px -16px rgb(0 0 0 / 0.7);
+
+  color-scheme: dark;
+}
+
+/* High contrast: maximum luminance separation, solid borders, no soft tints. */
+[data-contrast="high"] {
+  --bg: #ffffff;
+  --bg-subtle: #ffffff;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f2f2f2;
+  --fg: #000000;
+  --fg-muted: #1a1a1a;
+  --fg-subtle: #262626;
+  --border: #000000;
+  --border-strong: #000000;
+  --primary: #003d29;
+  --primary-fg: #ffffff;
+  --accent: #003d29;
+  --verified: #004d33;
+  --barrier: #8f0d00;
+  --unverified: #5c3700;
+  --unknown: #262626;
+  --winter: #0b3a63;
+  --focus: #000000;
+  --focus-halo: rgb(0 0 0 / 0.35);
+}
+.dark[data-contrast="high"] {
+  --bg: #000000;
+  --bg-subtle: #000000;
+  --surface: #000000;
+  --surface-raised: #0a0a0a;
+  --surface-sunken: #000000;
+  --fg: #ffffff;
+  --fg-muted: #f0f0f0;
+  --fg-subtle: #e0e0e0;
+  --border: #ffffff;
+  --border-strong: #ffffff;
+  --primary: #9ff5cf;
+  --primary-fg: #000000;
+  --accent: #9ff5cf;
+  --verified: #9ff5cf;
+  --barrier: #ffb3a8;
+  --unverified: #ffd27a;
+  --unknown: #e0e0e0;
+  --winter: #bfe0ff;
+  --focus: #ffffff;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-overlay: var(--overlay);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-fg-inverse: var(--fg-inverse);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-forest: var(--forest);
+  --color-emerald: var(--emerald);
+  --color-emerald-bright: var(--emerald-bright);
+  --color-teal: var(--teal);
+  --color-mint: var(--mint);
+  --color-sand: var(--sand);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-fg: var(--primary-fg);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-fg: var(--accent-fg);
+  --color-verified: var(--verified);
+  --color-verified-soft: var(--verified-soft);
+  --color-barrier: var(--barrier);
+  --color-barrier-soft: var(--barrier-soft);
+  --color-unverified: var(--unverified);
+  --color-unverified-soft: var(--unverified-soft);
+  --color-unknown: var(--unknown);
+  --color-unknown-soft: var(--unknown-soft);
+  --color-winter: var(--winter);
+  --color-winter-soft: var(--winter-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-focus: var(--focus);
+
+  /* shadcn-compatible aliases so adapted primitives read our tokens */
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
+  --color-muted: var(--bg-subtle);
+  --color-muted-foreground: var(--fg-muted);
+  --color-popover: var(--surface-raised);
+  --color-popover-foreground: var(--fg);
+  --color-ring: var(--focus);
+  --color-input: var(--border-strong);
+  --color-destructive: var(--barrier);
+
+  --font-sans: var(--font-atkinson), "Atkinson Hyperlegible Next", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", "Noto Sans", "Noto Sans Arabic", "Noto Nastaliq Urdu", "Noto Sans Devanagari",
+    "Noto Sans Bengali", "Noto Sans Gurmukhi", "Noto Sans Tamil", "PingFang SC", "PingFang TC",
+    "Noto Sans SC", "Noto Sans TC", "Microsoft YaHei", sans-serif;
+  --font-display: var(--font-instrument), "Instrument Serif", ui-serif, Georgia, "Noto Serif", serif;
+  --font-mono: var(--font-atkinson-mono), "Atkinson Hyperlegible Mono", ui-monospace, "SF Mono", Menlo,
+    monospace;
+
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  --shadow-1: var(--shadow-1);
+  --shadow-2: var(--shadow-2);
+  --shadow-3: var(--shadow-3);
+  --shadow-4: var(--shadow-4);
+
+  --ease-out-soft: var(--ease-out);
+  --ease-in-out-soft: var(--ease-in-out);
+
+  /* Fluid type scale (rem-based so user text scaling applies everywhere) */
+  --text-display: clamp(2.6rem, 1.4rem + 5.2vw, 5.6rem);
+  --text-display--line-height: 1.02;
+  --text-headline: clamp(1.9rem, 1.3rem + 2.4vw, 3.1rem);
+  --text-headline--line-height: 1.1;
+  --text-title: clamp(1.3rem, 1.15rem + 0.6vw, 1.6rem);
+  --text-title--line-height: 1.25;
+
+  --spacing-touch: var(--touch);
+}
+
+@layer base {
+  html {
+    font-size: calc(100% * var(--text-scale));
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    line-height: 1.55;
+    font-feature-settings: "ss01" on;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Non-Latin scripts need more vertical room than Latin. */
+  :lang(ar),
+  :lang(ur),
+  :lang(hi),
+  :lang(bn),
+  :lang(pa),
+  :lang(ta) {
+    line-height: 1.8;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+    /* Long words at 150% text size must wrap rather than force horizontal scrolling (WCAG 1.4.10). */
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--accent-soft);
+    color: var(--fg);
+  }
+
+  /* One focus style everywhere: thick, offset, never color-only. */
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  [data-contrast="high"] :focus-visible {
+    outline-width: 4px;
+    outline-offset: 3px;
+  }
+
+  [data-contrast="high"] a {
+    text-decoration: underline;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer utilities {
+  .surface-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-1);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Pattern used under status colours so state is never conveyed by colour alone. */
+  .pattern-hatch {
+    background-image: repeating-linear-gradient(
+      135deg,
+      currentColor 0 1.5px,
+      transparent 1.5px 6px
+    );
+  }
+
+  .pattern-dots {
+    background-image: radial-gradient(currentColor 1px, transparent 1.2px);
+    background-size: 5px 5px;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+}
+
+/* Respect reduced motion for CSS-driven animation (Motion components check this separately). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+[data-motion="reduce"] *,
+[data-motion="reduce"] *::before,
+[data-motion="reduce"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* MapLibre: align built-in UI with our tokens. */
+.maplibregl-ctrl-attrib {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  background: color-mix(in srgb, var(--surface) 88%, transparent) !important;
+  color: var(--fg-muted);
+}
+.maplibregl-ctrl-attrib a {
+  color: var(--fg);
+}
+.maplibregl-canvas:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: -3px;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Map markers (created imperatively by MapView). Shapes echo the logo: ring = origin, dot = destination. */
+.pa-marker-origin {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--surface-raised);
+  border: 5px solid var(--fg);
+  box-shadow: var(--shadow-2);
+}
+.pa-marker-destination {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--accent);
+  border: 4px solid var(--surface-raised);
+  box-shadow: var(--shadow-3);
+}
+.pa-marker-user {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--map-user);
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--map-user) 25%, transparent);
+}
