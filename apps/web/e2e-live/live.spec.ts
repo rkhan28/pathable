@@ -29,19 +29,41 @@ test("live routes: no development label, real alternatives, details and guidance
   expect(await page.locator(".pa-route-card:visible").count()).toBeGreaterThan(1);
   await expect(page.locator("[data-map-status]")).toHaveAttribute("data-map-status", /ready|fallback-style/, { timeout: 20000 });
   if (!isMobile) {
-    await page.getByRole("radio").nth(1).focus();
+    await page.locator("input.pa-route-radio").nth(1).focus();
     await page.keyboard.press("ArrowDown");
-    await expect(page.getByRole("radio").nth(2)).toBeChecked();
+    await expect(page.locator("input.pa-route-radio").nth(2)).toBeChecked();
   }
-  await page.getByRole("button", { name: "Route details" }).click();
+  await page.getByRole("button", { name: "Details", exact: true }).click();
   await page.getByRole("tab", { name: "Sections" }).click();
   await expect(page.getByText(/2023 lidar terrain model/).first()).toBeVisible();
-  await page.getByRole("button", { name: "Start guidance" }).click();
-  await expect(page.getByText(/Step 1 of \d+/)).toBeVisible();
-  await page.getByRole("button", { name: "Next step" }).click();
-  await expect(page.getByText(/Step 2 of \d+/)).toBeVisible();
+  // The test browser has no location, so guidance runs as a preview along the route.
+  await page.getByRole("button", { name: "Start", exact: true }).click();
+  const guidance = page.getByRole("region", { name: "Guidance" });
+  await expect(guidance.getByText(/Preview/)).toBeVisible();
+  await guidance.getByRole("button", { name: "Pause preview" }).click();
+  const first = await guidance.getByRole("heading").textContent();
+  await guidance.getByRole("button", { name: "Next step" }).click();
+  await expect(guidance.getByRole("heading")).not.toHaveText(first!);
   const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).exclude(".maplibregl-canvas").analyze();
   expect(axe.violations.map((v) => v.id)).toEqual([]);
+});
+
+test("live transit: a real TTC option with its line, then guidance that says where to get off", async ({ page }) => {
+  await page.goto(TRIP);
+  await page.getByRole("radio", { name: /Route A/ }).waitFor();
+  await page.getByRole("radio", { name: /^Transit/ }).click();
+  const option = page.getByRole("radio", { name: /Arrive/ }).first();
+  await expect(option).toBeChecked();
+  await expect(page.getByText("Scheduled TTC times")).toBeVisible();
+  await page.getByRole("button", { name: "Start", exact: true }).click();
+  const guidance = page.getByRole("region", { name: "Guidance" });
+  await guidance.getByRole("button", { name: "Pause preview" }).click();
+  for (let i = 0; i < 6 && !(await guidance.getByRole("heading", { name: /Get off at/ }).count()); i++) {
+    await guidance.getByRole("button", { name: "Next step" }).click();
+  }
+  await expect(guidance.getByRole("heading", { name: /Get off at/ })).toBeVisible();
+  await guidance.getByRole("button", { name: "End" }).click();
+  await expect(guidance).toHaveCount(0);
 });
 
 test("search finds a place and opens the planner with live routes", async ({ page }) => {

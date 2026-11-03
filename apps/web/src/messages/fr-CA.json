@@ -90,7 +90,7 @@
   },
   "landing": {
     "title": "Une ville sans limites commence par un meilleur itinéraire.",
-    "lede": "PathAble compare les itinéraires piétons selon ce que l’on sait vraiment de chaque trottoir, et vous montre où personne ne le sait encore.",
+    "lede": "Des itinéraires à pied classés selon ce que l’on sait vraiment de chaque trottoir, avec le transport en commun accessible quand il aide.",
     "searchLabel": "Où allez-vous?",
     "cta": "Trouver mon itinéraire",
     "secondary": "Voir le fonctionnement",
@@ -107,13 +107,13 @@
       "title": "Fonctionnement",
       "lede": "Quatre étapes, les mêmes que dans le planificateur.",
       "s1Title": "Dites-nous ce qui compte",
-      "s1Body": "Indiquez la pente maximale, la largeur minimale et vos autres limites. Un profil ne fait que proposer un point de départ.",
+      "s1Body": "Vos limites de pente, de largeur et de bordure.",
       "s2Title": "Choisissez votre destination",
-      "s2Body": "Cherchez une adresse, touchez un point sur la carte ou collez des coordonnées. Votre trajet reste dans cet onglet.",
-      "s3Title": "Comparez ce que l’on sait",
-      "s3Body": "Jusqu’à trois options, chacune indiquant la part du trajet vérifiée, avec obstacle, signalée ou inconnue.",
-      "s4Title": "Partez, puis dites-nous ce que vous avez vu",
-      "s4Body": "Un guidage étape par étape en gros caractères, avec lecture vocale au besoin. Signalez tout ce qui bloque le passage.",
+      "s2Body": "Cherchez, touchez la carte ou collez des coordonnées.",
+      "s3Title": "Comparez marche et transport en commun",
+      "s3Body": "Voyez ce qui est connu de chaque tronçon, et quand l’autobus est plus rapide.",
+      "s4Title": "Démarrez et suivez",
+      "s4Body": "Un guidage étape par étape qui vous suit, avec la voix si vous le voulez.",
       "exampleCaption": "Itinéraire A de l’Université York à Finch West, calculé à partir des données ouvertes de North York."
     },
     "states": {
@@ -234,7 +234,7 @@
     "why": "Pourquoi cet itinéraire?",
     "whyIntro": "Classé {rank} sur {total} à partir des mêmes chiffres qu’ici :",
     "details": "Détails de l’itinéraire",
-    "start": "Commencer le guidage",
+    "start": "Démarrer",
     "tabs": {
       "directions": "Indications",
       "sections": "Tronçons",
@@ -244,7 +244,13 @@
     "sectionLength": "{length} sur {street}",
     "unnamed": "un sentier sans nom",
     "evidenceUnknown": "Aucune donnée",
-    "backToRoutes": "Retour aux itinéraires"
+    "backToRoutes": "Retour aux itinéraires",
+    "compatibilityShort": {
+      "compatible": "Convient à vos préférences",
+      "unknowns": "Certains tronçons sans données",
+      "incompatible": "Obstacles connus"
+    },
+    "more": "Détails"
   },
   "reasons": {
     "fewest_barriers": "{value, plural, =0 {il ne comporte aucun obstacle connu} one {il compte le moins d’obstacles connus (#)} other {il compte le moins d’obstacles connus (#)}}",
@@ -495,5 +501,52 @@
     "body": "Le lien est peut-être périmé. Essayez le planificateur ou le centre d’aide.",
     "planner": "Ouvrir le planificateur",
     "help": "Aller à l’aide"
+  },
+  "navigate": {
+    "region": "Guidage",
+    "locating": "Recherche de votre position",
+    "arrived": "Vous êtes arrivé",
+    "done": "Terminé",
+    "board": "{mode, select, bus {Prenez l’autobus {line}} streetcar {Prenez le tramway {line}} other {Prenez la ligne {line}}}",
+    "boardDetail": "De {stop}, départ à {time}",
+    "alight": "Descendez à {stop}",
+    "stops": "{count, plural, one {# arrêt} other {# arrêts}}",
+    "soon": "Bientôt : {instruction}",
+    "arriveAt": "Arrivée {time}",
+    "preview": {
+      "far": "Aperçu : vous n’êtes pas près de cet itinéraire",
+      "denied": "Aperçu : la localisation est désactivée",
+      "unavailable": "Aperçu : la localisation n’est pas disponible"
+    },
+    "previewControls": "Commandes de l’aperçu",
+    "previousStep": "Étape précédente",
+    "nextStep": "Étape suivante",
+    "play": "Lancer l’aperçu",
+    "pause": "Mettre l’aperçu en pause",
+    "voice": "Guidage vocal",
+    "recenter": "Recentrer",
+    "exit": "Terminer",
+    "finish": "Terminer",
+    "rerouting": "Hors itinéraire, recherche d’un autre chemin"
+  },
+  "transit": {
+    "modes": "Mode de déplacement",
+    "walk": "À pied",
+    "transit": "Transport en commun",
+    "options": "Options de transport en commun",
+    "leaves": "Départ {time}",
+    "arrive": "Arrivée {time}",
+    "stepFree": {
+      "yes": "Sans marche",
+      "unknown": "Sans marche non confirmé"
+    },
+    "suggest": "{mode, select, bus {L’autobus {line}} streetcar {Le tramway {line}} other {La ligne {line}}} fait gagner {minutes}",
+    "none": "Aucun transport accessible ne part dans l’heure.",
+    "unavailable": "Les horaires ne sont pas disponibles pour le moment.",
+    "scheduled": "Horaires prévus de la TTC",
+    "walkLeg": "Marche {minutes}",
+    "rideLeg": "{mode, select, bus {Autobus} streetcar {Tramway} lrt {SLR} subway {Métro} other {Train}} {line}",
+    "faster": "Plus rapide",
+    "loading": "Vérification du transport en commun"
   }
 }

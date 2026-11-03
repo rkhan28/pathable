@@ -13,11 +13,13 @@ import { hasWebGL, loadMapLibre } from "./maplibre";
 import { brandStyle, fallbackStyle, readMapColors, type MapColors } from "./map-style";
 import {
   type MapRoute,
+  type RideLine,
   installRouteLayers,
   routeBounds,
   setDrawProgress,
   setFlowPhase,
   setIsolation,
+  setRides,
   setRoutes,
 } from "./route-layers";
 
@@ -52,6 +54,20 @@ export interface RouteMapProps {
   fallback?: ReactNode;
   className?: string;
   onStatus?: (status: MapStatus) => void;
+  /** Transit rides, drawn in each line's colour. */
+  rides?: RideLine[];
+  /** The person's position during guidance; glides to each new fix over `durationMs`. */
+  user?: UserMarker | null;
+  /** While true, the camera follows `user`, tilted and turned to face the way ahead. */
+  follow?: boolean;
+  /** Called when the person drags or zooms the map during guidance. */
+  onFollowBreak?: () => void;
+}
+
+export interface UserMarker {
+  position: LonLat;
+  bearing: number;
+  durationMs: number;
 }
 
 export type MapStatus = "loading" | "ready" | "fallback-style" | "no-webgl";
@@ -61,6 +77,24 @@ const DEFAULT_PADDING: Padding = { top: 48, bottom: 48, left: 48, right: 48 };
 const FLOW_PERIOD_MS = 7000;
 const FLOW_TICK_MS = 100;
 const DRAW_STEPS = 8;
+const NO_RIDES: RideLine[] = [];
+// During guidance the dot sits low on screen, so more of the way ahead is visible.
+const FOLLOW_PADDING: Padding = { top: 240, bottom: 140, left: 40, right: 40 };
+const FOLLOW_ZOOM = 17.6;
+const FOLLOW_PITCH = 50;
+
+function userMarker() {
+  const el = document.createElement("div");
+  el.className = "pa-user";
+  el.setAttribute("aria-hidden", "true");
+  el.innerHTML = '<span class="pa-user-halo"></span><span class="pa-user-cone"></span><span class="pa-user-dot"></span>';
+  return el;
+}
+
+/** Shortest turn from a to b, so 350 to 10 degrees turns 20 degrees, not 340. */
+function turn(a: number, b: number) {
+  return ((((b - a) % 360) + 540) % 360) - 180;
+}
 
 function distanceKm(a: [number, number], b: [number, number]) {
   const k = Math.PI / 180;
@@ -94,6 +128,10 @@ export function RouteMap({
   fallback,
   className,
   onStatus,
+  rides = NO_RIDES,
+  user = null,
+  follow = false,
+  onFollowBreak,
 }: RouteMapProps) {
   const t = useTranslations("planner");
   const locale = useLocale();
@@ -105,9 +143,9 @@ export function RouteMap({
   const [status, setStatus] = useState<MapStatus>("loading");
   const [styleVersion, setStyleVersion] = useState(0);
   const [hazardEls, setHazardEls] = useState<{ hazard: Hazard; el: HTMLElement }[]>([]);
-  const latest = useRef({ routes, selectedId, isolatedId, padding, onPick });
+  const latest = useRef({ routes, selectedId, isolatedId, padding, onPick, onFollowBreak, follow });
   useLayoutEffect(() => {
-    latest.current = { routes, selectedId, isolatedId, padding, onPick };
+    latest.current = { routes, selectedId, isolatedId, padding, onPick, onFollowBreak, follow };
   });
   const webgl = useSyncExternalStore(noopSubscribe, hasWebGL, () => true);
 
@@ -153,6 +191,13 @@ export function RouteMap({
         }
       });
       map.on("click", (e) => latest.current.onPick?.([e.lngLat.lng, e.lngLat.lat]));
+      // A drag, pinch or wheel by the person (not our own camera moves) stops following.
+      const breakFollow = (e: { originalEvent?: unknown }) => {
+        if (e.originalEvent && latest.current.follow) latest.current.onFollowBreak?.();
+      };
+      map.on("dragstart", breakFollow);
+      map.on("zoomstart", breakFollow);
+      map.on("rotatestart", breakFollow);
       // Test hook: how many route features are actually drawn, and whether basemap tiles rendered.
       map.on("idle", () => {
         const el = containerRef.current;
@@ -220,6 +265,12 @@ export function RouteMap({
 
   useEffect(() => {
     const map = mapRef.current;
+    if (!map || styleVersion === 0) return;
+    setRides(map, rides);
+  }, [rides, styleVersion]);
+
+  useEffect(() => {
+    const map = mapRef.current;
     if (!map || styleVersion === 0 || !map.getLayer("pa-alt")) return;
     setIsolation(map, isolatedId, selectedRoute?.id ?? null);
   }, [isolatedId, selectedRoute?.id, styleVersion]);
@@ -252,7 +303,8 @@ export function RouteMap({
     const map = mapRef.current;
     if (!map) return;
     const apply = () => {
-      const { routes: rs, selectedId: sel, padding: pad } = latest.current;
+      const { routes: rs, selectedId: sel, padding: pad, follow: following } = latest.current;
+      if (following) return;
       const route = rs.find((r) => r.id === sel) ?? rs[0];
       const b = route ? routeBounds([route]) : null;
       if (b) map.fitBounds(b, { padding: pad, duration: 0 });
@@ -271,7 +323,7 @@ export function RouteMap({
   const fitKey = `${selectedRoute?.id}|${fitTrigger}`;
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !selectedRoute) return;
+    if (!map || !selectedRoute || latest.current.follow) return;
     const b = routeBounds([selectedRoute]);
     if (!b) return;
     const reduced = prefersReducedMotion();
@@ -284,6 +336,82 @@ export function RouteMap({
     // fitKey captures the selection and the trigger; padding is read at fit time.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fitKey, styleVersion === 0]);
+
+  // The person's dot glides from fix to fix instead of jumping; the camera eases alongside it.
+  const userRef = useRef<{ marker: Marker; position: LonLat; bearing: number; frame: number } | null>(null);
+  const followingRef = useRef(false);
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    if (!user) {
+      if (userRef.current) {
+        cancelAnimationFrame(userRef.current.frame);
+        userRef.current.marker.remove();
+        userRef.current = null;
+      }
+      return;
+    }
+    let cancelled = false;
+    void loadMapLibre().then((ml) => {
+      if (cancelled) return;
+      const reduced = prefersReducedMotion();
+      if (!userRef.current) {
+        const marker = new ml.Marker({ element: userMarker(), rotationAlignment: "map", pitchAlignment: "viewport" })
+          .setLngLat(user.position)
+          .setRotation(user.bearing)
+          .addTo(map);
+        userRef.current = { marker, position: user.position, bearing: user.bearing, frame: 0 };
+        return;
+      }
+      const u = userRef.current;
+      cancelAnimationFrame(u.frame);
+      const from = u.position;
+      const fromBearing = u.bearing;
+      const delta = turn(fromBearing, user.bearing);
+      const start = performance.now();
+      const total = reduced ? 0 : user.durationMs;
+      const step = (now: number) => {
+        const p = total ? Math.min(1, (now - start) / total) : 1;
+        u.position = [from[0] + (user.position[0] - from[0]) * p, from[1] + (user.position[1] - from[1]) * p];
+        u.bearing = fromBearing + delta * p;
+        u.marker.setLngLat(u.position).setRotation(u.bearing);
+        if (p < 1) u.frame = requestAnimationFrame(step);
+      };
+      u.frame = requestAnimationFrame(step);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !user || !follow) return;
+    const reduced = prefersReducedMotion();
+    const first = !followingRef.current;
+    followingRef.current = true;
+    map.easeTo({
+      center: user.position,
+      bearing: user.bearing,
+      pitch: FOLLOW_PITCH,
+      zoom: first ? FOLLOW_ZOOM : map.getZoom(),
+      padding: FOLLOW_PADDING,
+      duration: reduced ? 0 : first ? 1200 : user.durationMs,
+      easing: first ? easeOutCubic : (t) => t,
+      essential: true,
+    });
+  }, [user, follow]);
+
+  // Guidance ended: level the map, drop the follow padding and frame the route again.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || user || !followingRef.current) return;
+    followingRef.current = false;
+    map.setPadding({ top: 0, bottom: 0, left: 0, right: 0 });
+    const route = latest.current.routes.find((r) => r.id === latest.current.selectedId) ?? latest.current.routes[0];
+    const b = route ? routeBounds([route]) : null;
+    if (b) map.fitBounds(b, { padding: latest.current.padding, bearing: 0, pitch: 0, duration: prefersReducedMotion() ? 0 : 900, easing: easeOutCubic });
+  }, [user]);
 
   useEffect(() => {
     const map = mapRef.current;

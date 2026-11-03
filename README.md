@@ -39,6 +39,24 @@ Every stretch of every route is one of these:
 Each fact shows its source and its observation date. "No data" is never scored
 as accessible.
 
+## Guidance and transit
+
+- **Start** turns the planner into live guidance: one large instruction at the
+  top, time and distance left at the bottom, and a tilted map that follows you.
+  It advances on its own as your location moves along the route, says each
+  instruction aloud if you turn voice on, and plans again from where you are
+  if you leave the route on foot.
+- Away from the route (or with location off), the same screen runs as a
+  **preview** that walks the route for you, with pause and step buttons. It
+  says it is a preview.
+- **Transit**: beside walking routes, the planner offers walk, ride, walk
+  options on the TTC schedule (bus, streetcar, LRT and subway), drawn in each
+  line's colour. When one saves real time, a single line under the mode switch
+  says so. Stops and trips the TTC marks as not accessible are never offered,
+  and "step-free" is shown only when the schedule says so for the trip and both
+  stops. Times are scheduled, not real-time, and the screen says that too.
+  Transfers are not planned yet ([ADR 0004](docs/decisions/0004-transit-options.md)).
+
 ## What the data actually supports
 
 Measured in [docs/DATA_REPORT.md](docs/DATA_REPORT.md):
@@ -65,11 +83,11 @@ shares of walkable length are:
 | Check | Result |
 | --- | --- |
 | axe-core (WCAG 2.2 AA tags) | **0 violations**: 13 pages × 2 languages × 4 themes, plus open menus, dialogs, details and guidance |
-| End-to-end (Playwright, production build) | **146 passing**: keyboard flows, 390 px at 150% text, 44 px targets, language switch keeps the trip, honest unavailable states |
-| Web unit tests (Vitest) | 50, including shared ranking cases and contract checks of every fixture |
-| API integration tests (pytest, PostGIS via testcontainers) | 26, zero warnings; every response validated against the generated OpenAPI |
-| Live end-to-end (production web image, API, PostGIS, object storage) | **12 passing**: live routes, search, report with photo, map pick, withdraw, coverage refusal, French |
-| Pipeline tests | 25 |
+| End-to-end (Playwright, production build) | **150 passing**: guidance and transit flows, keyboard flows, 390 px at 150% text, 44 px targets, language switch keeps the trip, honest unavailable states |
+| Web unit tests (Vitest) | 64, including shared ranking cases, contract checks of every fixture, and position matching along a journey |
+| API integration tests (pytest, PostGIS via testcontainers) | 32, zero warnings, transit on a real slice of the TTC schedule; every response validated against the generated OpenAPI |
+| Live end-to-end (production web image, API, PostGIS, object storage) | **14 passing**: live routes, live TTC transit with guidance, search, report with photo, map pick, withdraw, coverage refusal, French |
+| Pipeline tests | 27 |
 | `/v1/routes` latency, 50 corridor trips, k6 | p95 **121 ms**, p99 **137 ms**, 6 workers ([details](docs/PERFORMANCE.md)) |
 | `/v1/hazards` latency | p95 **4.6 ms** |
 | `/v1/routes` on the full North York graph | p95 **273 ms**, p99 **345 ms**, 50 borough-wide trips |

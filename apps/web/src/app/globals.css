@@ -80,6 +80,7 @@
   @media (prefers-reduced-motion: reduce) {
     :root:not([data-motion="full"]) *, :root:not([data-motion="full"]) *::before, :root:not([data-motion="full"]) *::after {
       animation-duration: 1ms !important;
+      animation-delay: 0ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 1ms !important;
       scroll-behavior: auto !important;
@@ -87,6 +88,7 @@
   }
   [data-motion="reduced"] *, [data-motion="reduced"] *::before, [data-motion="reduced"] *::after {
     animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 1ms !important;
     scroll-behavior: auto !important;

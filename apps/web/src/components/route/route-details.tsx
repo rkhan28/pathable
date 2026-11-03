@@ -12,6 +12,7 @@ import { routeLabel } from "@/lib/route-label";
 import { spring } from "@/lib/motion";
 import { usePreferences } from "@/stores/preferences";
 import { StateIcon, STATE_TEXT_CLASS } from "./state-icon";
+import { WhyThisRoute } from "./why-this-route";
 
 export function useStepText() {
   const t = useTranslations("steps");
@@ -74,8 +75,10 @@ export function RouteDetails({
   onBack,
   onShowOnMap,
   onStartGuidance,
+  total,
 }: {
   route: Route;
+  total: number;
   onBack: () => void;
   onShowOnMap: (position: LonLat) => void;
   onStartGuidance: () => void;
@@ -104,6 +107,15 @@ export function RouteDetails({
           <span className="tabular">{f.distance(route.distanceM)}</span>
           <span className="tabular">{f.minutes(route.durationS)}</span>
         </span>
+      </div>
+
+      {/* What used to crowd the route card lives here, where there is room for it. */}
+      <div className="mt-3 grid gap-1 text-sm">
+        <p className={route.compatibility === "incompatible" ? "font-bold text-barrier" : undefined}>{t(`route.compatibility.${route.compatibility}`)}</p>
+        <p className="text-ink-muted">
+          {t("route.reports", { count: route.reportCount })}. {t("route.freshness", { oldest: f.date(route.oldestObservation), newest: f.date(route.newestObservation) })}
+        </p>
+        <WhyThisRoute reasons={route.reasons} rank={route.rank} total={total} />
       </div>
 
       <Tabs.Root defaultValue="directions" className="mt-4">
@@ -204,7 +216,7 @@ export function RouteDetails({
         </Tabs.Content>
       </Tabs.Root>
 
-      <button type="button" className="pa-link-button is-primary mt-4 w-full justify-center" onClick={onStartGuidance}>
+      <button type="button" className="pa-start-button mt-4 w-full" onClick={onStartGuidance}>
         <Navigation aria-hidden size={18} />
         {t("route.start")}
       </button>

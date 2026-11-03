@@ -30,15 +30,19 @@ test.describe("axe: open states", () => {
     await page.goto(TRIP);
     await page.getByRole("radio", { name: /Route A/ }).waitFor();
     await expectNoAxeViolations(page, "route list");
+    await page.getByRole("radio", { name: /^Transit/ }).click();
+    await page.getByRole("radio", { name: /Arrive/ }).first().waitFor();
+    await expectNoAxeViolations(page, "transit options");
+    await page.getByRole("radio", { name: /^Walk/ }).click();
+    await page.getByRole("button", { name: "Details", exact: true }).click();
     await page.getByRole("button", { name: "Why this route?" }).click();
-    await expectNoAxeViolations(page, "why this route");
-    await page.getByRole("button", { name: "Route details" }).click();
-    await expectNoAxeViolations(page, "directions");
+    await expectNoAxeViolations(page, "directions and why this route");
     await page.getByRole("tab", { name: "Sections" }).click();
     await expectNoAxeViolations(page, "sections");
     await page.getByRole("tab", { name: "Hazards" }).click();
     await expectNoAxeViolations(page, "hazards");
-    await page.getByRole("button", { name: "Start guidance" }).click();
+    await page.getByRole("button", { name: "Start", exact: true }).click();
+    await page.getByRole("region", { name: "Guidance" }).waitFor();
     await expectNoAxeViolations(page, "guidance");
   });
 

@@ -1,8 +1,8 @@
 "use client";
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { ArrowUpDown, ChevronsLeft, ChevronsRight, Link2, SlidersHorizontal, WifiOff } from "lucide-react";
-import { LayoutGroup } from "motion/react";
+import { ArrowUpDown, ChevronsLeft, ChevronsRight, Footprints, Link2, SlidersHorizontal, TrainFront, WifiOff } from "lucide-react";
+import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -10,18 +10,23 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExtern
 import { toast } from "sonner";
 import { Wordmark } from "@/components/brand/wordmark";
 import { CoveragePatterns } from "@/components/route/coverage-bar";
-import { Guidance } from "@/components/route/guidance";
 import { RouteCard } from "@/components/route/route-card";
 import { RouteDetails } from "@/components/route/route-details";
+import { TransitCard } from "@/components/route/transit-card";
+import { Navigation } from "@/components/navigate/navigation";
+import { navCamera } from "@/components/navigate/nav-camera";
+import { MODE_ICON } from "@/components/navigate/maneuver-icon";
 import { FixtureBanner } from "@/components/site/fixture-banner";
 import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { CommandPalette } from "@/components/palette/command-palette";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
-import type { LonLat, RouteResponse } from "@/lib/api/contracts";
+import type { LonLat, RouteResponse, TransitResponse } from "@/lib/api/contracts";
 import { PathAbleError } from "@/lib/api/errors";
 import { getService, serviceKind } from "@/lib/api/select-service";
 import { announce } from "@/lib/announce";
 import { formatLonLat, parseLinkParam } from "@/lib/geo";
+import { type Journey, fromRoute, fromTransit } from "@/lib/journey";
+import { spring } from "@/lib/motion";
 import { usePreferences } from "@/stores/preferences";
 import { useTrip, type Place } from "@/stores/trip";
 import { BottomSheet } from "./bottom-sheet";
@@ -35,6 +40,10 @@ import type { Hazard } from "@/lib/api/contracts";
 
 const renderHazard = (h: Hazard) => <HazardMarker hazard={h} />;
 const NO_HAZARDS: Hazard[] = [];
+const followBreak = () => navCamera.set({ follow: false });
+
+/** Suggest transit when it saves real time: at least 5 minutes and a fifth of the walk. */
+const SUGGEST_SAVES_S = 5 * 60;
 
 /**
  * The sheet reports its height on every animation frame. Keeping it in React
@@ -57,8 +66,9 @@ const sheetHeight = (() => {
   };
 })();
 
-function PlannerMap({ desktop, collapsed, ...props }: Omit<RouteMapProps, "padding"> & { desktop: boolean; collapsed: boolean }) {
+function PlannerMap({ desktop, collapsed, navigating, ...props }: Omit<RouteMapProps, "padding"> & { desktop: boolean; collapsed: boolean; navigating: boolean }) {
   const height = useSyncExternalStore(sheetHeight.subscribe, sheetHeight.get, () => 0);
+  const camera = useSyncExternalStore(navCamera.subscribe, navCamera.get, navCamera.get);
   const padding = useMemo<Padding>(
     () =>
       desktop
@@ -66,6 +76,7 @@ function PlannerMap({ desktop, collapsed, ...props }: Omit<RouteMapProps, "paddi
         : { top: 72, bottom: Math.max(height, 136) + 24, left: 32, right: 72 },
     [desktop, collapsed, height],
   );
+  if (navigating) return <RouteMap {...props} padding={padding} user={camera.user} follow={camera.follow} onFollowBreak={followBreak} controls={false} />;
   return <RouteMap {...props} padding={padding} />;
 }
 
@@ -111,7 +122,10 @@ export function Planner() {
   const preferences = usePreferences((s) => s.preferences);
   const [isolated, setIsolated] = useState<string | null>(null);
   const [view, setView] = useState<"list" | "details">("list");
-  const [guidance, setGuidance] = useState(false);
+  const [mode, setMode] = useState<"walk" | "transit">("walk");
+  const [transitId, setTransitId] = useState<string | null>(null);
+  const [navigating, setNavigating] = useState<Journey | null>(null);
+  const [rerouting, setRerouting] = useState(false);
   const [picking, setPicking] = useState<null | "origin" | "destination">(null);
   const [focusPoint, setFocusPoint] = useState<{ position: LonLat; key: number } | null>(null);
   const [collapsed, setCollapsed] = useState(false);
@@ -176,6 +190,54 @@ export function Planner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query.isPending, JSON.stringify(request)]);
   const selected = routes.find((r) => r.id === selectedRouteId) ?? routes[0] ?? null;
+
+  // Transit is asked for alongside walking routes, so the switch can say at once whether it is faster.
+  const transitQuery = useQuery<TransitResponse, PathAbleError>({
+    queryKey: ["transit", request],
+    queryFn: async ({ signal }) => (await getService()).transit(request!, signal),
+    enabled: Boolean(request),
+    staleTime: 60_000,
+    retry: false,
+  });
+  const options = useMemo(() => transitQuery.data?.options ?? [], [transitQuery.data]);
+  const journeys = useMemo(() => new Map(options.map((o) => [o.id, fromTransit(o)])), [options]);
+  const fastestTransit = options.reduce<(typeof options)[number] | null>((a, o) => (!a || o.durationS < a.durationS ? o : a), null);
+  const selectedTransit = options.find((o) => o.id === transitId) ?? options[0] ?? null;
+  const transitJourney = selectedTransit ? journeys.get(selectedTransit.id)! : null;
+  const showTransit = mode === "transit" && transitJourney !== null;
+  const walkS = selected?.durationS ?? 0;
+  const transitSaves = fastestTransit ? walkS - fastestTransit.durationS : 0;
+  const suggestTransit = fastestTransit && transitSaves >= SUGGEST_SAVES_S && transitSaves >= walkS / 5 ? fastestTransit : null;
+  const suggestedRide = suggestTransit?.legs.find((l) => l.kind === "ride");
+
+  const startWalk = useCallback(
+    (id: string) => {
+      const route = routes.find((r) => r.id === id);
+      if (route) setNavigating(fromRoute(route));
+    },
+    [routes],
+  );
+  const startTransit = useCallback((id: string) => {
+    const j = journeys.get(id);
+    if (j) setNavigating(j);
+  }, [journeys]);
+
+  // Off route on foot: plan again from where the person is now, to the same place.
+  const reroute = useCallback(
+    async (from: LonLat) => {
+      if (!destination || rerouting) return;
+      setRerouting(true);
+      try {
+        const res = await (await getService()).routes({ origin: from, destination: destination.position, preferences });
+        if (res.routes[0]) setNavigating(fromRoute(res.routes[0]));
+      } catch {
+        // Keep guiding along the old line; the banner says we are still off it.
+      } finally {
+        setRerouting(false);
+      }
+    },
+    [destination, preferences, rerouting],
+  );
   const fixture = query.data?.source === "development-fixture";
 
   useEffect(() => {
@@ -225,7 +287,8 @@ export function Planner() {
           route={selected}
           onBack={() => setView("list")}
           onShowOnMap={(p) => setFocusPoint({ position: p, key: Date.now() })}
-          onStartGuidance={() => setGuidance(true)}
+          onStartGuidance={() => startWalk(selected.id)}
+          total={routes.length}
         />
       ) : (
         <>
@@ -349,8 +412,103 @@ export function Planner() {
           )}
 
           {routes.length > 0 && (
-            <section aria-labelledby="routes-title" className="mt-6">
-              <h2 id="routes-title" className="text-md font-bold">
+            <div className="pa-modes mt-5" role="radiogroup" aria-label={t("transit.modes")}>
+              {(["walk", "transit"] as const).map((m) => {
+                const Icon = m === "walk" ? Footprints : TrainFront;
+                const s = m === "walk" ? selected?.durationS : fastestTransit?.durationS;
+                const active = mode === m;
+                return (
+                  <button
+                    key={m}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    tabIndex={active ? 0 : -1}
+                    className="pa-mode"
+                    onClick={() => setMode(m)}
+                    onKeyDown={(e) => {
+                      // A radio group: arrow keys move between the two modes.
+                      if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) return;
+                      e.preventDefault();
+                      const next = m === "walk" ? "transit" : "walk";
+                      setMode(next);
+                      (e.currentTarget.parentElement?.querySelector(`[data-mode="${next}"]`) as HTMLElement | null)?.focus();
+                    }}
+                    data-mode={m}
+                  >
+                    {active && <motion.span layoutId="pa-mode-pill" className="pa-mode-pill" transition={spring.ui} />}
+                    <Icon aria-hidden size={18} />
+                    <span>{t(`transit.${m}`)}</span>
+                    <span className="pa-mode-time">
+                      {s !== undefined ? t("common.minutes", { value: Math.max(1, Math.round(s / 60)) }) : m === "transit" && transitQuery.isPending ? <span className="pa-dots" aria-label={t("transit.loading")} /> : null}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          <AnimatePresence initial={false}>
+            {mode === "walk" && suggestTransit && suggestedRide?.kind === "ride" && (
+              <motion.button
+                type="button"
+                className="pa-suggest mt-3"
+                onClick={() => {
+                  setTransitId(suggestTransit.id);
+                  setMode("transit");
+                }}
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={spring.ui}
+              >
+                {(() => {
+                  const Icon = MODE_ICON[suggestedRide.mode];
+                  return <Icon aria-hidden size={18} />;
+                })()}
+                {t("transit.suggest", { mode: suggestedRide.mode, line: suggestedRide.line, minutes: t("common.minutes", { value: Math.round(transitSaves / 60) }) })}
+              </motion.button>
+            )}
+          </AnimatePresence>
+
+          {routes.length > 0 && mode === "transit" && (
+            <section aria-labelledby="transit-title" className="mt-4">
+              <h2 id="transit-title" className="sr-only">{t("transit.options")}</h2>
+              {transitQuery.isPending && (
+                <ul className="grid gap-3" aria-busy="true" aria-label={t("transit.loading")}>
+                  {[0, 1].map((i) => (
+                    <li key={i} className="pa-skeleton-card is-short" />
+                  ))}
+                </ul>
+              )}
+              {transitQuery.isError && <p className="pa-notice">{t("transit.unavailable")}</p>}
+              {transitQuery.data && options.length === 0 && <p className="pa-notice">{t("transit.none")}</p>}
+              {options.length > 0 && (
+                <fieldset className="border-0 p-0">
+                  <legend className="sr-only">{t("transit.options")}</legend>
+                  <ul className="grid gap-3">
+                    {options.map((o) => (
+                      <TransitCard
+                        key={o.id}
+                        option={o}
+                        name={`${radioName}-transit`}
+                        selected={o.id === selectedTransit?.id}
+                        fixture={transitQuery.data?.source === "development-fixture"}
+                        fastest={options.length > 1 && o.id === fastestTransit?.id}
+                        onSelect={setTransitId}
+                        onStart={startTransit}
+                      />
+                    ))}
+                  </ul>
+                  <p className="mt-3 text-sm text-ink-muted">{t("transit.scheduled")}</p>
+                </fieldset>
+              )}
+            </section>
+          )}
+
+          {routes.length > 0 && mode === "walk" && (
+            <section aria-labelledby="routes-title" className="mt-4">
+              <h2 id="routes-title" className="sr-only">
                 {t("planner.routes")}
               </h2>
               {routes.every((r) => r.compatibility === "incompatible") && (
@@ -364,13 +522,13 @@ export function Planner() {
                       <RouteCard
                         key={r.id}
                         route={r}
-                        total={routes.length}
                         name={radioName}
                         selected={r.id === selected?.id}
                         fixture={fixture}
                         onSelect={select}
                         onIsolate={setIsolated}
                         onDetails={openDetails}
+                        onStart={startWalk}
                       />
                     ))}
                   </ul>
@@ -393,8 +551,10 @@ export function Planner() {
         <PlannerMap
           desktop={desktop}
           collapsed={collapsed}
-          routes={routes}
-          selectedId={selected?.id ?? null}
+          navigating={navigating !== null}
+          routes={navigating ? [navigating] : showTransit ? [transitJourney] : routes}
+          rides={navigating ? navigating.rides.map((r) => r.leg) : showTransit ? transitJourney.rides.map((r) => r.leg) : undefined}
+          selectedId={navigating ? navigating.id : showTransit ? transitJourney.id : (selected?.id ?? null)}
           isolatedId={isolated}
           origin={origin?.position}
           destination={destination?.position}
@@ -420,7 +580,7 @@ export function Planner() {
         )}
       </div>
 
-      {desktop ? (
+      {navigating ? null : desktop ? (
         <aside className={collapsed ? "pa-sidebar is-collapsed" : "pa-sidebar"} aria-label={t("planner.title")}>
           <div className="flex items-center gap-2 px-4 pt-3 [&>a]:me-auto">
             {!collapsed && (
@@ -443,7 +603,7 @@ export function Planner() {
         </BottomSheet>
       )}
 
-      {selected && guidance && <Guidance key={selected.id} route={selected} open onOpenChange={setGuidance} onStep={(i) => setFocusPoint({ position: selected.geometry[selected.steps[i].at], key: Date.now() })} />}
+      {navigating && <Navigation journey={navigating} onExit={() => setNavigating(null)} onReroute={reroute} rerouting={rerouting} />}
     </div>
   );
 }

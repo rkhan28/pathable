@@ -8,7 +8,7 @@ export function ExampleCard({ route }: { route: Route }) {
   return (
     <div inert className="pa-example-card">
       <ul>
-        <RouteCard route={route} total={3} name="example" selected fixture onSelect={() => {}} onIsolate={() => {}} onDetails={() => {}} />
+        <RouteCard route={route} name="example" selected fixture onSelect={() => {}} onIsolate={() => {}} onDetails={() => {}} onStart={() => {}} />
       </ul>
     </div>
   );

@@ -94,3 +94,25 @@ which now appears only on the example card, where it carries meaning.
 - On the states map, the corridor is long and thin, so the isolated state reads
   small at 1440. A tighter crop would help.
 - At 390 the hero map sits below the first viewport by design.
+
+## 2026-11-03: Guidance that follows you, transit beside walking, less text
+
+**Feedback.** "Click Start and it should tell me how and where to go, and if I
+should take the bus." The planner felt static and wordy.
+
+**Changes.**
+
+| Area | Before | After |
+| --- | --- | --- |
+| Guidance | A full-screen dialog of text steps with Previous and Next | The map stays. One instruction banner on top, time and distance left in a bar below. The camera tilts and follows the position; instructions advance on their own and change with a short slide. Off the route on foot, it plans again. Without location, the same screen is a labelled preview that walks the route. |
+| Transit | None | A Walk / Transit switch with the best time on each side. Transit cards are a row of leg chips (walk 4, Line 1, walk 2) in the line's own colour, the departure, and one step-free chip. The ride is drawn along the vehicle's real path. |
+| Route card | Seven lines: label, badge, distance and time, compatibility sentence, barriers, reports, freshness, why, details | Time large, distance small, one status chip, the knowledge bar, and Details and Start. Reports, freshness and "Why this route?" moved to Details. |
+| Landing | Long step descriptions and an extra paragraph on analysis | One line per step with an icon; the hero lede shortened |
+| Motion | One load moment per page | The landing opens with the mark drawing itself once per session (ring, P, dot, about one second, never under reduced motion, headline painted beneath it). Hero items rise in turn; later sections rise as they scroll in; cards enter with a short stagger; buttons lift on hover and press on click; pages after the first fade in. |
+
+**Rule kept:** body text and numbers still never animate on their own; motion
+follows something the person did or a change of state.
+
+**Still open:**
+- Real-device test of following and voice on a phone outdoors.
+- Transfers between two vehicles.

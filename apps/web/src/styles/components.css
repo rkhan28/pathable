@@ -192,12 +192,6 @@
   .pa-sheet-bar { inline-size: 2.5rem; block-size: 0.3125rem; border-radius: 999px; background: var(--line); }
   .pa-sheet-body { overflow-y: auto; touch-action: pan-y; overscroll-behavior: contain; }
 
-  .pa-guidance { position: fixed; inset: 0; z-index: 60; display: flex; flex-direction: column; padding: 1rem 1.25rem max(1rem, env(safe-area-inset-bottom)); background: var(--surface); max-inline-size: 48rem; margin-inline: auto; }
-  .pa-guidance-instruction { font-size: var(--type-guidance); line-height: 1.2; }
-  .pa-guidance-controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; align-items: center; }
-  .pa-guidance-button { display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem; min-block-size: 3.5rem; padding-inline: 0.75rem; border-radius: var(--r-control); border: 1.5px solid var(--line); background: var(--surface-raised); font-weight: 700; text-align: center; }
-  .pa-guidance-button.is-primary { background: var(--signal); color: var(--on-signal); border-color: transparent; }
-  .pa-guidance-button:disabled { opacity: 0.45; }
 }
 
 @layer components {
@@ -253,9 +247,10 @@
   .pa-section-rule { border-block-start: 1px solid var(--line-subtle); }
   .pa-split-even { display: grid; gap: 3rem; align-items: start; }
   @media (min-width: 64rem) { .pa-split-even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 5rem; } }
-  .pa-steps { margin-block-start: 2.5rem; display: grid; counter-reset: step; }
-  .pa-step { counter-increment: step; display: grid; grid-template-columns: 2.5rem 1fr; padding-block: 1.25rem; border-block-start: 1px solid var(--line-subtle); }
-  .pa-step::before { content: counter(step); grid-row: span 2; font-family: var(--font-numeric); font-size: var(--type-md); color: var(--ink-muted); }
+  .pa-steps { margin-block-start: 2rem; display: grid; }
+  .pa-step { display: flex; gap: 1rem; align-items: flex-start; padding-block: 1.125rem; border-block-start: 1px solid var(--line-subtle); }
+  .pa-step-icon { display: grid; place-items: center; flex: none; inline-size: 2.5rem; block-size: 2.5rem; border-radius: 0.75rem; background: color-mix(in srgb, var(--signal) 16%, var(--surface-raised)); color: var(--state-verified); transition: transform var(--duration-state) var(--ease-out-cubic); }
+  .pa-step:hover .pa-step-icon { transform: translateY(-2px) rotate(-4deg); }
   .pa-example { margin: 0; position: sticky; inset-block-start: calc(var(--header-height) + 2rem); }
   .pa-example-card { padding: 1.25rem; border-radius: var(--r-sheet); background-color: var(--map-land); background-image: radial-gradient(circle at center, var(--dome) 0 2.5px, transparent 3px); background-size: 18px 18px; }
   .pa-example-card .pa-route-card { box-shadow: var(--elevation-map); }
@@ -357,4 +352,126 @@
   .pa-planner-skeleton span { display: block; block-size: 3.25rem; border-radius: var(--r-control); background: var(--surface-sunken); }
   .pa-planner-skeleton span.card { block-size: 9rem; border-radius: var(--r-card); }
   @media (prefers-reduced-motion: no-preference) { .pa-planner-skeleton span { animation: pa-pulse 1.4s ease-in-out infinite; } }
+
+  /* ---------- Travel mode switch, suggestion, transit legs ---------- */
+  .pa-modes { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0.25rem; padding: 0.25rem; border-radius: var(--r-control); background: var(--surface-sunken); }
+  .pa-mode { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem; min-block-size: 2.75rem; padding-inline: 0.75rem; border-radius: var(--r-control); font-weight: 700; color: var(--ink-muted); transition: color var(--duration-state); }
+  .pa-mode > :not(.pa-mode-pill) { position: relative; }
+  .pa-mode[aria-checked="true"] { color: var(--ink); }
+  .pa-mode:hover { color: var(--ink); }
+  .pa-mode-pill { position: absolute; inset: 0; border-radius: var(--r-control); background: var(--surface-raised); box-shadow: 0 1px 2px rgb(0 0 0 / 0.12), 0 2px 8px rgb(0 0 0 / 0.06); }
+  .pa-mode-time { font-weight: 400; color: var(--ink-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .pa-mode { white-space: nowrap; }
+  @media (max-width: 23rem) { .pa-mode > span:not(.pa-mode-time):not(.pa-mode-pill) { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); } }
+  .pa-suggest { display: flex; inline-size: 100%; align-items: center; gap: 0.5rem; min-block-size: 2.75rem; padding: 0.5rem 0.875rem; border-radius: var(--r-card); background: color-mix(in srgb, var(--signal) 14%, var(--surface-raised)); border: 1px solid color-mix(in srgb, var(--signal) 45%, transparent); font-weight: 700; text-align: start; transition: transform var(--duration-press) var(--ease-out-cubic), background-color var(--duration-state); }
+  .pa-suggest:hover { background: color-mix(in srgb, var(--signal) 22%, var(--surface-raised)); }
+  .pa-suggest:active { transform: scale(0.98); }
+  .pa-legs { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem; }
+  .pa-legs-sep { color: var(--ink-muted); }
+  .pa-leg { display: inline-flex; align-items: center; gap: 0.25rem; min-block-size: 1.625rem; padding-inline: 0.5rem; border-radius: var(--r-chip); font-size: var(--type-sm); font-weight: 700; }
+  .pa-leg.is-walk { background: var(--surface-sunken); color: var(--ink); }
+  .pa-leg.is-ride { background: var(--ink); color: var(--surface); }
+  .pa-card-time { font-size: var(--type-lg); font-weight: 700; line-height: 1.2; }
+  .pa-chip-status { display: inline-flex; align-items: center; gap: 0.375rem; font-size: var(--type-sm); font-weight: 700; color: var(--ink-muted); }
+  .pa-chip-status.is-compatible, .pa-chip-status.is-good { color: var(--state-verified); }
+  .pa-chip-status.is-incompatible { color: var(--state-barrier); }
+  .pa-start-button { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-block-size: 2.75rem; padding-inline: 1.25rem; border-radius: var(--r-control); background: var(--signal); color: var(--on-signal); font-weight: 700; inline-size: 100%; transition: transform var(--duration-press) var(--ease-out-cubic), filter var(--duration-state), box-shadow var(--duration-state); }
+  .flex > .pa-start-button { inline-size: auto; }
+  .pa-start-button:hover { filter: brightness(0.95); box-shadow: 0 4px 14px color-mix(in srgb, var(--signal) 40%, transparent); }
+  .pa-start-button:active { transform: scale(0.97); }
+  .pa-skeleton-card.is-short { block-size: 6.5rem; }
+  .pa-dots { display: inline-block; inline-size: 1.5rem; block-size: 0.375rem; border-radius: 999px; background: radial-gradient(circle closest-side, currentColor 90%, transparent) 0 50% / 33% 100% repeat-x; opacity: 0.6; }
+  @media (prefers-reduced-motion: no-preference) {
+    .pa-dots { animation: pa-pulse 1s ease-in-out infinite; }
+    .pa-card-in { animation: pa-card-in var(--duration-panel) var(--ease-out-cubic) backwards; }
+    li.pa-card-in:nth-child(2) { animation-delay: 50ms; }
+    li.pa-card-in:nth-child(3) { animation-delay: 100ms; }
+  }
+  @keyframes pa-card-in { from { opacity: 0; transform: translateY(8px); } }
+
+  /* ---------- Live guidance ---------- */
+  .pa-nav { position: fixed; inset: 0; z-index: 50; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: max(0.75rem, env(safe-area-inset-top)) 0.75rem max(0.75rem, env(safe-area-inset-bottom)); }
+  .pa-nav > * { pointer-events: auto; }
+  .pa-nav-top { display: grid; gap: 0.5rem; justify-items: center; inline-size: 100%; max-inline-size: 34rem; margin-inline: auto; pointer-events: none; }
+  .pa-nav-top > * { pointer-events: auto; }
+  .pa-nav-banner { display: flex; align-items: center; gap: 0.875rem; inline-size: 100%; padding: 0.875rem 1rem; border-radius: var(--r-sheet); background: var(--brand); color: var(--on-brand); box-shadow: 0 10px 30px rgb(0 0 0 / 0.25); }
+  .pa-nav-banner.is-arrived { background: var(--signal); color: var(--on-signal); }
+  .pa-nav-icon { display: grid; place-items: center; flex: none; inline-size: 3.5rem; block-size: 3.5rem; border-radius: 1rem; background: rgb(255 255 255 / 0.14); }
+  .pa-nav-distance { font-size: var(--type-xl); font-weight: 800; line-height: 1.1; }
+  .pa-nav-instruction { font-size: var(--type-md); font-weight: 700; line-height: 1.3; }
+  .pa-nav-detail { margin-block-start: 0.125rem; font-size: var(--type-sm); opacity: 0.85; }
+  .pa-nav-chip { padding: 0.375rem 0.875rem; border-radius: var(--r-control); background: var(--surface-raised); color: var(--ink); font-size: var(--type-sm); font-weight: 700; box-shadow: var(--elevation-map); }
+  .pa-nav-recenter { align-self: center; margin-block-start: auto; margin-block-end: 0.75rem; display: inline-flex; align-items: center; gap: 0.5rem; min-block-size: 2.75rem; padding-inline: 1.125rem; border-radius: var(--r-control); background: var(--surface-raised); color: var(--ink); font-weight: 700; box-shadow: var(--elevation-map); }
+  .pa-nav-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.625rem 0.5rem; inline-size: 100%; max-inline-size: 34rem; margin-inline: auto; padding: 0.75rem 0.75rem 0.75rem 1.25rem; border-radius: var(--r-sheet); background: var(--surface-raised); color: var(--ink); box-shadow: 0 -4px 24px rgb(0 0 0 / 0.16); }
+  .pa-nav-eta { font-size: var(--type-xl); font-weight: 800; line-height: 1.1; color: var(--state-verified); }
+  .pa-nav-meta { display: flex; flex-wrap: wrap; gap: 0 0.75rem; font-size: var(--type-sm); color: var(--ink-muted); }
+  .pa-nav-summary { flex: 1 1 auto; min-inline-size: 0; }
+  .pa-nav-controls { display: flex; align-items: center; justify-content: center; gap: 0.5rem; order: 3; flex-basis: 100%; }
+  @media (min-width: 30rem) { .pa-nav-controls { order: 0; flex-basis: auto; } }
+  .pa-nav-meta { white-space: nowrap; }
+  .pa-nav-preview { display: flex; gap: 0.25rem; }
+  .pa-nav-button { display: grid; place-items: center; inline-size: 2.75rem; block-size: 2.75rem; border-radius: 999px; background: var(--surface-sunken); color: var(--ink); transition: transform var(--duration-press) var(--ease-out-cubic), background-color var(--duration-state); }
+  .pa-nav-button:hover { background: var(--line-subtle); }
+  .pa-nav-button:active, .pa-nav-exit:active, .pa-nav-recenter:active { transform: scale(0.94); }
+  .pa-nav-exit { display: inline-flex; align-items: center; gap: 0.375rem; min-block-size: 2.75rem; padding-inline: 1rem; border-radius: var(--r-control); background: var(--state-barrier); color: #fff; font-weight: 700; transition: transform var(--duration-press) var(--ease-out-cubic); }
+  [data-theme="dark"] .pa-nav-exit { color: #0d1411; }
+  .pa-nav-exit.is-done { background: var(--signal); color: var(--on-signal); }
+  @media (min-width: 64rem) { .pa-nav { padding: 1.25rem; } .pa-nav-top { justify-items: start; margin-inline: 0; } .pa-nav-bar { margin-inline: 0; } }
+
+  /* The person's position: a dot with a soft halo and a cone for the way they face. */
+  .pa-user { position: relative; inline-size: 4rem; block-size: 4rem; pointer-events: none; }
+  .pa-user-dot { position: absolute; inset: 50% auto auto 50%; inline-size: 1.25rem; block-size: 1.25rem; margin: -0.625rem 0 0 -0.625rem; border-radius: 50%; background: var(--winter); border: 3px solid #fff; box-shadow: 0 1px 4px rgb(0 0 0 / 0.35); }
+  .pa-user-halo { position: absolute; inset: 50% auto auto 50%; inline-size: 3rem; block-size: 3rem; margin: -1.5rem 0 0 -1.5rem; border-radius: 50%; background: color-mix(in srgb, var(--winter) 22%, transparent); }
+  .pa-user-cone { position: absolute; top: 0; left: 50%; inline-size: 2.5rem; block-size: 2rem; margin-left: -1.25rem; background: linear-gradient(to top, color-mix(in srgb, var(--winter) 45%, transparent), transparent); clip-path: polygon(50% 100%, 0 0, 100% 0); }
+  @media (prefers-reduced-motion: no-preference) { .pa-user-halo { animation: pa-halo 2.4s ease-out infinite; } }
+  @keyframes pa-halo { 0% { transform: scale(0.6); opacity: 1; } 100% { transform: scale(1.4); opacity: 0; } }
+
+  /* ---------- Landing intro and entrances ---------- */
+  /* The mark draws itself on the first visit in a session, then lifts away. */
+  .pa-intro { display: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    :root[data-intro="play"]:not([data-motion="reduced"]) .pa-intro {
+      display: grid; place-items: center; position: fixed; inset: 0; z-index: 100; pointer-events: none; background: var(--surface);
+      animation: pa-intro-out 420ms var(--ease-out-cubic) 1000ms both;
+    }
+  }
+  .pa-intro-mark { inline-size: 5.5rem; block-size: 5.5rem; overflow: visible; animation: pa-intro-lift 420ms var(--ease-out-cubic) 1000ms both; }
+  .pa-intro-ring, .pa-intro-p { fill: none; stroke: var(--brand); stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .pa-intro-ring { stroke-width: 2.4; animation: pa-draw 380ms var(--ease-out-cubic) 80ms forwards; }
+  .pa-intro-p { stroke-width: 3.2; animation: pa-draw 560ms cubic-bezier(0.65, 0, 0.35, 1) 320ms forwards; }
+  .pa-intro-dot { fill: var(--signal); transform-box: fill-box; transform-origin: center; transform: scale(0); animation: pa-pop 360ms cubic-bezier(0.34, 1.56, 0.64, 1) 780ms forwards; }
+  @keyframes pa-draw { to { stroke-dashoffset: 0; } }
+  @keyframes pa-pop { to { transform: scale(1); } }
+  @keyframes pa-intro-out { to { opacity: 0; visibility: hidden; } }
+  @keyframes pa-intro-lift { to { transform: translateY(-12px) scale(0.92); } }
+
+  /* Hero items rise in turn, after the intro when it plays. The headline moves but is never hidden. */
+  :root { --intro-delay: 0ms; }
+  :root[data-intro="play"] { --intro-delay: 1050ms; }
+  @media (prefers-reduced-motion: no-preference) {
+    .pa-rise { animation: pa-rise 640ms var(--ease-out-cubic) backwards; animation-delay: calc(var(--intro-delay) + var(--i, 0) * 80ms); }
+    .pa-rise-t { animation: pa-rise-t 720ms var(--ease-out-cubic) backwards; animation-delay: calc(var(--intro-delay) + var(--i, 0) * 80ms); }
+    @supports (animation-timeline: view()) {
+      :root:not([data-motion="reduced"]) .pa-reveal { animation: pa-rise linear backwards; animation-timeline: view(); animation-range: entry 0% entry 35%; }
+    }
+  }
+  /* Entrance animations fill backwards only: once finished they leave no transform behind, so they
+     never create a stacking context that could cover a menu opened later (the search suggestions). */
+  @keyframes pa-rise { from { opacity: 0; transform: translateY(14px); } }
+  @keyframes pa-rise-t { from { transform: translateY(18px); } }
+
+  /* Buttons answer the pointer: a small lift on hover, a press on click. */
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .pa-link-button.is-primary:hover, .pa-start-button:hover { transform: translateY(-1px); }
+    .pa-route-card { transition: border-color var(--duration-state), box-shadow var(--duration-state), transform var(--duration-state) var(--ease-out-cubic); }
+    .pa-route-card:not(.is-selected):hover { box-shadow: var(--elevation-map); }
+    .pa-chip-button { transition: background-color var(--duration-state), transform var(--duration-press) var(--ease-out-cubic); }
+    .pa-chip-button:hover { background: var(--surface-sunken); }
+  }
+  .pa-chip-button:active { transform: scale(0.96); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pa-page.is-entering { animation: pa-page-in 280ms var(--ease-out-cubic) backwards; }
+  }
+  @keyframes pa-page-in { from { opacity: 0; transform: translateY(6px); } }
 }

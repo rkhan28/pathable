@@ -1,11 +1,18 @@
+import type { CSSProperties } from "react";
 import { getTranslations } from "next-intl/server";
 import { CoveragePatterns } from "@/components/route/coverage-bar";
 import { ExampleCard } from "@/components/landing/example-card";
 import { HeroMap } from "@/components/landing/hero-map";
+import { IntroMark, introScript } from "@/components/landing/intro";
 import { LandingSearch } from "@/components/landing/landing-search";
 import { PhotoPrivacy, TrustNumbers, WinterExample } from "@/components/landing/sections";
 import { StatesExplorer } from "@/components/landing/states-explorer";
 import { Link } from "@/i18n/navigation";
+import { Navigation, Route as RouteIcon, Search, SlidersHorizontal } from "lucide-react";
+
+const STEP_ICONS = [SlidersHorizontal, Search, RouteIcon, Navigation];
+/** Position in the hero's entrance; each item rises a beat after the one before. */
+const rise = (i: number) => ({ "--i": i }) as CSSProperties;
 import { RouteResponse } from "@/lib/api/contracts";
 import { heroData } from "@/lib/hero-data";
 import realityCheck from "@/generated/reality-check.json";
@@ -43,15 +50,19 @@ export default async function LandingPage() {
   return (
     <>
       <CoveragePatterns />
+      <script dangerouslySetInnerHTML={{ __html: introScript }} />
+      <IntroMark />
       <section className="pa-hero" aria-labelledby="hero-title">
         <div className="pa-container pa-hero-grid">
           <div className="pa-hero-copy">
-            <h1 id="hero-title" className="pa-display">
+            <h1 id="hero-title" className="pa-display pa-rise-t" style={rise(0)}>
               {t("title")}
             </h1>
-            <p className="pa-lede">{t("lede")}</p>
-            <LandingSearch />
-            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <p className="pa-lede pa-rise" style={rise(1)}>{t("lede")}</p>
+            <div className="pa-rise" style={rise(2)}>
+              <LandingSearch />
+            </div>
+            <div className="pa-rise mt-6 flex flex-wrap items-center gap-x-6 gap-y-3" style={rise(3)}>
               <Link href="/navigate" className="pa-link-button is-primary">
                 {t("cta")}
               </Link>
@@ -59,34 +70,43 @@ export default async function LandingPage() {
                 {t("secondary")}
               </a>
             </div>
-            <p className="mt-6 text-sm text-ink-muted">
+            <p className="pa-rise mt-6 text-sm text-ink-muted" style={rise(4)}>
               {t("pilot")}{" "}
               <Link href="/coverage" className="pa-text-link">
                 {t("coverageLink")}
               </Link>
             </p>
           </div>
-          <HeroMap data={data} />
+          <div className="pa-rise min-w-0" style={rise(2)}>
+            <HeroMap data={data} />
+          </div>
         </div>
       </section>
 
       <section id="how-it-works" className="pa-section" aria-labelledby="how-title">
         <div className="pa-container pa-split-even">
-          <div>
+          <div className="min-w-0">
             <h2 id="how-title" className="pa-h2">
               {t("how.title")}
             </h2>
-            <p className="pa-section-lede">{t("how.lede")}</p>
             <ol className="pa-steps">
-              {steps.map((st) => (
-                <li key={st.title} className="pa-step">
-                  <h3 className="text-md">{st.title}</h3>
-                  <p className="mt-1 text-ink-muted">{st.body}</p>
-                </li>
-              ))}
+              {steps.map((st, i) => {
+                const Icon = STEP_ICONS[i];
+                return (
+                  <li key={st.title} className="pa-step pa-reveal">
+                    <span className="pa-step-icon" aria-hidden>
+                      <Icon size={20} />
+                    </span>
+                    <div className="min-w-0">
+                      <h3 className="text-md">{st.title}</h3>
+                      <p className="mt-1 text-ink-muted">{st.body}</p>
+                    </div>
+                  </li>
+                );
+              })}
             </ol>
           </div>
-          <figure className="pa-example">
+          <figure className="pa-example pa-reveal min-w-0">
             <ExampleCard route={exampleLight} />
             <figcaption className="mt-3 text-sm text-ink-muted">{t("how.exampleCaption")}</figcaption>
           </figure>
@@ -99,7 +119,9 @@ export default async function LandingPage() {
             {t("states.title")}
           </h2>
           <p className="pa-section-lede">{t("states.lede")}</p>
-          <StatesExplorer shares={shares} data={data} />
+          <div className="pa-reveal">
+            <StatesExplorer shares={shares} data={data} />
+          </div>
         </div>
       </section>
 
@@ -110,12 +132,13 @@ export default async function LandingPage() {
               {t("reporting.title")}
             </h2>
             <p className="pa-section-lede">{t("reporting.body")}</p>
-            <p className="pa-section-lede">{t("reporting.ai")}</p>
             <Link href="/report" className="pa-link-button mt-8">
               {t("reporting.cta")}
             </Link>
           </div>
-          <PhotoPrivacy />
+          <div className="pa-reveal">
+            <PhotoPrivacy />
+          </div>
         </div>
       </section>
 
@@ -127,7 +150,9 @@ export default async function LandingPage() {
             </h2>
             <p className="pa-section-lede">{t("winter.body")}</p>
           </div>
-          <WinterExample />
+          <div className="pa-reveal">
+            <WinterExample />
+          </div>
         </div>
       </section>
 

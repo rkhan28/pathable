@@ -19,7 +19,7 @@ test("route cards are a radio group: arrow keys change the route", async ({ page
   await a.focus();
   await expect(a).toBeChecked();
   await page.keyboard.press("ArrowDown");
-  const second = page.getByRole("radio").nth(1);
+  const second = page.locator("input.pa-route-radio").nth(1);
   await expect(second).toBeChecked();
   await expect(second).toBeFocused();
   await expect(page.locator(".pa-route-card.is-selected")).toHaveCount(1);

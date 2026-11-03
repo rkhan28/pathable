@@ -15,7 +15,13 @@ import type { MapColors } from "./map-style";
 /** The subset of a route the map needs; the landing hero sends only this. */
 export type MapRoute = Pick<Route, "id" | "geometry"> & { segments: Pick<Segment, "from" | "to" | "lengthM" | "state">[] };
 
-export const SOURCES = { segments: "pa-segments", alternatives: "pa-alternatives", flow: "pa-flow" } as const;
+export const SOURCES = { segments: "pa-segments", alternatives: "pa-alternatives", flow: "pa-flow", rides: "pa-rides" } as const;
+
+/** A bus, streetcar, LRT or subway ride, drawn in the line's own colour. */
+export interface RideLine {
+  geometry: LonLat[];
+  color: string | null;
+}
 const L = {
   altCasing: "pa-alt-casing",
   alt: "pa-alt",
@@ -26,6 +32,8 @@ const L = {
   unverified: "pa-sel-unverified",
   unknown: "pa-sel-unknown",
   flow: "pa-sel-flow",
+  rideCasing: "pa-ride-casing",
+  ride: "pa-ride",
 } as const;
 
 type Feature = GeoJSON.Feature<GeoJSON.LineString, { routeId: string; state: KnowledgeState; start: number; end: number }>;
@@ -102,6 +110,11 @@ export function installRouteLayers(map: MlMap, c: MapColors): void {
     id: L.unknown, type: "line", source: SOURCES.segments, layout: lineLayout,
     filter: ["==", ["get", "state"], "unknown"], paint: { "line-color": c.unknown, "line-width": width(6), "line-dasharray": [0, 1.7] },
   });
+  add({ id: L.rideCasing, type: "line", source: SOURCES.rides, layout: lineLayout, paint: { "line-color": c.casing, "line-width": width(12) } });
+  add({
+    id: L.ride, type: "line", source: SOURCES.rides, layout: lineLayout,
+    paint: { "line-color": ["coalesce", ["get", "color"], c.signal] as never, "line-width": width(8) },
+  });
   add({
     id: L.flow, type: "line", source: SOURCES.flow, layout: lineLayout,
     paint: { "line-width": width(3), "line-gradient": flowGradient(0, c.casing) as never, "line-opacity": 0.55 },
@@ -121,6 +134,14 @@ export function setRoutes(map: MlMap, routes: MapRoute[], selectedId: string | n
       ? { type: "Feature", geometry: { type: "LineString", coordinates: selected.geometry }, properties: {} }
       : { type: "FeatureCollection", features: [] },
   );
+}
+
+export function setRides(map: MlMap, rides: RideLine[]): void {
+  if (!alive(map)) return;
+  (map.getSource(SOURCES.rides) as GeoJSONSource | undefined)?.setData({
+    type: "FeatureCollection",
+    features: rides.map((r) => ({ type: "Feature", geometry: { type: "LineString", coordinates: r.geometry }, properties: { color: r.color } })),
+  });
 }
 
 const SELECTED_LAYERS = [L.casing, L.verified, L.barrier, L.barrierStripe, L.unverified, L.unknown];
@@ -174,7 +195,7 @@ export function setFlowPhase(map: MlMap, phase: number, light: string): void {
   if (alive(map) && map.getLayer(L.flow)) map.setPaintProperty(L.flow, "line-gradient", flowGradient(phase, light) as never);
 }
 
-export function routeBounds(routes: Pick<Route, "geometry">[]): [[number, number], [number, number]] | null {
+export function routeBounds(routes: { geometry: LonLat[] }[]): [[number, number], [number, number]] | null {
   const pts = routes.flatMap((r) => r.geometry);
   if (!pts.length) return null;
   let [minX, minY, maxX, maxY] = [Infinity, Infinity, -Infinity, -Infinity];

@@ -90,7 +90,7 @@
   },
   "landing": {
     "title": "A city without limits begins with a better route.",
-    "lede": "PathAble compares walking routes by what is actually known about each sidewalk, and shows you where nobody knows yet.",
+    "lede": "Walking routes ranked by what is actually known about each sidewalk, with accessible transit when it helps.",
     "searchLabel": "Where to?",
     "cta": "Find your route",
     "secondary": "Explore how it works",
@@ -107,13 +107,13 @@
       "title": "How it works",
       "lede": "Four steps, the same ones the planner walks you through.",
       "s1Title": "Tell us what matters",
-      "s1Body": "Set the steepest slope, narrowest width and other limits that work for you. A profile only fills in a starting point.",
+      "s1Body": "Your slope, width and curb limits.",
       "s2Title": "Choose where you are going",
-      "s2Body": "Search an address, pick a point on the map or paste coordinates. Your trip stays in this browser tab.",
-      "s3Title": "Compare what is known",
-      "s3Body": "Up to three alternatives, each showing how much of the route is verified, a barrier, reported or unknown.",
-      "s4Title": "Go, and tell us what you find",
-      "s4Body": "Step-by-step guidance in large text, with optional voice. Report anything that blocks the way.",
+      "s2Body": "Search, tap the map or paste coordinates.",
+      "s3Title": "Compare walking and transit",
+      "s3Body": "See what is known about every stretch, and when the bus is faster.",
+      "s4Title": "Start, and follow along",
+      "s4Body": "Turn-by-turn guidance that follows you, with voice if you want it.",
       "exampleCaption": "Route A from York University to Finch West, computed from North York open data."
     },
     "states": {
@@ -231,7 +231,7 @@
     "why": "Why this route?",
     "whyIntro": "Ranked {rank} of {total} using the same numbers shown here:",
     "details": "Route details",
-    "start": "Start guidance",
+    "start": "Start",
     "tabs": {
       "directions": "Directions",
       "sections": "Sections",
@@ -244,7 +244,13 @@
     "backToRoutes": "Back to routes",
     "distance": "Distance",
     "time": "Walking time",
-    "timeHint": "At 1.0 m/s, the walking speed Toronto uses to time crossing signals"
+    "timeHint": "At 1.0 m/s, the walking speed Toronto uses to time crossing signals",
+    "compatibilityShort": {
+      "compatible": "Fits your preferences",
+      "unknowns": "Some stretches have no data",
+      "incompatible": "Has known barriers"
+    },
+    "more": "Details"
   },
   "reasons": {
     "fewest_barriers": "{value, plural, =0 {it has no known barriers} one {it has the fewest known barriers (#)} other {it has the fewest known barriers (#)}}",
@@ -495,5 +501,52 @@
     "body": "The link may be old. Try the planner or the help centre.",
     "planner": "Open the planner",
     "help": "Go to help"
+  },
+  "navigate": {
+    "region": "Guidance",
+    "locating": "Finding where you are",
+    "arrived": "You have arrived",
+    "done": "Done",
+    "board": "{mode, select, bus {Take the {line} bus} streetcar {Take the {line} streetcar} other {Take Line {line}}}",
+    "boardDetail": "From {stop}, leaves {time}",
+    "alight": "Get off at {stop}",
+    "stops": "{count, plural, one {# stop} other {# stops}}",
+    "soon": "Soon: {instruction}",
+    "arriveAt": "Arrive {time}",
+    "preview": {
+      "far": "Preview: you are not near this route",
+      "denied": "Preview: location is off",
+      "unavailable": "Preview: location is not available"
+    },
+    "previewControls": "Preview controls",
+    "previousStep": "Previous step",
+    "nextStep": "Next step",
+    "play": "Play preview",
+    "pause": "Pause preview",
+    "voice": "Voice guidance",
+    "recenter": "Re-centre",
+    "exit": "End",
+    "finish": "Finish",
+    "rerouting": "Off route, finding a new way"
+  },
+  "transit": {
+    "modes": "Travel mode",
+    "walk": "Walk",
+    "transit": "Transit",
+    "options": "Transit options",
+    "leaves": "Leaves {time}",
+    "arrive": "Arrive {time}",
+    "stepFree": {
+      "yes": "Step-free",
+      "unknown": "Step-free not confirmed"
+    },
+    "suggest": "{mode, select, bus {The {line} bus} streetcar {The {line} streetcar} other {Line {line}}} saves {minutes}",
+    "none": "No accessible transit leaves in the next hour.",
+    "unavailable": "Transit times are not available right now.",
+    "scheduled": "Scheduled TTC times",
+    "walkLeg": "Walk {minutes}",
+    "rideLeg": "{mode, select, bus {Bus} streetcar {Streetcar} lrt {LRT} subway {Subway} other {Train}} {line}",
+    "faster": "Faster",
+    "loading": "Checking transit"
   }
 }
