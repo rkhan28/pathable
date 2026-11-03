@@ -78,3 +78,22 @@ export function heroData(): HeroData {
     profiles,
   };
 }
+
+import sample from "@/generated/fixtures/routes/york-u-finch-west.json";
+
+/** A real short route for the onboarding preview: geometry plus each segment's evidence. */
+export function previewRoute() {
+  const response = RouteResponse.parse(sample.response);
+  const route = response.routes.find((r) => r.id.endsWith("-a"))!;
+  const keep = route.geometry.map((p) => [Number(p[0].toFixed(5)), Number(p[1].toFixed(5))] as LonLat);
+  return {
+    hero: {
+      generatedAt: response.generatedAt,
+      origin: sample.trip.origin as LonLat,
+      destination: sample.trip.destination as LonLat,
+      routes: [{ id: route.id, label: routeLabel(route.id), geometry: keep, segments: route.segments.map((s) => [s.from, s.to, Math.round(s.lengthM)] as [number, number, number]) }],
+      profiles: Object.fromEntries(HERO_PROFILES.map((p) => [p, { order: [route.id], states: { [route.id]: "" }, reason: null }])) as HeroData["profiles"],
+    },
+    evidence: route.segments.map((s) => s.evidence),
+  };
+}
