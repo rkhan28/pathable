@@ -1,0 +1,50 @@
+{
+  "desktop": [
+    {
+      "name": "hero",
+      "at": 0.001
+    },
+    {
+      "name": "rerank",
+      "at": 4.579
+    },
+    {
+      "name": "states",
+      "at": 11.608
+    },
+    {
+      "name": "compare",
+      "at": 17.352
+    },
+    {
+      "name": "details",
+      "at": 30.71
+    },
+    {
+      "name": "guidance",
+      "at": 38.805
+    },
+    {
+      "name": "palette",
+      "at": 44.548
+    },
+    {
+      "name": "settings",
+      "at": 48.055
+    },
+    {
+      "name": "end",
+      "at": 51.984
+    }
+  ],
+  "mobile": [
+    {
+      "name": "sheet",
+      "at": 0
+    },
+    {
+      "name": "end",
+      "at": 10.716
+    }
+  ]
+}

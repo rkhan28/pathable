@@ -12,6 +12,19 @@ about each sidewalk, and says plainly where nothing is known.
 | --- | --- |
 | ![Turn-by-turn directions with curb ramp and surface notes](docs/screenshots/r2-details-1440-light.png) | ![Landing hero with the live corridor map](docs/screenshots/r2-landing-1440-light.png) |
 
+## Signature moments
+
+Recorded from the production build with real data and real tiles
+(`apps/web/scripts/record-walkthrough.mjs`). Full clips:
+[desktop, 51 s](docs/media/walkthrough-desktop.mp4) and
+[mobile, 11 s](docs/media/walkthrough-mobile.mp4).
+
+| | |
+| --- | --- |
+| **Hero map re-ranks by mobility aid**<br>![Hero map re-ranking routes for wheelchair, walker and cane](docs/media/hero-rerank.gif) | **Route comparison as a radio group**<br>![Arrow keys move between routes; the map follows; a barrier stretch is striped](docs/media/route-comparison.gif) |
+| **Details, sections and guidance**<br>![Route details tabs and large-text step guidance](docs/media/details-and-guidance.gif) | **Mobile sheet: keys or drag, the route stays framed**<br>![Bottom sheet snapping between positions on a phone](docs/media/mobile-sheet.gif) |
+| **Four knowledge states on the real corridor**<br>![Choosing a state isolates it on the corridor map](docs/media/knowledge-states.gif) | **Command palette, ⌘K**<br>![Command palette opening and jumping to settings](docs/media/command-palette.gif) |
+
 ## Four knowledge states, never blurred
 
 Every stretch of every route is one of these:
@@ -116,7 +129,6 @@ make bench      # k6 against a running API
 ## Honest limitations
 
 - **No live demo yet.** It needs hosting accounts.
-- **No GIFs or screen recording yet.** The screenshots above are real.
 - **Only the demo corridor is loaded into PostGIS.** The full North York graph
   build has not been run.
 - **Engine choice is measured, not assumed.** On 50 corridor trips, the
