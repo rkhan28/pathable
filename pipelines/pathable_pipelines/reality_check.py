@@ -136,6 +136,22 @@ def tag_completeness(ped: gpd.GeoDataFrame, kerb_ok: pd.Series) -> dict:
     return out
 
 
+def crossing_kerbs_raw(ways: gpd.GeoDataFrame, nodes: gpd.GeoDataFrame) -> pd.Series:
+    """Per way: "start;end" kerb values for crossings, a single value if only one
+    end is mapped, None otherwise. Values are OSM ``kerb`` tags, unchanged."""
+    kerb_by_node = nodes.dropna(subset=["kerb"]).set_index("osm_id")["kerb"].to_dict()
+    out: dict = {}
+    for idx, row in ways.iterrows():
+        if row.footway != "crossing":
+            out[idx] = None
+        elif isinstance(row.kerb, str):
+            out[idx] = f"{row.kerb};{row.kerb}"
+        else:
+            kerbs = [kerb_by_node[n] for n in row.node_ids if n in kerb_by_node]
+            out[idx] = f"{kerbs[0]};{kerbs[-1]}" if len(kerbs) >= 2 else (kerbs[0] if kerbs else None)
+    return pd.Series(out, dtype="object")
+
+
 def crossing_kerbs(ped: gpd.GeoDataFrame, nodes: gpd.GeoDataFrame) -> pd.Series:
     """Per crossing way: pass / fail / unknown for kerbs at both ends."""
     kerb_by_node = nodes.dropna(subset=["kerb"]).set_index("osm_id")["kerb"].to_dict()
