@@ -74,14 +74,14 @@ export async function TrustNumbers({ shares, sources }: { shares: Record<"verifi
   const ts = await getTranslations("states");
   const order = ["verified", "unverified", "unknown", "barrier"] as const;
   return (
-    <div className="mt-10 grid gap-10">
+    <div className="mt-10 grid grid-cols-1 gap-10">
       <figure>
         <div className="pa-corridor-bar" aria-hidden>
           {order.map((s) => (
             <span key={s} className={`pa-corridor-part is-${s}`} style={{ flexBasis: `${shares[s]}%` }} />
           ))}
         </div>
-        <figcaption className="mt-3 grid gap-x-8 gap-y-1 text-sm sm:grid-cols-4">
+        <figcaption className="mt-3 grid grid-cols-1 gap-x-8 gap-y-1 text-sm sm:grid-cols-4">
           {order.map((s) => (
             <span key={s} className="flex justify-between gap-3 border-t border-line-subtle pt-2">
               <span>{ts(s)}</span>

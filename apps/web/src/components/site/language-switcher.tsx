@@ -17,8 +17,10 @@ export function LanguageSwitcher() {
   const current = LOCALES.find((l) => l.code === locale)!;
 
   return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger className="pa-chip-button" aria-label={`${t("languageLabel")}: ${current.endonym}`}>
+    // Non-modal: a modal menu hides the rest of the page from assistive tech, including the skip link.
+    <DropdownMenu.Root modal={false}>
+      {/* The accessible name starts with the visible "EN" so voice control can say what it sees (WCAG 2.5.3). */}
+      <DropdownMenu.Trigger className="pa-chip-button" aria-label={`${current.code.slice(0, 2).toUpperCase()}, ${t("languageLabel")}: ${current.endonym}`}>
         <Languages aria-hidden size={18} />
         <span className="max-sm:sr-only">{current.code.slice(0, 2).toUpperCase()}</span>
       </DropdownMenu.Trigger>

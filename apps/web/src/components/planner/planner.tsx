@@ -14,6 +14,7 @@ import { Guidance } from "@/components/route/guidance";
 import { RouteCard } from "@/components/route/route-card";
 import { RouteDetails } from "@/components/route/route-details";
 import { FixtureBanner } from "@/components/site/fixture-banner";
+import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import type { LonLat, RouteResponse } from "@/lib/api/contracts";
 import { PathAbleError } from "@/lib/api/errors";
@@ -84,15 +85,24 @@ export function Planner() {
   const kind = serviceKind();
 
   // Shareable links: ?from=lat,lon&to=lat,lon seed the trip on first load.
+  // Wait for the session store to rehydrate first, and leave an identical trip
+  // alone, so a language switch keeps the selected route.
   const seeded = useRef(false);
   useEffect(() => {
-    if (seeded.current) return;
-    seeded.current = true;
-    const from = parseLinkParam(params.get("from"));
-    const to = parseLinkParam(params.get("to"));
-    const trip = demoTrips.find((d) => from && to && d.origin.position[0].toFixed(4) === from[0].toFixed(4) && d.destination.position[0].toFixed(4) === to[0].toFixed(4));
-    if (from) setOrigin(trip?.origin ?? { label: t("search.coordinates", { lat: from[1].toFixed(5), lon: from[0].toFixed(5) }), position: from });
-    if (to) setDestination(trip?.destination ?? { label: t("search.coordinates", { lat: to[1].toFixed(5), lon: to[0].toFixed(5) }), position: to });
+    const same = (a: LonLat | undefined, b: LonLat) => Boolean(a) && a![0].toFixed(5) === b[0].toFixed(5) && a![1].toFixed(5) === b[1].toFixed(5);
+    const seed = () => {
+      if (seeded.current) return;
+      seeded.current = true;
+      const from = parseLinkParam(params.get("from"));
+      const to = parseLinkParam(params.get("to"));
+      const current = useTrip.getState();
+      const trip = demoTrips.find((d) => from && to && same(d.origin.position, from) && same(d.destination.position, to));
+      const label = (p: LonLat) => t("search.coordinates", { lat: p[1].toFixed(5), lon: p[0].toFixed(5) });
+      if (from && !same(current.origin?.position, from)) setOrigin(trip?.origin ?? { label: label(from), position: from });
+      if (to && !same(current.destination?.position, to)) setDestination(trip?.destination ?? { label: label(to), position: to });
+    };
+    if (useTrip.persist.hasHydrated()) seed();
+    else return useTrip.persist.onFinishHydration(seed);
     // Runs once on mount.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -199,6 +209,7 @@ export function Planner() {
           </div>
 
           <div className="mt-3 flex flex-wrap gap-2">
+            {!desktop && <LanguageSwitcher />}
             <Link href="/settings#mobility" className="pa-chip-button">
               <SlidersHorizontal aria-hidden size={16} />
               {t("planner.editPreferences")}
@@ -355,11 +366,14 @@ export function Planner() {
 
       {desktop ? (
         <aside className={collapsed ? "pa-sidebar is-collapsed" : "pa-sidebar"} aria-label={t("planner.title")}>
-          <div className="flex items-center justify-between gap-2 px-4 pt-3">
+          <div className="flex items-center gap-2 px-4 pt-3 [&>a]:me-auto">
             {!collapsed && (
-              <Link href="/" aria-label={t("nav.home")} className="pa-logo-link">
-                <Wordmark />
-              </Link>
+              <>
+                <Link href="/" aria-label={t("nav.home")} className="pa-logo-link">
+                  <Wordmark />
+                </Link>
+                <LanguageSwitcher />
+              </>
             )}
             <button type="button" className="pa-icon-button" onClick={() => setCollapsed((c) => !c)} aria-expanded={!collapsed} aria-label={collapsed ? t("planner.expandSidebar") : t("planner.collapseSidebar")}>
               {collapsed ? <ChevronsRight aria-hidden size={20} className="rtl:rotate-180" /> : <ChevronsLeft aria-hidden size={20} className="rtl:rotate-180" />}

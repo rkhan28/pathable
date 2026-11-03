@@ -14,13 +14,14 @@
   .pa-link-button {
     display: inline-flex; align-items: center; gap: 0.5rem; min-block-size: 2.75rem; padding-inline: 1.25rem;
     border-radius: var(--r-control); border: 1px solid var(--line); background: var(--surface-raised);
-    color: var(--ink); font-weight: 700; text-decoration: none; white-space: nowrap;
+    color: var(--ink); font-weight: 700; text-decoration: none; text-align: start;
     transition: transform var(--duration-press) var(--ease-out-cubic), background-color var(--duration-state);
   }
   .pa-link-button:hover { background: var(--surface-sunken); }
   .pa-link-button.is-primary { background: var(--signal); color: var(--on-signal); border-color: transparent; min-block-size: 3.25rem; padding-inline: 1.75rem; font-size: var(--type-md); }
   .pa-link-button.is-primary:hover { filter: brightness(0.95); }
   .pa-press:active, .pa-link-button:active, .pa-icon-button:active, .pa-map-button:active { transform: scale(0.97); }
+  button.pa-text-link { display: inline-flex; align-items: center; min-block-size: 2.75rem; }
   .pa-text-link { font-weight: 700; color: var(--brand); text-decoration: underline; text-underline-offset: 0.25em; }
   .pa-icon-button, .pa-chip-button {
     display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem;
@@ -215,12 +216,12 @@
   /* ---------- Forms, settings, flows ---------- */
   .pa-settings-group { display: grid; gap: 1.25rem; margin-block-start: 2.5rem; padding: 1.5rem; border-radius: var(--r-card); border: 1px solid var(--line-subtle); background: var(--surface-raised); }
   .pa-switch-row { display: flex; align-items: center; gap: 1rem; min-block-size: 3rem; padding-block: 0.375rem; }
-  .pa-switch { position: relative; flex-shrink: 0; inline-size: 3.25rem; block-size: 2rem; border-radius: 999px; background: var(--surface-sunken); border: 1.5px solid var(--line); }
+  .pa-switch { position: relative; flex-shrink: 0; inline-size: 4.25rem; block-size: 2.75rem; border-radius: 999px; background: var(--surface-sunken); border: 1.5px solid var(--line); }
   .pa-switch[data-state="checked"] { background: var(--ink); border-color: var(--ink); }
-  .pa-switch-thumb { display: block; inline-size: 1.5rem; block-size: 1.5rem; border-radius: 50%; background: var(--surface-raised); transform: translateX(0.125rem); transition: transform var(--duration-state) var(--ease-out-cubic); box-shadow: 0 1px 2px rgb(0 0 0 / 0.3); }
-  .pa-switch-thumb[data-state="checked"] { transform: translateX(1.375rem); }
+  .pa-switch-thumb { display: block; inline-size: 2.125rem; block-size: 2.125rem; border-radius: 50%; background: var(--surface-raised); transform: translateX(0.125rem); transition: transform var(--duration-state) var(--ease-out-cubic); box-shadow: 0 1px 2px rgb(0 0 0 / 0.3); }
+  .pa-switch-thumb[data-state="checked"] { transform: translateX(1.75rem); }
   [dir="rtl"] .pa-switch-thumb { transform: translateX(-0.125rem); }
-  [dir="rtl"] .pa-switch-thumb[data-state="checked"] { transform: translateX(-1.375rem); }
+  [dir="rtl"] .pa-switch-thumb[data-state="checked"] { transform: translateX(-1.75rem); }
   .pa-slider-row { display: grid; gap: 0.5rem; }
   .pa-slider { position: relative; display: flex; align-items: center; block-size: 2.75rem; touch-action: none; user-select: none; }
   .pa-slider-track { position: relative; flex: 1; block-size: 0.375rem; border-radius: 999px; background: var(--surface-sunken); border: 1px solid var(--line); }
@@ -260,7 +261,7 @@
   .pa-example-card .pa-route-card { box-shadow: var(--elevation-map); }
 
   .pa-fixture-overlay { position: absolute; inset-block-start: 0.75rem; inset-inline-start: 0.75rem; z-index: 4; max-inline-size: calc(100% - 1.5rem); box-shadow: var(--elevation-map); }
-  .pa-fixture-overlay .pa-fixture-toggle { min-block-size: 2.25rem; font-size: var(--type-sm); }
+  .pa-fixture-overlay .pa-fixture-toggle { font-size: var(--type-sm); }
 
   .pa-specimen { margin-block-start: 3rem; display: grid; gap: 2.5rem; }
   @media (min-width: 64rem) { .pa-specimen { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: center; } }
@@ -305,4 +306,8 @@
   .pa-empty-state.domes { background-color: var(--surface); }
   .pa-faq { display: grid; max-inline-size: var(--measure); }
   .pa-faq > div { padding-block: 1.25rem; border-block-start: 1px solid var(--line-subtle); }
+}
+
+@layer components {
+  .pa-table-scroll { max-inline-size: 100%; }
 }
