@@ -268,6 +268,102 @@
         }
       }
     },
+    "/v1/photos": {
+      "post": {
+        "operationId": "uploadPhoto",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "photo"
+                ],
+                "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Stored privately, metadata removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhotoReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/reports/{id}/withdraw": {
       "post": {
         "operationId": "withdrawReport",
@@ -1216,9 +1312,14 @@
             "maxLength": 500
           },
           "photoId": {
-            "type": [
-              "string",
-              "null"
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{32}$"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "observedOn": {
@@ -1263,6 +1364,20 @@
           "id",
           "status",
           "receivedAt"
+        ],
+        "additionalProperties": false
+      },
+      "PhotoReceipt": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "photoId": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$"
+          }
+        },
+        "required": [
+          "photoId"
         ],
         "additionalProperties": false
       },

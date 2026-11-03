@@ -22,7 +22,7 @@ def database_url():
     if url := os.environ.get("TEST_DATABASE_URL"):
         yield url
         return
-    from testcontainers.postgres import PostgresContainer
+    from testcontainers.community.postgres import PostgresContainer
 
     with PostgresContainer(
         POSTGIS_IMAGE, username="pathable", password="pathable", dbname="pathable", driver=None
@@ -53,7 +53,7 @@ def migrated(database_url):
 
 
 @pytest.fixture(scope="session")
-def client(migrated):
+def client(migrated, tmp_path_factory):
     from pathable_api.main import create_app
     from pathable_api.settings import Settings
 
@@ -64,6 +64,7 @@ def client(migrated):
             cors_origins=("http://localhost:3000",),
             routes_per_minute=1000,
             reports_per_minute=1000,
+            photo_dir=str(tmp_path_factory.mktemp("photos")),
         )
     )
     with TestClient(app) as c:

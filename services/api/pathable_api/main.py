@@ -7,9 +7,10 @@ import time
 import uuid
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
+from typing import Annotated
 
 import psycopg
-from fastapi import FastAPI, Query, Request, Response
+from fastapi import FastAPI, File, Query, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.concurrency import run_in_threadpool
@@ -18,6 +19,7 @@ from . import errors
 from .db import Database
 from .errors import ApiError
 from .models import ReportCreate, RouteRequest
+from .photos import MAX_BYTES, InvalidPhoto, LocalStorage, S3Storage, clean_jpeg
 from .ratelimit import RateLimiter
 from .routing import EvidenceGraph
 from .settings import Settings
@@ -31,6 +33,7 @@ class State:
     graph: EvidenceGraph | None = None
     version: str | None = None
     limiter: RateLimiter
+    photos: LocalStorage | S3Storage | None = None
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -41,6 +44,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def lifespan(_app: FastAPI):
         state.db = Database(settings.database_url)
         state.limiter = RateLimiter(settings.redis_url)
+        if settings.s3_bucket:
+            state.photos = S3Storage(
+                settings.s3_endpoint, settings.s3_bucket, settings.s3_access_key, settings.s3_secret_key
+            )
+        elif settings.photo_dir:
+            state.photos = LocalStorage(settings.photo_dir)
         latest = state.db.latest_version()
         if latest:
             started = time.perf_counter()
@@ -103,7 +112,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             if not (w <= lon <= e and s <= lat <= n) or not state.db.in_coverage(state.version, lon, lat):
                 raise ApiError("outside_coverage")
         prefs = body.preferences.model_dump()
-        result = await run_in_threadpool(state.graph.route, tuple(body.origin), tuple(body.destination), prefs)
+        (ox, oy), (dx, dy) = body.origin, body.destination
+        margin = 0.02  # about 2 km: alternatives can stray beyond the straight line
+        reports = state.db.open_reports(
+            (min(ox, dx) - margin, min(oy, dy) - margin, max(ox, dx) + margin, max(oy, dy) + margin)
+        )
+        result = await run_in_threadpool(state.graph.route, tuple(body.origin), tuple(body.destination), prefs, reports)
         if not result:
             raise ApiError("no_route")
         return {
@@ -135,6 +149,18 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             return state.db.create_report(body.kind, lon, lat, body.description.strip(), body.photoId, body.observedOn)
         except psycopg.errors.CheckViolation as exc:
             raise ApiError("invalid_request") from exc
+
+    @app.post("/v1/photos", status_code=201)
+    async def upload_photo(request: Request, photo: Annotated[UploadFile, File()]):
+        state.limiter.check("reports", client(request), settings.reports_per_minute)
+        if state.photos is None:
+            raise ApiError("unavailable")
+        data = await photo.read(MAX_BYTES + 1)
+        try:
+            cleaned = await run_in_threadpool(clean_jpeg, data)
+        except InvalidPhoto as exc:
+            raise ApiError("invalid_request") from exc
+        return {"photoId": await run_in_threadpool(state.photos.put, cleaned)}
 
     @app.post("/v1/reports/{report_id}/withdraw")
     def withdraw(report_id: str):

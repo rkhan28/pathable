@@ -18,7 +18,8 @@
     "test:e2e": "playwright test",
     "contracts": "node --experimental-strip-types scripts/build-openapi.mjs",
     "lighthouse": "node scripts/lighthouse.mjs",
-    "case-study": "node scripts/build-case-study.mjs"
+    "case-study": "node scripts/build-case-study.mjs",
+    "test:live": "playwright test -c playwright.live.config.ts"
   },
   "dependencies": {
     "@fontsource/atkinson-hyperlegible-mono": "^5.3.0",

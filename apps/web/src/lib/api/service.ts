@@ -1,6 +1,7 @@
 import type {
   AnalysisResponse,
   HazardsResponse,
+  PhotoReceipt,
   ReportCreate,
   ReportReceipt,
   RouteRequest,
@@ -14,6 +15,7 @@ export interface PathAbleService {
   readonly kind: ServiceKind;
   routes(request: RouteRequest, signal?: AbortSignal): Promise<RouteResponse>;
   hazards(bbox: [number, number, number, number], signal?: AbortSignal): Promise<HazardsResponse>;
+  uploadPhoto(photo: Blob): Promise<PhotoReceipt>;
   createReport(report: ReportCreate): Promise<ReportReceipt>;
   withdrawReport(id: string): Promise<ReportReceipt>;
   analyzePhoto(photo: Blob): Promise<AnalysisResponse>;

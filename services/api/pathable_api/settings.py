@@ -13,6 +13,12 @@ class Settings:
             o for o in os.environ.get("CORS_ORIGINS", "http://localhost:3000").split(",") if o
         )
     )
+    # Photo storage: S3 when S3_BUCKET is set, a local directory when PHOTO_DIR is set, otherwise off.
+    s3_endpoint: str | None = field(default_factory=lambda: os.environ.get("S3_ENDPOINT"))
+    s3_bucket: str | None = field(default_factory=lambda: os.environ.get("S3_BUCKET"))
+    s3_access_key: str | None = field(default_factory=lambda: os.environ.get("S3_ACCESS_KEY"))
+    s3_secret_key: str | None = field(default_factory=lambda: os.environ.get("S3_SECRET_KEY"))
+    photo_dir: str | None = field(default_factory=lambda: os.environ.get("PHOTO_DIR"))
     # Requests per minute per client for /v1/routes; reports are stricter.
     routes_per_minute: int = int(os.environ.get("ROUTES_PER_MINUTE", "60"))
     reports_per_minute: int = int(os.environ.get("REPORTS_PER_MINUTE", "6"))

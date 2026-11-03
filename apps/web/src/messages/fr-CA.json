@@ -173,7 +173,7 @@
     "useLocation": "Utiliser ma position",
     "chooseOnMap": "Choisir sur la carte",
     "recent": "Lieux récents",
-    "demoTrips": "Trajets de démonstration",
+    "demoTrips": "Trajets d’exemple",
     "noResults": "Aucun lieu trouvé à North York",
     "results": "{count, plural, one {# résultat} other {# résultats}}",
     "coordinates": "Coordonnées {lat}, {lon}",
@@ -212,7 +212,8 @@
     "myLocation": "Afficher ma position",
     "offline": "Vous êtes hors ligne. Les itinéraires déjà chargés restent affichés.",
     "pickOnMap": "Touchez la carte pour définir {which}. Appuyez sur Échap pour annuler.",
-    "updated": "{count, plural, one {# itinéraire mis à jour} other {# itinéraires mis à jour}} selon vos préférences"
+    "updated": "{count, plural, one {# itinéraire mis à jour} other {# itinéraires mis à jour}} selon vos préférences",
+    "waking": "Le service d’itinéraires se réveille après une période d’inactivité. Cela peut prendre jusqu’à une minute."
   },
   "route": {
     "label": "Itinéraire {label}",
@@ -315,7 +316,7 @@
     "measured": "Mesuré à partir du {source}, {date}"
   },
   "errors": {
-    "outside_coverage": "Ce trajet est hors de North York, le secteur couvert par le projet pilote.",
+    "outside_coverage": "Ce trajet est hors du secteur que PathAble couvre en ce moment. La page Couverture indique où il fonctionne.",
     "no_route": "Aucun itinéraire praticable n’a été trouvé entre ces points.",
     "no_route_fixture": "Les données de développement ne couvrent que les trajets de démonstration. Choisissez-en un ci-dessous ou branchez le service en direct.",
     "invalid_request": "La demande n’est pas valide. Vérifiez le départ et l’arrivée.",

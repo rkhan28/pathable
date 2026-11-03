@@ -6,6 +6,7 @@ export const unavailableService: PathAbleService = {
   kind: "unavailable",
   routes: () => Promise.reject(new PathAbleError("unavailable", false)),
   hazards: () => Promise.reject(new PathAbleError("unavailable", false)),
+  uploadPhoto: () => Promise.reject(new PathAbleError("unavailable", false)),
   createReport: () => Promise.reject(new PathAbleError("unavailable", false)),
   withdrawReport: () => Promise.reject(new PathAbleError("unavailable", false)),
   analyzePhoto: () => Promise.resolve({ status: "unavailable", reason: "disabled" }),

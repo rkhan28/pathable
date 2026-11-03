@@ -74,6 +74,7 @@ export const fixtureService: PathAbleService = {
     // No community reports exist yet; fixtures never invent any.
     return { source: "development-fixture", generatedAt: new Date().toISOString(), hazards: [] };
   },
+  uploadPhoto: () => Promise.reject(new PathAbleError("unavailable", false)),
   createReport: () => Promise.reject(new PathAbleError("unavailable", false)),
   withdrawReport: () => Promise.reject(new PathAbleError("unavailable", false)),
   analyzePhoto: () => Promise.resolve({ status: "unavailable", reason: "no_model" }),

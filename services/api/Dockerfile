@@ -8,9 +8,11 @@ RUN uv sync --frozen --no-dev --no-install-project
 COPY . .
 RUN uv sync --frozen --no-dev
 RUN useradd --system --uid 10001 app && chown -R app /app
+# Run from the virtualenv directly; `uv run` would need a writable cache at runtime.
+ENV PATH="/app/.venv/bin:$PATH"
 USER app
 EXPOSE 8000
 HEALTHCHECK --interval=10s --timeout=3s CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz')"
 # Routing is CPU-bound Python; keep workers above expected concurrent route requests (docs/PERFORMANCE.md).
 ENV WEB_CONCURRENCY=4
-CMD ["sh", "-c", "uv run --no-sync alembic upgrade head && uv run --no-sync uvicorn pathable_api.main:app --host 0.0.0.0 --port 8000 --workers $WEB_CONCURRENCY"]
+CMD ["sh", "-c", "alembic upgrade head && uvicorn pathable_api.main:app --host 0.0.0.0 --port 8000 --workers $WEB_CONCURRENCY"]

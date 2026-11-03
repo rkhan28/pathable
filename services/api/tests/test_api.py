@@ -225,3 +225,101 @@ def test_a_second_data_version_with_the_same_edge_ids_loads(migrated):
         assert counts["test-second-build"] == 50
         assert counts["test-york-u-finch-west"] == len(doc["edges"])
         c.execute("DELETE FROM data_versions WHERE id = 'test-second-build'")
+
+
+def test_open_reports_are_avoided_or_shown(client):
+    """With "avoid reported obstacles" on, routes go around a reported spot; with it off,
+    the route that passes it carries the report and says so."""
+    off = TRIP | {"preferences": PREFS | {"avoidReportedObstacles": False}}
+    base = client.post("/v1/routes", json=off).json()["routes"][0]
+    seg = next(s for s in base["segments"] if s["kind"] == "sidewalk" and s["lengthM"] > 20)
+    (ax, ay), (bx, by) = base["geometry"][seg["from"]], base["geometry"][seg["to"]]
+    mid = [(ax + bx) / 2, (ay + by) / 2]
+    receipt = client.post(
+        "/v1/reports",
+        json={
+            "kind": "obstacle",
+            "location": mid,
+            "description": "",
+            "photoId": None,
+            "observedOn": date.today().isoformat(),
+        },
+    ).json()
+    try:
+        shown = client.post("/v1/routes", json=off).json()["routes"]
+        carrying = [r for r in shown if any(h["id"] == receipt["id"] for h in r["hazards"])]
+        assert carrying, "with avoidance off, the route through the report should carry it"
+        for r in carrying:
+            h = next(h for h in r["hazards"] if h["id"] == receipt["id"])
+            assert h["status"] == "reported"
+            assert h["source"] == "community-report"
+            assert any(reason["code"] == "reported_hazards" for reason in r["reasons"])
+
+        avoided = client.post("/v1/routes", json=TRIP).json()["routes"]
+        best = avoided[0]
+        on_best = [h for h in best["hazards"] if h["id"] == receipt["id"]]
+        # Either the best route now goes around it, or, if it cannot, the stretch is marked reported.
+        if on_best:
+            assert next(s for s in best["segments"] if s["id"] == on_best[0]["segmentId"])["state"] in (
+                "unverified",
+                "barrier",
+            )
+        else:
+            assert best["geometry"] != base["geometry"]
+    finally:
+        client.post(f"/v1/reports/{receipt['id']}/withdraw")
+    after = client.post("/v1/routes", json=off).json()["routes"]
+    assert all(h["id"] != receipt["id"] for r in after for h in r["hazards"])
+
+
+def _jpeg_with_gps() -> bytes:
+    import io
+
+    from PIL import Image
+
+    img = Image.new("RGB", (2400, 1200), (120, 140, 130))
+    exif = Image.Exif()
+    exif[0x010F] = "PhoneMaker"  # Make
+    exif[0x8825] = {1: "N", 2: (43.0, 46.0, 30.0), 3: "W", 4: (79.0, 29.0, 50.0)}  # GPS
+    out = io.BytesIO()
+    img.save(out, "JPEG", exif=exif)
+    return out.getvalue()
+
+
+def test_photo_upload_strips_metadata_and_stores_privately(client):
+    from PIL import Image
+
+    raw = _jpeg_with_gps()
+    assert b"Exif" in raw[:200]
+    res = client.post("/v1/photos", files={"photo": ("ramp.jpg", raw, "image/jpeg")})
+    assert res.status_code == 201, res.text
+    valid("PhotoReceipt", res.json())
+    stored = client.app.state.pathable.photos.root / f"{res.json()['photoId']}.jpg"
+    data = stored.read_bytes()
+    assert b"Exif" not in data and b"PhoneMaker" not in data
+    with Image.open(stored) as img:
+        assert max(img.size) == 1600
+        assert not img.getexif()
+
+    report = {
+        "kind": "obstacle",
+        "location": [-79.49, 43.77],
+        "description": "",
+        "photoId": res.json()["photoId"],
+        "observedOn": date.today().isoformat(),
+    }
+    receipt = client.post("/v1/reports", json=report)
+    assert receipt.status_code == 201
+    client.post(f"/v1/reports/{receipt.json()['id']}/withdraw")
+
+
+def test_photo_upload_rejects_non_images_and_bad_ids(client):
+    assert client.post("/v1/photos", files={"photo": ("x.jpg", b"not an image", "image/jpeg")}).status_code == 400
+    bad = {
+        "kind": "obstacle",
+        "location": [-79.49, 43.77],
+        "description": "",
+        "photoId": "../../etc/passwd",
+        "observedOn": date.today().isoformat(),
+    }
+    assert client.post("/v1/reports", json=bad).status_code == 400

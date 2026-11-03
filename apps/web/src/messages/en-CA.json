@@ -173,7 +173,7 @@
     "useLocation": "Use my location",
     "chooseOnMap": "Choose on map",
     "recent": "Recent places",
-    "demoTrips": "Demo trips",
+    "demoTrips": "Example trips",
     "noResults": "No places found in North York",
     "results": "{count, plural, one {# result} other {# results}}",
     "coordinates": "Coordinates {lat}, {lon}",
@@ -212,7 +212,8 @@
     "myLocation": "Show my location",
     "offline": "You are offline. Routes you already loaded are still shown.",
     "pickOnMap": "Click or tap the map to set {which}. Press Escape to cancel.",
-    "updated": "{count, plural, one {# route} other {# routes}} updated for your preferences"
+    "updated": "{count, plural, one {# route} other {# routes}} updated for your preferences",
+    "waking": "The route service is waking up after a quiet period. This can take up to a minute."
   },
   "route": {
     "label": "Route {label}",
@@ -315,7 +316,7 @@
     "measured": "Measured from the {source}, {date}"
   },
   "errors": {
-    "outside_coverage": "That trip is outside North York, where this pilot has data.",
+    "outside_coverage": "That trip is outside the area PathAble covers right now. The coverage page shows where it works.",
     "no_route": "No walkable route was found between these points.",
     "no_route_fixture": "Development data only covers the demo trips. Choose one below, or connect the live service.",
     "invalid_request": "Something in the request was not valid. Check the start and destination.",

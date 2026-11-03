@@ -24,8 +24,10 @@ services:
       DATABASE_URL: postgresql://pathable:pathable@db:5432/pathable
       REDIS_URL: redis://redis:6379/0
       CORS_ORIGINS: http://localhost:3000
+      S3_ENDPOINT: http://s3:8333
+      S3_BUCKET: pathable-report-photos
     ports: ["8000:8000"]
-    depends_on: { db: { condition: service_healthy }, redis: { condition: service_started } }
+    depends_on: { db: { condition: service_healthy }, redis: { condition: service_started }, s3: { condition: service_started } }
   web:
     build:
       context: ..

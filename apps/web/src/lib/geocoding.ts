@@ -40,6 +40,7 @@ export async function searchPlaces(query: string, lang: string, signal?: AbortSi
   if (!res.ok) throw new Error(`geocoder ${res.status}`);
   const parsed = PhotonResponse.safeParse(await res.json());
   if (!parsed.success) throw new Error("geocoder contract mismatch");
+  const seen = new Set<string>();
   return parsed.data.features
     .filter((f) => inNorthYorkBbox(f.geometry.coordinates))
     .map((f, i) => {
@@ -52,5 +53,12 @@ export async function searchPlaces(query: string, lang: string, signal?: AbortSi
         detail: [p.name ? street : null, p.district ?? p.city].filter(Boolean).join(", "),
         position: f.geometry.coordinates,
       };
+    })
+    // A long street comes back once per OSM segment; show each place once.
+    .filter((r) => {
+      const key = `${r.label}|${r.detail}`.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
     });
 }

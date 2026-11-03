@@ -13,6 +13,7 @@ const schemas = {
   HazardsResponse: c.HazardsResponse,
   ReportCreate: c.ReportCreate,
   ReportReceipt: c.ReportReceipt,
+  PhotoReceipt: c.PhotoReceipt,
   AnalysisResponse: c.AnalysisResponse,
   ApiError: c.ApiError,
   Preferences: c.Preferences,
@@ -37,6 +38,13 @@ const doc = {
       },
     },
     "/v1/reports": { post: { operationId: "createReport", requestBody: { required: true, ...json("ReportCreate") }, responses: { 201: { description: "Received", ...json("ReportReceipt") }, ...errors } } },
+    "/v1/photos": {
+      post: {
+        operationId: "uploadPhoto",
+        requestBody: { required: true, content: { "multipart/form-data": { schema: { type: "object", required: ["photo"], properties: { photo: { type: "string", format: "binary" } } } } } },
+        responses: { 201: { description: "Stored privately, metadata removed", ...json("PhotoReceipt") }, ...errors },
+      },
+    },
     "/v1/reports/{id}/withdraw": {
       post: { operationId: "withdrawReport", parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }], responses: { 200: { description: "Withdrawn", ...json("ReportReceipt") }, ...errors } },
     },

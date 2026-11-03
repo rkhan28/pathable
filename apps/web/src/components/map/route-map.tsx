@@ -319,6 +319,8 @@ export function RouteMap({
     <div className={cn("relative h-full w-full", className)}>
       {/* MapLibre forces position:relative on its container, so the wrapper owns the size. */}
       <div ref={containerRef} className="pa-map-container" data-map-status={status} />
+      {/* Until the first frame is drawn: a quiet placeholder that fades out, never a blank box. */}
+      <div className="pa-map-placeholder" data-hidden={status !== "loading"} aria-hidden />
       {controls && interactive && (
         <div role="group" aria-label={t("mapControls")} className="pa-map-controls">
           <button type="button" className="pa-map-button" onClick={() => zoom(1)} aria-label={t("zoomIn")}>

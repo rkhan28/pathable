@@ -1,9 +1,21 @@
-node_modules
-.next
+# The web image builds from the repository root (it needs contracts/ and
+# docs/data/), so keep everything else out of the build context.
 .git
-test-results
-playwright-report
-public/vendor
+data/
+**/node_modules
+**/.next
+**/.venv
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
+**/test-results
+**/playwright-report
+apps/web/public/vendor
+apps/web/public/data
+apps/web/src/generated
+docs/screenshots
+docs/media
+docs/lighthouse
 *.log
 .env*
 !.env.example

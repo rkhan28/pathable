@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import dynamic from "next/dynamic";
 import { PlaceSearch } from "@/components/planner/place-search";
 import { HazardKind, type LonLat } from "@/lib/api/contracts";
 import { PathAbleError } from "@/lib/api/errors";
@@ -15,6 +16,8 @@ import { announce } from "@/lib/announce";
 import { preparePhoto } from "@/lib/photo";
 import { useReports } from "@/stores/reports";
 import type { Place } from "@/stores/trip";
+
+const RouteMap = dynamic(() => import("@/components/map/route-map").then((m) => m.RouteMap), { ssr: false });
 
 const STEPS = ["photo", "location", "review", "details", "send"] as const;
 type StepName = (typeof STEPS)[number];
@@ -37,6 +40,7 @@ export function ReportFlow() {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
   const [place, setPlace] = useState<Place | null>(null);
+  const [picking, setPicking] = useState(false);
   const [sentMessage, setSentMessage] = useState<string | null>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const upsert = useReports((s) => s.upsert);
@@ -56,8 +60,12 @@ export function ReportFlow() {
   });
 
   const send = useMutation({
-    mutationFn: async (values: DetailsForm) =>
-      (await getService()).createReport({ ...values, location: place!.position as LonLat, photoId: null }),
+    mutationFn: async (values: DetailsForm) => {
+      const service = await getService();
+      // A chosen photo must arrive with the report: if it fails, the whole report stays a draft.
+      const photoId = photo ? (await service.uploadPhoto(photo)).photoId : null;
+      return service.createReport({ ...values, location: place!.position as LonLat, photoId });
+    },
     onSuccess: (receipt, values) => {
       upsert({ localId: receipt.id, ...values, location: place!.position, createdAt: new Date().toISOString(), serverId: receipt.id, status: receipt.status });
       setSentMessage(t("report.sent"));
@@ -122,8 +130,30 @@ export function ReportFlow() {
         <section aria-labelledby="step-title">
           <h1 id="step-title" ref={headingRef} tabIndex={-1} className="pa-step-title">{t("report.locationTitle")}</h1>
           <div className="mt-6">
-            <PlaceSearch label={t("report.locationTitle")} hideLabel value={place} onSelect={setPlace} />
+            <PlaceSearch label={t("report.locationTitle")} hideLabel value={place} onSelect={setPlace} onChooseOnMap={() => setPicking(true)} />
           </div>
+          {(picking || place) && (
+            <div className="pa-report-map">
+              <RouteMap
+                routes={[]}
+                selectedId={null}
+                destination={place?.position ?? null}
+                label={t("report.locationMap")}
+                controls
+                focusPoint={place ? { position: place.position, key: place.position[0] + place.position[1] } : null}
+                onPick={(p) => {
+                  setPlace({ label: t("search.coordinates", { lat: p[1].toFixed(5), lon: p[0].toFixed(5) }), position: p });
+                  setPicking(false);
+                }}
+                fallback={null}
+              />
+              {picking && (
+                <p className="pa-pick-hint" role="status">
+                  {t("planner.pickOnMap", { which: t("report.locationTitle") })}
+                </p>
+              )}
+            </div>
+          )}
           {place && (
             <p className="mt-3 flex items-center gap-2 text-sm">
               <LocateFixed aria-hidden size={16} />

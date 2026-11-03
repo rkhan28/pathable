@@ -27,6 +27,7 @@ import { useTrip, type Place } from "@/stores/trip";
 import { BottomSheet, type Snap } from "./bottom-sheet";
 import { PlaceSearch } from "./place-search";
 import { useDemoTrips } from "./use-demo-trips";
+import { NearbyReports } from "./nearby-reports";
 import { WhereTheyDiffer } from "./where-they-differ";
 import type { Padding } from "@/components/map/route-map";
 import { HazardMarker } from "@/components/map/hazard-marker";
@@ -130,6 +131,18 @@ export function Planner() {
     placeholderData: keepPreviousData,
   });
   const routes = useMemo(() => query.data?.routes ?? [], [query.data]);
+  // After 4 s, say why it is slow instead of leaving a spinner to speak for itself.
+  const [slow, setSlow] = useState(false);
+  useEffect(() => {
+    if (!query.isPending || !request) return;
+    const timer = window.setTimeout(() => setSlow(true), 4000);
+    return () => {
+      window.clearTimeout(timer);
+      setSlow(false);
+    };
+    // Restart the timer for each new request.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query.isPending, JSON.stringify(request)]);
   const selected = routes.find((r) => r.id === selectedRouteId) ?? routes[0] ?? null;
   const fixture = query.data?.source === "development-fixture";
 
@@ -283,11 +296,19 @@ export function Planner() {
           )}
 
           {request && query.isPending && (
-            <ul className="mt-6 grid gap-3" aria-busy="true" aria-label={t("common.loading")}>
-              {[0, 1, 2].map((i) => (
-                <li key={i} className="pa-skeleton-card" />
-              ))}
-            </ul>
+            <>
+              {slow && (
+                <div className="pa-waking mt-6" role="status">
+                  <p>{t("planner.waking")}</p>
+                  <div className="pa-indeterminate" aria-hidden />
+                </div>
+              )}
+              <ul className="mt-6 grid gap-3" aria-busy="true" aria-label={t("common.loading")}>
+                {[0, 1, 2].map((i) => (
+                  <li key={i} className="pa-skeleton-card" />
+                ))}
+              </ul>
+            </>
           )}
 
           {routes.length > 0 && (
@@ -322,12 +343,7 @@ export function Planner() {
                 </LayoutGroup>
               </fieldset>
               <WhereTheyDiffer routes={routes} onShow={(p) => setFocusPoint({ position: p, key: Date.now() })} />
-              <section aria-labelledby="reports-title" className="mt-6">
-                <h3 id="reports-title" className="font-bold">
-                  {t("planner.nearbyReports")}
-                </h3>
-                <p className="mt-1 text-ink-muted">{t("planner.noReports")}</p>
-              </section>
+              {selected && <NearbyReports route={selected} onShow={(p) => setFocusPoint({ position: p, key: Date.now() })} />}
             </section>
           )}
         </>

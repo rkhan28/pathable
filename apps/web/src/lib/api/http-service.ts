@@ -3,6 +3,7 @@ import {
   AnalysisResponse,
   ApiError,
   HazardsResponse,
+  PhotoReceipt,
   ReportReceipt,
   RouteResponse,
   type ReportCreate,
@@ -34,11 +35,15 @@ export async function parseResponse<T extends z.ZodType>(res: Response, schema: 
 
 export function createHttpService(baseUrl: string, fetchImpl: typeof fetch = fetch): PathAbleService {
   const url = (path: string) => new URL(path, baseUrl).toString();
+  // A sleeping free-tier instance can take about a minute to wake; give up after 90 s.
+  const TIMEOUT_MS = 90_000;
   const send = async (path: string, init?: RequestInit) => {
+    const timeout = AbortSignal.timeout(TIMEOUT_MS);
+    const signal = init?.signal ? AbortSignal.any([init.signal, timeout]) : timeout;
     try {
-      return await fetchImpl(url(path), init);
+      return await fetchImpl(url(path), { ...init, signal });
     } catch (e) {
-      if ((e as Error).name === "AbortError") throw e;
+      if ((e as Error).name === "AbortError" && !timeout.aborted) throw e;
       throw new PathAbleError(typeof navigator !== "undefined" && !navigator.onLine ? "offline" : "unavailable", true);
     }
   };
@@ -54,6 +59,11 @@ export function createHttpService(baseUrl: string, fetchImpl: typeof fetch = fet
     },
     async hazards(bbox, signal) {
       return parseResponse(await send(`/v1/hazards?bbox=${bbox.join(",")}`, { signal }), HazardsResponse);
+    },
+    async uploadPhoto(photo: Blob) {
+      const form = new FormData();
+      form.append("photo", photo, "photo.jpg");
+      return parseResponse(await send("/v1/photos", { method: "POST", body: form }), PhotoReceipt);
     },
     async createReport(report: ReportCreate) {
       return parseResponse(await send("/v1/reports", json(report)), ReportReceipt);

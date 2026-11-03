@@ -43,5 +43,5 @@ class ReportCreate(BaseModel):
     kind: HazardKind
     location: LonLat
     description: str = Field(max_length=500)
-    photoId: str | None
+    photoId: str | None = Field(pattern=r"^[0-9a-f]{32}$")
     observedOn: date

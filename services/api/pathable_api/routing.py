@@ -42,6 +42,25 @@ def metres(a: LonLat, b: LonLat) -> float:
     return math.hypot(x, y) * 6_371_000
 
 
+REPORT_MATCH_M = 15.0  # a report further than this from every edge is not on the network
+
+
+class _Overlay(Mapping):
+    """A read-only view of cached multipliers with a few per-request overrides."""
+
+    def __init__(self, base: Mapping[str, float], overrides: Mapping[str, float]):
+        self._base, self._overrides = base, overrides
+
+    def __getitem__(self, key: str) -> float:
+        return self._overrides.get(key) or self._base[key]
+
+    def __iter__(self):
+        return iter(self._base)
+
+    def __len__(self) -> int:
+        return len(self._base)
+
+
 CELL_DEG = 0.002  # about 160 m east-west and 220 m north-south at Toronto's latitude
 
 
@@ -84,15 +103,53 @@ class EvidenceGraph:
         # A* with straight-line distance: admissible because every cost is length x a multiplier of at least 1.
         return nx.astar_path(self.g, src, dst, heuristic=lambda a, _b: metres(a, dst), weight=weight)
 
-    def route(self, origin: LonLat, destination: LonLat, prefs: Mapping) -> list[dict] | None:
-        """Up to three structurally different, ranked alternatives, or None."""
+    def piece_near(self, p: LonLat, max_m: float = REPORT_MATCH_M) -> str | None:
+        """The edge piece passing closest to p, if one is within max_m metres."""
+        cx, cy = cell(p)
+        best, best_d = None, max_m
+        k = math.cos(math.radians(p[1]))
+        for dx_ in (-1, 0, 1):
+            for dy_ in (-1, 0, 1):
+                for node in self._cells.get((cx + dx_, cy + dy_), ()):
+                    for nb in self.g.neighbors(node):
+                        ax, ay = node
+                        bx, by = nb
+                        vx, vy = (bx - ax) * k, by - ay
+                        denom = vx * vx + vy * vy
+                        t = 0.0 if denom == 0 else max(0.0, min(1.0, ((p[0] - ax) * k * vx + (p[1] - ay) * vy) / denom))
+                        d = metres(p, (ax + t * (bx - ax), ay + t * (by - ay)))
+                        if d < best_d:
+                            best, best_d = self.g.edges[node, nb]["piece"], d
+        return best
+
+    def route(
+        self, origin: LonLat, destination: LonLat, prefs: Mapping, reports: Sequence[Mapping] = ()
+    ) -> list[dict] | None:
+        """Up to three structurally different, ranked alternatives, or None.
+
+        Open community reports are matched to the edge they lie on. With
+        "avoid reported obstacles" on, those edges cost what their state would:
+        a reported obstacle like an unverified stretch, a verified one like a
+        barrier. Every route that uses the edge carries the report as a hazard.
+        """
         src, d1 = self.nearest(origin)
         dst, d2 = self.nearest(destination)
         if max(d1, d2) > SNAP_RADIUS_M or self._component[src] != self._component[dst]:
             return None
-        multiplier = self._multipliers(tuple(sorted(prefs.items())))
+        on_piece: dict[str, list[Mapping]] = {}
+        for r in reports:
+            pid = self.piece_near(tuple(r["location"]))
+            if pid:
+                on_piece.setdefault(pid, []).append(r)
+        multiplier: Mapping[str, float] = self._multipliers(tuple(sorted(prefs.items())))
+        if on_piece and prefs["avoidReportedObstacles"]:
+            overrides = {
+                pid: STATE_WEIGHT["barrier" if any(r["status"] == "verified" for r in rs) else "unverified"]
+                for pid, rs in on_piece.items()
+            }
+            multiplier = _Overlay(multiplier, overrides)
         paths = self._alternatives(src, dst, multiplier)
-        routes = [self._to_route(path, f"r-{chr(97 + i)}") for i, path in enumerate(paths)]
+        routes = [self._to_route(path, f"r-{chr(97 + i)}", on_piece) for i, path in enumerate(paths)]
         return finalize(routes, prefs)
 
     @functools.lru_cache(maxsize=64)  # noqa: B019 -- one graph per process; bounded by distinct preference sets
@@ -138,7 +195,7 @@ class EvidenceGraph:
             penalty *= 2
         return found
 
-    def _to_route(self, path: list, route_id: str) -> dict:
+    def _to_route(self, path: list, route_id: str, reports: Mapping[str, list[Mapping]] | None = None) -> dict:
         geometry = [[round(n[0], 6), round(n[1], 6)] for n in path]
         segments, hazards, idx = [], [], 0
         runs: list[tuple[str, list]] = []
@@ -165,6 +222,7 @@ class EvidenceGraph:
                 }
             )
             hazards.extend({**h, "segmentId": seg_id} for h in piece.hazards)
+            hazards.extend({**r, "segmentId": seg_id} for r in (reports or {}).get(pid, ()))
             idx += len(nodes) - 1
         distance = sum(s["lengthM"] for s in segments)
         return {

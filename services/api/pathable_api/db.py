@@ -85,6 +85,20 @@ class Database:
             ).fetchall()
         return [_hazard(h) for h in [*measured, *reported]]
 
+    def open_reports(self, bbox: tuple[float, float, float, float]) -> list[dict]:
+        """Community reports that are still open (not rejected, withdrawn or expired) inside bbox."""
+        with self.pool.connection() as c:
+            rows = c.execute(
+                """SELECT id::text, kind, CASE WHEN status = 'verified' THEN 'verified' ELSE 'reported' END AS status,
+                          'community-report' AS source, observed_on, expires_at, NULL::text AS edge_id,
+                          ST_X(geom) AS lon, ST_Y(geom) AS lat
+                   FROM reports WHERE geom && ST_MakeEnvelope(%s, %s, %s, %s, 4326)
+                   AND status IN ('received','under_review','verified')
+                   AND (expires_at IS NULL OR expires_at > now())""",
+                bbox,
+            ).fetchall()
+        return [_hazard(r) for r in rows]
+
     def create_report(
         self, kind: str, lon: float, lat: float, description: str, photo_id: str | None, observed_on
     ) -> dict:

@@ -210,7 +210,7 @@ export const ReportCreate = z.object({
   location: LonLat,
   /** Free text the person chose to send; personal notes never leave the device. */
   description: z.string().max(500),
-  photoId: z.string().nullable(),
+  photoId: z.string().regex(/^[0-9a-f]{32}$/).nullable(),
   observedOn: IsoDate,
 });
 export type ReportCreate = z.infer<typeof ReportCreate>;
@@ -221,6 +221,10 @@ export const ReportReceipt = z.object({
   receivedAt: IsoDateTime,
 });
 export type ReportReceipt = z.infer<typeof ReportReceipt>;
+
+/** A stored report photo. The server re-encodes it with no metadata and never serves it publicly. */
+export const PhotoReceipt = z.object({ photoId: z.string().regex(/^[0-9a-f]{32}$/) });
+export type PhotoReceipt = z.infer<typeof PhotoReceipt>;
 
 export const Detection = z.object({
   kind: HazardKind,
