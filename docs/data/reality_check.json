@@ -1,0 +1,382 @@
+{
+  "area_km2": 176.6,
+  "sources": {
+    "boundary": {
+      "title": "Former Municipality Boundaries",
+      "licence": "open-government-licence-toronto",
+      "last_refreshed": "2026-02-20 19:04:49.452735",
+      "resource_name": "Former Municipality Boundaries Data - 4326.gpkg",
+      "sha256": "f77fddd854c75de51cc6c235eaaf4873c4fbbcaac00f583e8643be49b70d141e"
+    },
+    "neighbourhoods": {
+      "title": "Neighbourhoods",
+      "licence": "open-government-licence-toronto",
+      "last_refreshed": "2026-02-20 19:15:31.440337",
+      "resource_name": "Neighbourhoods - 4326.gpkg",
+      "sha256": "355b30f4021490716a966d7cc69da4671175412ddf3a60bfb2495c834ccb3951"
+    },
+    "pedestrian_crossovers": {
+      "title": "Traffic Signals Tabular",
+      "licence": "open-government-licence-toronto",
+      "last_refreshed": "2026-10-31 00:07:29.103032",
+      "resource_name": "Pedestrian Crossover - 4326.gpkg",
+      "sha256": "81e7d776aeb83813c1b871b6832b520f1a651815da58edc50625c8e0403b470c"
+    },
+    "pednet": {
+      "title": "Pedestrian Network",
+      "licence": "open-government-licence-toronto",
+      "last_refreshed": "2026-02-20 20:56:54.146991",
+      "resource_name": "Pedestrian Network Data - 4326.gpkg",
+      "sha256": "278273f11898377f6887c5d83c0c169aa8e4ab17db6aa9a91abf7fc2522a0172"
+    },
+    "sidewalk_inventory": {
+      "title": "Sidewalk Inventory",
+      "licence": "open-government-licence-toronto",
+      "last_refreshed": "2019-07-23 17:59:24.7985",
+      "resource_name": "sidewalk-inventory-wgs84",
+      "sha256": "f772e27ad7912eaf7e278474c244b7e055c0fd2af7ab8ef6f6e400038be164ef"
+    },
+    "sidewalk_polygons": {
+      "title": "Topographic Mapping \u2013 Physical area of sidewalks",
+      "licence": "open-government-licence-toronto",
+      "last_refreshed": "2026-02-20 21:02:25.680341",
+      "resource_name": "Sidewalks - 4326.gpkg",
+      "sha256": "14768fdd818933a1e4217620a66319adfc95a5defa2deaa449b5d149ad612563"
+    },
+    "traffic_signals": {
+      "title": "Traffic Signals Tabular",
+      "licence": "open-government-licence-toronto",
+      "last_refreshed": "2026-10-31 00:07:29.103032",
+      "resource_name": "Traffic Signal - 4326.gpkg",
+      "sha256": "08dd4249260f562e63481bdc6f41553de338c7d43ce2beb982afa6a15caf860e"
+    }
+  },
+  "osm_north_york": {
+    "all_pedestrian_ways": {
+      "count": 23439,
+      "km": 1988.8,
+      "surface": 46.7,
+      "smoothness": 0.5,
+      "width": 1.1,
+      "incline": 0.5,
+      "wheelchair": 0.0,
+      "tactile_paving": 0.2
+    },
+    "sidewalks": {
+      "count": 8510,
+      "km": 1386.9,
+      "surface": 48.1,
+      "smoothness": 0.4,
+      "width": 1.1,
+      "incline": 0.1,
+      "wheelchair": 0.0,
+      "tactile_paving": 0.0
+    },
+    "crossings": {
+      "count": 6200,
+      "km": 99.0,
+      "surface": 44.4,
+      "smoothness": 0.4,
+      "width": 0.1,
+      "incline": 0.1,
+      "wheelchair": 0.0,
+      "tactile_paving": 2.4,
+      "kerb_both_ends_known": 7.3
+    }
+  },
+  "osm_crossing_nodes": {
+    "count": 9527,
+    "with_tactile_paving": 12.6,
+    "with_kerb_tag": 0.3
+  },
+  "osm_kerb_nodes": {
+    "lowered": 1043,
+    "flush": 99,
+    "raised": 66,
+    "no": 15,
+    "yes": 7,
+    "rolled": 3
+  },
+  "osm_newest_edit": "2026-11-01 20:00:08+00:00",
+  "sidewalk_presence": {
+    "city_inventory_sidewalk_km": 1735.9,
+    "city_partial_segments_pct": 8.1,
+    "osm_sidewalk_km": 1541.2,
+    "osm_to_city_ratio_pct": 88.8,
+    "city_no_sidewalk_road_km": 388.2
+  },
+  "neighbourhood_osm_ratio": {
+    "count": 37,
+    "median_pct": 95.1,
+    "min": {
+      "name": "Humber Summit",
+      "ratio": 0.41067861337666556
+    },
+    "max": {
+      "name": "St.Andrew-Windfields",
+      "ratio": 1.1626553307254666
+    },
+    "below_50pct": 2
+  },
+  "signals": {
+    "traffic_signals": 574,
+    "aps_pct": 49.5,
+    "aps_operation": {
+      "None": 291,
+      "Pushbutton Actuated": 283
+    },
+    "pedestrian_crossovers": 54
+  },
+  "sidewalk_polygons": {
+    "features_in_north_york": 3411,
+    "area_km2": 2.8,
+    "geometry_maintained_range": [
+      "2021-01-01T00:00:00",
+      "2024-11-26T13:42:02"
+    ]
+  },
+  "width_estimate": {
+    "osm_sidewalk_ways": 8510,
+    "estimated_pct_length": 93.9,
+    "median_of_medians_m": 1.5,
+    "median_below_1_5m_pct_length": 60.8,
+    "median_below_0_9m_pct_length": 0.0
+  },
+  "width_validation": {
+    "osm_ways_with_numeric_width_and_estimate": 78,
+    "median_abs_error_m": 0.12,
+    "mean_abs_error_m": 0.26,
+    "bias_m": 0.07
+  },
+  "corridor": {
+    "path_km": 9.43,
+    "buffer_m": 250,
+    "segments": 2412,
+    "segment_max_m": 50.0
+  },
+  "osm_corridor": {
+    "all_pedestrian_ways": {
+      "count": 1292,
+      "km": 77.9,
+      "surface": 52.3,
+      "smoothness": 1.0,
+      "width": 0.0,
+      "incline": 0.3,
+      "wheelchair": 0.0,
+      "tactile_paving": 0.1
+    },
+    "sidewalks": {
+      "count": 420,
+      "km": 50.0,
+      "surface": 54.1,
+      "smoothness": 1.5,
+      "width": 0.0,
+      "incline": 0.0,
+      "wheelchair": 0.0,
+      "tactile_paving": 0.0
+    },
+    "crossings": {
+      "count": 261,
+      "km": 4.7,
+      "surface": 56.7,
+      "smoothness": 1.9,
+      "width": 0.0,
+      "incline": 0.0,
+      "wheelchair": 0.0,
+      "tactile_paving": 1.3,
+      "kerb_both_ends_known": 10.7
+    }
+  },
+  "slope": {
+    "dtm_2023": "TRCA-GTA_2023-1m (HRDEM lidar, 1 m)",
+    "dtm_2015": "NRCAN-GTA2015-1m (HRDEM lidar, 1 m)",
+    "ways_with_slope": 1842,
+    "ways_excluded_bridge_tunnel_steps_level": 195,
+    "slope_pct_length": 92.6,
+    "median_abs_diff_2023_vs_2015_pp": 0.17,
+    "p90_abs_diff_2023_vs_2015_pp": 1.06,
+    "threshold_agreement_pct": 95.0,
+    "osm_incline_comparisons": 0,
+    "over_5pct_length_pct": 10.0
+  },
+  "corridor_states_pct_length": {
+    "known_accessible": 9.7,
+    "known_barrier": 12.3,
+    "reported_unverified": 0.0,
+    "no_data": 78.0
+  },
+  "corridor_barrier_causes_pct_length": {
+    "steps": 0.5,
+    "surface": 1.4,
+    "slope": 7.5,
+    "width": 3.5,
+    "kerbs": 0.0
+  },
+  "corridor_states_by_min_width": {
+    "0.9": {
+      "known_accessible": 26.0,
+      "known_barrier": 9.1,
+      "reported_unverified": 0.0,
+      "no_data": 64.9
+    },
+    "1.2": {
+      "known_accessible": 25.4,
+      "known_barrier": 9.2,
+      "reported_unverified": 0.0,
+      "no_data": 65.4
+    },
+    "1.5": {
+      "known_accessible": 9.7,
+      "known_barrier": 12.3,
+      "reported_unverified": 0.0,
+      "no_data": 78.0
+    }
+  },
+  "corridor_attribute_known_pct_length": {
+    "surface": 52.3,
+    "width_estimate": 52.9,
+    "slope_2023": 92.6,
+    "slope_corroborated": 86.5,
+    "kerb_both_ends_on_crossings": 12.1
+  },
+  "field_check_locations": [
+    {
+      "osm_way": 845201610,
+      "lat": 43.770435,
+      "lon": -79.501045,
+      "max_slope_2023_pct": 2.0,
+      "max_slope_2015_pct": 2.3,
+      "status": "not yet checked"
+    },
+    {
+      "osm_way": 1524115090,
+      "lat": 43.770718,
+      "lon": -79.436004,
+      "max_slope_2023_pct": 2.0,
+      "max_slope_2015_pct": 1.7,
+      "status": "not yet checked"
+    },
+    {
+      "osm_way": 845201610,
+      "lat": 43.77084,
+      "lon": -79.501136,
+      "max_slope_2023_pct": 2.3,
+      "max_slope_2015_pct": 2.3,
+      "status": "not yet checked"
+    },
+    {
+      "osm_way": 132057995,
+      "lat": 43.771921,
+      "lon": -79.442709,
+      "max_slope_2023_pct": 3.8,
+      "max_slope_2015_pct": 3.9,
+      "status": "not yet checked"
+    },
+    {
+      "osm_way": 1550217388,
+      "lat": 43.773475,
+      "lon": -79.497657,
+      "max_slope_2023_pct": 5.8,
+      "max_slope_2015_pct": 5.6,
+      "status": "not yet checked"
+    },
+    {
+      "osm_way": 1037279796,
+      "lat": 43.765514,
+      "lon": -79.481315,
+      "max_slope_2023_pct": 4.5,
+      "max_slope_2015_pct": 6.7,
+      "status": "not yet checked"
+    },
+    {
+      "osm_way": 66979686,
+      "lat": 43.770833,
+      "lon": -79.447002,
+      "max_slope_2023_pct": 6.6,
+      "max_slope_2015_pct": 7.0,
+      "status": "not yet checked"
+    },
+    {
+      "osm_way": 983737686,
+      "lat": 43.769839,
+      "lon": -79.451935,
+      "max_slope_2023_pct": 7.0,
+      "max_slope_2015_pct": 7.2,
+      "status": "not yet checked"
+    },
+    {
+      "osm_way": 613144330,
+      "lat": 43.76107,
+      "lon": -79.412213,
+      "max_slope_2023_pct": 12.9,
+      "max_slope_2015_pct": 14.9,
+      "status": "not yet checked"
+    },
+    {
+      "osm_way": 762558247,
+      "lat": 43.770722,
+      "lon": -79.467137,
+      "max_slope_2023_pct": 15.3,
+      "max_slope_2015_pct": 14.8,
+      "status": "not yet checked"
+    }
+  ],
+  "corridor_steepest_ways": [
+    {
+      "osm_way": 132114163,
+      "highway": "footway",
+      "footway": "sidewalk",
+      "max_slope_2023_pct": 75.1,
+      "max_slope_2015_pct": 5.0
+    },
+    {
+      "osm_way": 132114163,
+      "highway": "footway",
+      "footway": "sidewalk",
+      "max_slope_2023_pct": 73.6,
+      "max_slope_2015_pct": 6.5
+    },
+    {
+      "osm_way": 591907744,
+      "highway": "pedestrian",
+      "footway": NaN,
+      "max_slope_2023_pct": 43.6,
+      "max_slope_2015_pct": 43.5
+    },
+    {
+      "osm_way": 591907744,
+      "highway": "pedestrian",
+      "footway": NaN,
+      "max_slope_2023_pct": 31.2,
+      "max_slope_2015_pct": 31.1
+    },
+    {
+      "osm_way": 591108133,
+      "highway": "pedestrian",
+      "footway": NaN,
+      "max_slope_2023_pct": 29.4,
+      "max_slope_2015_pct": 30.1
+    },
+    {
+      "osm_way": 930904263,
+      "highway": "footway",
+      "footway": NaN,
+      "max_slope_2023_pct": 29.2,
+      "max_slope_2015_pct": 36.5
+    },
+    {
+      "osm_way": 591108133,
+      "highway": "pedestrian",
+      "footway": NaN,
+      "max_slope_2023_pct": 28.4,
+      "max_slope_2015_pct": 35.8
+    },
+    {
+      "osm_way": 613144324,
+      "highway": "pedestrian",
+      "footway": NaN,
+      "max_slope_2023_pct": 27.0,
+      "max_slope_2015_pct": 1.4
+    }
+  ]
+}
