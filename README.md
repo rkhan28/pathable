@@ -67,7 +67,8 @@ shares of walkable length are:
 | axe-core (WCAG 2.2 AA tags) | **0 violations**: 13 pages × 2 languages × 4 themes, plus open menus, dialogs, details and guidance |
 | End-to-end (Playwright, production build) | **146 passing**: keyboard flows, 390 px at 150% text, 44 px targets, language switch keeps the trip, honest unavailable states |
 | Web unit tests (Vitest) | 50, including shared ranking cases and contract checks of every fixture |
-| API integration tests (pytest, PostGIS via testcontainers) | 22; every response validated against the generated OpenAPI |
+| API integration tests (pytest, PostGIS via testcontainers) | 26, zero warnings; every response validated against the generated OpenAPI |
+| Live end-to-end (production web image, API, PostGIS, object storage) | **12 passing**: live routes, search, report with photo, map pick, withdraw, coverage refusal, French |
 | Pipeline tests | 25 |
 | `/v1/routes` latency, 50 corridor trips, k6 | p95 **121 ms**, p99 **137 ms**, 6 workers ([details](docs/PERFORMANCE.md)) |
 | `/v1/hazards` latency | p95 **4.6 ms** |
@@ -125,7 +126,12 @@ All checks:
 make check      # contrast, copy, lint, types, unit, API on PostGIS, pipelines
 make e2e        # Playwright and axe against the production build
 make bench      # k6 against a running API
+cd apps/web && npm run test:live   # end-to-end against the running stack from `make up`
 ```
+
+`make up` from an empty Docker volume takes about 80 s on a laptop, including
+loading the corridor graph. For all of North York, run `make load AREA=north-york`
+afterwards (about 10 minutes).
 
 ## Honest limitations
 
