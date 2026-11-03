@@ -13,7 +13,7 @@ const STATE_STROKE: Record<string, { color: string; dash?: string; cap: "round" 
  * motion is reduced, and the first paint before the map loads. Same encoding
  * as the map: colour plus pattern, with the selected route on top.
  */
-export function HeroSvg({ data, profile, title }: { data: HeroData; profile: HeroProfile; title: string }) {
+export function HeroSvg({ data, profile, title, highlight, onlySelected = false, weight = 1 }: { data: HeroData; profile: HeroProfile; title: string; highlight?: string; onlySelected?: boolean; weight?: number }) {
   const W = 800;
   const H = 520;
   const pad = 40;
@@ -38,6 +38,7 @@ export function HeroSvg({ data, profile, title }: { data: HeroData; profile: Her
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={title} className="h-full w-full" preserveAspectRatio="xMidYMid meet">
       {ordered.map((r) => {
         if (r.id !== selectedId) {
+          if (onlySelected) return null;
           return (
             <g key={r.id}>
               <path d={path(r.geometry)} fill="none" stroke="var(--route-casing)" strokeWidth={7} strokeLinecap="round" strokeLinejoin="round" />
@@ -57,12 +58,12 @@ export function HeroSvg({ data, profile, title }: { data: HeroData; profile: Her
         });
         return (
           <g key={r.id}>
-            <path d={path(r.geometry)} fill="none" stroke="var(--route-casing)" strokeWidth={11} strokeLinecap="round" strokeLinejoin="round" />
+            <path d={path(r.geometry)} fill="none" stroke="var(--route-casing)" strokeWidth={11 * weight} strokeLinecap="round" strokeLinejoin="round" />
             {runs.map((run, i) => {
               const s = STATE_STROKE[run.state];
               return (
-                <g key={i}>
-                  <path d={path(run.pts)} fill="none" stroke={s.color} strokeWidth={6} strokeDasharray={s.dash} strokeLinecap={s.cap} strokeLinejoin="round" />
+                <g key={i} opacity={highlight && run.state !== highlight ? 0.16 : 1}>
+                  <path d={path(run.pts)} fill="none" stroke={s.color} strokeWidth={6 * weight} strokeDasharray={s.dash} strokeLinecap={s.cap} strokeLinejoin="round" />
                   {run.state === "b" && <path d={path(run.pts)} fill="none" stroke="var(--route-casing)" strokeWidth={1.6} strokeLinecap="round" />}
                 </g>
               );

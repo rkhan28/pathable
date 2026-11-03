@@ -23,7 +23,7 @@
     "observed": "Observé le {date}",
     "notObserved": "Aucune observation",
     "km": "{value, number, ::.0} km",
-    "m": "{value, number, ::0} m",
+    "m": "{value, number, ::precision-integer} m",
     "minutes": "{value, plural, one {# min} other {# min}}",
     "percent": "{value, number, ::.0} %",
     "metres": "{value, number, ::.00} m",
@@ -113,28 +113,57 @@
       "s3Title": "Comparez ce que l’on sait",
       "s3Body": "Jusqu’à trois options, chacune indiquant la part du trajet vérifiée, avec obstacle, signalée ou inconnue.",
       "s4Title": "Partez, puis dites-nous ce que vous avez vu",
-      "s4Body": "Un guidage étape par étape en gros caractères, avec lecture vocale au besoin. Signalez tout ce qui bloque le passage."
+      "s4Body": "Un guidage étape par étape en gros caractères, avec lecture vocale au besoin. Signalez tout ce qui bloque le passage.",
+      "exampleCaption": "Itinéraire A de l’Université York à Finch West, calculé à partir des données ouvertes de North York."
     },
     "states": {
       "title": "Quatre états de connaissance, jamais confondus",
       "lede": "Chaque tronçon de chaque itinéraire est dans l’un de ces états. L’absence de données n’est jamais présentée comme accessible.",
-      "exampleLabel": "Exemple de tronçon près de la station Finch West"
+      "exampleLabel": "Exemple de tronçon près de la station Finch West",
+      "share": "Part du corridor de démonstration",
+      "drawn": "Tracé sur la carte",
+      "mapLabel": "Corridor de démonstration avec l’état choisi mis en évidence"
     },
     "reporting": {
       "title": "Des signalements faits sur place",
       "body": "Les données de localisation sont retirées des photos sur votre appareil avant tout envoi. Un signalement reste marqué « signalé » jusqu’à sa vérification par une personne.",
       "ai": "L’analyse automatique des photos reste désactivée tant qu’aucun modèle ne réussit notre évaluation publiée. D’ici là, une personne examine chaque signalement.",
-      "cta": "Signaler un obstacle"
+      "cta": "Signaler un obstacle",
+      "removedTitle": "Retiré sur votre appareil avant tout envoi",
+      "removed": {
+        "gps": "Latitude et longitude GPS",
+        "altitude": "Altitude et orientation",
+        "time": "Date et heure de la prise de vue",
+        "camera": "Marque, modèle et numéro de série de l’appareil photo",
+        "software": "Logiciel de retouche",
+        "thumbnail": "Vignette intégrée"
+      },
+      "keptTitle": "Envoyé",
+      "kept": "L’image elle-même, redimensionnée à 1 600 pixels au plus sur son plus grand côté",
+      "aiStatus": "Analyse des photos",
+      "aiOff": "Désactivée. Aucun modèle n’a réussi l’évaluation."
     },
     "winter": {
       "title": "L’hiver, c’est une autre ville",
-      "body": "Neige, glace et bateaux de trottoir ensevelis par le déneigement changent chaque jour. Les marqueurs d’hiver proviennent uniquement de signalements faits sur place, indiquent quand ils ont été vus et expirent après 48 heures. Les prévisions météo ne sont jamais présentées comme l’état des trottoirs."
+      "body": "Neige, glace et bateaux de trottoir ensevelis par le déneigement changent chaque jour. Les marqueurs d’hiver proviennent uniquement de signalements faits sur place, indiquent quand ils ont été vus et expirent après 48 heures. Les prévisions météo ne sont jamais présentées comme l’état des trottoirs.",
+      "exampleLabel": "Exemple d’affichage d’un signalement hivernal. Il ne s’agit pas d’un vrai signalement.",
+      "exampleKind": "Glace",
+      "exampleStatus": "Signalé, non vérifié",
+      "exampleSeen": "Vu il y a 2 heures",
+      "exampleExpires": "Expire dans 46 heures",
+      "freshness": "Temps restant avant l’expiration"
     },
     "trust": {
       "title": "Ce que nous savons, et avec quelle fiabilité",
       "body": "Dans le corridor entre l’Université York et Yonge-Sheppard, avec une pente maximale de 5 % et une largeur minimale de 1,5 m, environ 10 % de la longueur praticable est confirmée accessible, 12 % présente un obstacle connu et 78 % n’a aucune donnée. Nous publions notre méthode de mesure.",
       "report": "Lire le rapport sur les données",
-      "sources": "Sources : OpenStreetMap, données ouvertes de la Ville de Toronto, lidar de Ressources naturelles Canada."
+      "sources": "Sources : OpenStreetMap, données ouvertes de la Ville de Toronto, lidar de Ressources naturelles Canada.",
+      "sourcesTitle": "D’où viennent les données",
+      "dataset": "Jeu de données",
+      "publisher": "Éditeur",
+      "refreshed": "Mis à jour",
+      "licence": "Licence",
+      "corridorLabel": "Corridor de démonstration selon la longueur praticable, pente maximale de 5 % et largeur minimale de 1,5 m"
     }
   },
   "search": {

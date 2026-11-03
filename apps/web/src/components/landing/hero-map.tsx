@@ -49,6 +49,7 @@ export function HeroMap({ data }: { data: HeroData }) {
   return (
     <div className="pa-hero-map">
       <div className="pa-hero-canvas domes-edge">
+        <FixtureBanner generatedAt={data.generatedAt} className="pa-fixture-overlay" />
         <HeroSvg data={data} profile={profile} title={t("landing.heroMapLabel")} />
         {live && (
           <div className="absolute inset-0">
@@ -84,7 +85,6 @@ export function HeroMap({ data }: { data: HeroData }) {
           ]}
         />
         <p className="pa-hero-explanation">{explanation}</p>
-        <FixtureBanner generatedAt={data.generatedAt} />
       </div>
     </div>
   );

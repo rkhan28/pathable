@@ -40,7 +40,7 @@ for (const scheme of ["light", "dark"]) {
       }
       await page.waitForTimeout(1500);
       const file = `${out}/${round}-${name}-${size.name}-${scheme}.png`;
-      await page.screenshot({ path: file, fullPage: name === "landing" && size.name === "390" ? false : false });
+      await page.screenshot({ path: file, fullPage: process.env.FULL === "1" && !["planner", "details"].includes(name) });
       console.log("wrote", file);
     }
     await context.close();

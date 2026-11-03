@@ -23,7 +23,7 @@
     "observed": "Observed {date}",
     "notObserved": "No observation",
     "km": "{value, number, ::.0} km",
-    "m": "{value, number, ::0} m",
+    "m": "{value, number, ::precision-integer} m",
     "minutes": "{value, plural, one {# min} other {# min}}",
     "percent": "{value, number, ::.0}%",
     "metres": "{value, number, ::.00} m",
@@ -113,28 +113,57 @@
       "s3Title": "Compare what is known",
       "s3Body": "Up to three alternatives, each showing how much of the route is verified, a barrier, reported or unknown.",
       "s4Title": "Go, and tell us what you find",
-      "s4Body": "Step-by-step guidance in large text, with optional voice. Report anything that blocks the way."
+      "s4Body": "Step-by-step guidance in large text, with optional voice. Report anything that blocks the way.",
+      "exampleCaption": "Route A from York University to Finch West, computed from North York open data."
     },
     "states": {
       "title": "Four knowledge states, never blurred",
       "lede": "Every stretch of every route is one of these. No data is never shown as accessible.",
-      "exampleLabel": "Example stretch near Finch West station"
+      "exampleLabel": "Example stretch near Finch West station",
+      "share": "Share of the demo corridor",
+      "drawn": "How it is drawn",
+      "mapLabel": "Demo corridor with the selected state highlighted"
     },
     "reporting": {
       "title": "Reports from people who were there",
       "body": "Photos have location data removed on your device before anything is sent. Reports stay marked as reported until a reviewer verifies them.",
       "ai": "Automatic photo analysis is turned off until a model passes our published evaluation. Until then, a person reviews every report.",
-      "cta": "Report a barrier"
+      "cta": "Report a barrier",
+      "removedTitle": "Removed on your device before anything is sent",
+      "removed": {
+        "gps": "GPS latitude and longitude",
+        "altitude": "Altitude and direction",
+        "time": "Date and time the photo was taken",
+        "camera": "Camera make, model and serial number",
+        "software": "Editing software",
+        "thumbnail": "Embedded thumbnail"
+      },
+      "keptTitle": "Sent",
+      "kept": "The image itself, resized to at most 1,600 pixels on its longest side",
+      "aiStatus": "Photo analysis",
+      "aiOff": "Off. No model has passed evaluation."
     },
     "winter": {
       "title": "Winter is a different city",
-      "body": "Snow, ice and plowed-in ramps change daily. Winter markers come only from on-the-ground reports, show when they were seen and expire after 48 hours. Weather forecasts are never shown as sidewalk conditions."
+      "body": "Snow, ice and plowed-in ramps change daily. Winter markers come only from on-the-ground reports, show when they were seen and expire after 48 hours. Weather forecasts are never shown as sidewalk conditions.",
+      "exampleLabel": "Example of how a winter report appears. Not a real report.",
+      "exampleKind": "Ice",
+      "exampleStatus": "Reported, not verified",
+      "exampleSeen": "Seen 2 hours ago",
+      "exampleExpires": "Expires in 46 hours",
+      "freshness": "Time left before it expires"
     },
     "trust": {
       "title": "What we know, and how well",
       "body": "In the York University to Yonge and Sheppard corridor, with a 5% slope limit and a 1.5 m minimum width, about 10% of walkable length is known accessible, 12% is a known barrier and 78% has no data. We publish how we measured that.",
       "report": "Read the data report",
-      "sources": "Sources: OpenStreetMap, City of Toronto Open Data, Natural Resources Canada lidar."
+      "sources": "Sources: OpenStreetMap, City of Toronto Open Data, Natural Resources Canada lidar.",
+      "sourcesTitle": "Where the data comes from",
+      "dataset": "Dataset",
+      "publisher": "Publisher",
+      "refreshed": "Refreshed",
+      "licence": "Licence",
+      "corridorLabel": "Demo corridor by walkable length, 5% slope limit and 1.5 m minimum width"
     }
   },
   "search": {

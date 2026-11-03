@@ -46,3 +46,51 @@ captured by `apps/web/scripts/screenshots.mjs` against a production build.
    - Landing: the shield icon above the AI note. The sentence carries itself.
    - Planner: the warning and speech-bubble icons beside the barrier and report
      counts. A count in barrier red, in bold, says more.
+
+## Round 2: the whole landing page, held to the best product sites (`r2-*`)
+
+**References.** I studied these for principles, not looks:
+- Apple Maps: panels layer over the map, and the map does the talking.
+- Linear: the real interface is the hero, rendered with precision.
+- Stripe: numbers and specimens carry the argument.
+- Transit: route lines that read at a glance.
+
+The common thread: every section shows the actual product or the actual data,
+and nothing is decoration.
+
+**Critique of r1 below the fold.** The hero worked; everything after it failed
+the "would this look the same on a generic SaaS page?" test.
+1. Five text-only sections in alternating background bands (grey, white, grey,
+   blue, grey), with big empty gutters. Nothing showed PathAble.
+2. The knowledge-states legend was four tiny swatches in a grey box and a lone
+   "78.0%".
+3. The yellow fixture banner was the loudest thing in the hero and competed
+   with the single emerald action.
+4. Details showed step distances like "70.2 m". The ICU `::0` skeleton was not
+   applied; walking distances to a tenth of a metre are false precision.
+5. Headings that receive focus programmatically on step changes drew a visible
+   halo box.
+
+**Changes.**
+
+| Section | Before | After |
+| --- | --- | --- |
+| How it works | Four text columns | A numbered list beside a real route card for York University to Finch West, rendered by the same component as the planner and marked `inert` |
+| Knowledge states | Swatch legend | A specimen table: line sample, icon and name, meaning, and the measured corridor share with a bar. Choosing a row isolates that state on the real corridor route. |
+| Reporting | Text block | A spec sheet of exactly which EXIF fields are removed on the device, what is sent, and the analysis status ("Off. No model has passed evaluation.") |
+| Winter | A blue band | A single example of a winter report card with its expiry, captioned plainly as an example, not a real report |
+| Trust | Text | The corridor's state distribution as one full-width bar with the numbers, and a table of every source with its publisher, refresh date and licence, read from `reality_check.json` |
+| Fixture banner | A full-width yellow bar | A compact overlay inside the map frame. Still collapsible, never dismissible. |
+
+**Also fixed:**
+- Walking distances round to 5 m below a kilometre.
+- Programmatically focused headings no longer draw a ring.
+- The bands are gone. Sections are separated by a hairline and 96 px of space.
+
+**Removed one decoration per screen:** the snowflake beside the winter heading,
+which now appears only on the example card, where it carries meaning.
+
+**Still open:**
+- On the states map, the corridor is long and thin, so the isolated state reads
+  small at 1440. A tighter crop would help.
+- At 390 the hero map sits below the first viewport by design.

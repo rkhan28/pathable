@@ -72,6 +72,8 @@
     border-radius: inherit;
   }
   [data-contrast="more"] :focus-visible { outline-width: 4px; }
+  /* Headings receive focus programmatically on step changes; that is for screen readers, not a visible ring. */
+  [tabindex="-1"]:focus, [tabindex="-1"]:focus-visible { outline: none; box-shadow: none; }
 
   .tabular { font-family: var(--font-numeric); font-variant-numeric: tabular-nums; }
 

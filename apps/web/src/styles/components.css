@@ -71,10 +71,6 @@
   .pa-h2 { font-size: var(--type-2xl); letter-spacing: -0.02em; max-inline-size: 22ch; }
   @media (max-width: 40rem) { .pa-h2 { font-size: var(--type-xl); } }
   .pa-section-lede { margin-block-start: 1rem; font-size: var(--type-md); color: var(--ink-muted); max-inline-size: var(--measure); }
-  .pa-steps { margin-block-start: 2.5rem; display: grid; gap: 2rem; counter-reset: step; }
-  @media (min-width: 48rem) { .pa-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-  .pa-step { counter-increment: step; padding-block-start: 1rem; border-block-start: 3px solid var(--ink); }
-  .pa-step::before { content: counter(step); display: block; font-family: var(--font-numeric); font-size: var(--type-lg); margin-block-end: 0.5rem; }
   .pa-split { display: grid; gap: 2rem; }
   @media (min-width: 64rem) { .pa-split { grid-template-columns: 7fr 5fr; align-items: end; } }
   .pa-aside { padding: 1.5rem; border-radius: var(--r-card); border: 1px solid var(--line-subtle); background: var(--surface-raised); max-inline-size: 36rem; }
@@ -249,4 +245,57 @@
   .pa-prose ul { list-style: disc; padding-inline-start: 1.25rem; }
   .pa-prose table { inline-size: 100%; border-collapse: collapse; font-size: var(--type-sm); }
   .pa-prose th, .pa-prose td { text-align: start; padding: 0.5rem; border-block-end: 1px solid var(--line-subtle); vertical-align: top; }
+}
+
+@layer components {
+  /* ---------- Landing, round 2 ---------- */
+  .pa-section-rule { border-block-start: 1px solid var(--line-subtle); }
+  .pa-split-even { display: grid; gap: 3rem; align-items: start; }
+  @media (min-width: 64rem) { .pa-split-even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 5rem; } }
+  .pa-steps { margin-block-start: 2.5rem; display: grid; counter-reset: step; }
+  .pa-step { counter-increment: step; display: grid; grid-template-columns: 2.5rem 1fr; padding-block: 1.25rem; border-block-start: 1px solid var(--line-subtle); }
+  .pa-step::before { content: counter(step); grid-row: span 2; font-family: var(--font-numeric); font-size: var(--type-md); color: var(--ink-muted); }
+  .pa-example { margin: 0; position: sticky; inset-block-start: calc(var(--header-height) + 2rem); }
+  .pa-example-card { padding: 1.25rem; border-radius: var(--r-sheet); background-color: var(--map-land); background-image: radial-gradient(circle at center, var(--dome) 0 2.5px, transparent 3px); background-size: 18px 18px; }
+  .pa-example-card .pa-route-card { box-shadow: var(--elevation-map); }
+
+  .pa-fixture-overlay { position: absolute; inset-block-start: 0.75rem; inset-inline-start: 0.75rem; z-index: 4; max-inline-size: calc(100% - 1.5rem); box-shadow: var(--elevation-map); }
+  .pa-fixture-overlay .pa-fixture-toggle { min-block-size: 2.25rem; font-size: var(--type-sm); }
+
+  .pa-specimen { margin-block-start: 3rem; display: grid; gap: 2.5rem; }
+  @media (min-width: 64rem) { .pa-specimen { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: center; } }
+  .pa-specimen-table { border: 0; margin: 0; padding: 0; min-inline-size: 0; }
+  .pa-specimen-head { display: grid; grid-template-columns: 7rem 1fr 9rem; gap: 1.5rem; padding-block-end: 0.75rem; font-size: var(--type-sm); color: var(--ink-muted); }
+  .pa-specimen-row { display: grid; grid-template-columns: 7rem 1fr 9rem; gap: 1.5rem; align-items: center; padding: 1.25rem 0.75rem; margin-inline: -0.75rem; border-block-start: 1px solid var(--line-subtle); border-radius: var(--r-chip); cursor: pointer; transition: background-color var(--duration-state); }
+  .pa-specimen-row:has(:checked) { background: var(--surface-raised); box-shadow: inset 3px 0 0 var(--ink); }
+  .pa-specimen-row:has(:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+  @media (max-width: 40rem) { .pa-specimen-row, .pa-specimen-head { grid-template-columns: 4.5rem 1fr; } .pa-specimen-share { grid-column: 2; } .pa-specimen-head span:last-child { display: none; } }
+  .pa-specimen-share { display: grid; gap: 0.375rem; justify-items: end; }
+  .pa-share-track { display: block; inline-size: 100%; block-size: 0.375rem; border-radius: 999px; background: var(--surface-sunken); overflow: hidden; }
+  .pa-share-fill { display: block; block-size: 100%; border-radius: inherit; }
+  .pa-specimen-map { aspect-ratio: 4 / 3; border-radius: var(--r-sheet); background: var(--map-land); padding: 1rem; }
+
+  .pa-spec-sheet { padding: 1.75rem; border-radius: var(--r-card); border: 1px solid var(--line-subtle); background: var(--surface-raised); }
+  .pa-spec-title { font-size: var(--type-sm); font-weight: 700; color: var(--ink-muted); }
+  .pa-spec-list { margin-block-start: 0.75rem; display: grid; }
+  .pa-spec-list li { display: flex; gap: 0.75rem; padding-block: 0.5rem; border-block-end: 1px solid var(--line-subtle); }
+  .pa-spec-list li.is-removed { text-decoration: line-through; text-decoration-color: var(--line); color: var(--ink-muted); }
+  .pa-spec-mark { font-family: var(--font-numeric); inline-size: 1rem; color: var(--ink); text-decoration: none; display: inline-block; }
+  .pa-spec-status { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-block-start: 1.5rem; padding-block-start: 1rem; border-block-start: 1px solid var(--line); font-size: var(--type-sm); }
+  .pa-status-dot { inline-size: 0.625rem; block-size: 0.625rem; border-radius: 50%; border: 2px solid var(--state-unknown); }
+
+  .pa-winter-example { margin: 0; }
+  .pa-winter-card { display: flex; gap: 0.875rem; max-inline-size: 22rem; padding: 1.25rem; border-radius: var(--r-card); background: var(--surface-raised); box-shadow: var(--elevation-map); }
+
+  .pa-corridor-bar { display: flex; inline-size: 100%; block-size: 2rem; border-radius: var(--r-chip); overflow: hidden; gap: 2px; }
+  .pa-corridor-part { flex-grow: 0; flex-shrink: 1; }
+  .pa-corridor-part.is-verified { background: var(--signal); }
+  .pa-corridor-part.is-barrier { background: var(--state-barrier); }
+  .pa-corridor-part.is-unverified { background: repeating-linear-gradient(90deg, var(--state-unverified) 0 6px, transparent 6px 10px); }
+  .pa-corridor-part.is-unknown { background: radial-gradient(circle, var(--state-unknown) 0 2.5px, transparent 3px) 0 50% / 10px 10px repeat-x, var(--surface-sunken); }
+  .pa-corridor-part[style*="flex-basis: 0%"] { display: none; }
+  .pa-table-scroll { overflow-x: auto; }
+  .pa-table { inline-size: 100%; border-collapse: collapse; font-size: var(--type-sm); }
+  .pa-table th { text-align: start; font-weight: 700; color: var(--ink-muted); padding: 0.625rem 1rem 0.625rem 0; border-block-end: 1px solid var(--line); white-space: nowrap; }
+  .pa-table td { padding: 0.75rem 1rem 0.75rem 0; border-block-end: 1px solid var(--line-subtle); vertical-align: top; }
 }
