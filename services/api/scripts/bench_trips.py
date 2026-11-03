@@ -26,6 +26,6 @@ while len(trips) < 50:
     a, b = rng.sample(pts, 2)
     if 400 <= metres(a, b) <= 4000:
         trips.append({"origin": list(a), "destination": list(b), "straightLineM": round(metres(a, b))})
-out = Path(__file__).resolve().parents[3] / "infra/k6/trips.json"
+out = Path(os.environ.get("TRIPS_OUT", Path(__file__).resolve().parents[3] / "infra/k6/trips.json"))
 out.write_text(json.dumps(trips, indent=1) + "\n")
 print(f"wrote {len(trips)} trips; median straight line {sorted(t['straightLineM'] for t in trips)[25]} m")

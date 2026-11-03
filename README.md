@@ -71,6 +71,7 @@ shares of walkable length are:
 | Pipeline tests | 25 |
 | `/v1/routes` latency, 50 corridor trips, k6 | p95 **121 ms**, p99 **137 ms**, 6 workers ([details](docs/PERFORMANCE.md)) |
 | `/v1/hazards` latency | p95 **4.6 ms** |
+| `/v1/routes` on the full North York graph | p95 **273 ms**, p99 **345 ms**, 50 borough-wide trips |
 | Colour contrast | 156 token pairs pass AA, and AAA text in high-contrast themes |
 | Lighthouse, landing | mobile **88** (target 85), desktop **100**; Accessibility 100; CLS 0 ([details](docs/PERFORMANCE.md)) |
 
@@ -129,8 +130,9 @@ make bench      # k6 against a running API
 ## Honest limitations
 
 - **No live demo yet.** It needs hosting accounts.
-- **Only the demo corridor is loaded into PostGIS.** The full North York graph
-  build has not been run.
+- **All of North York is built and loaded:** 105,069 edges, with routes p95
+  273 ms across the borough. A free-tier deployment can hold only the corridor
+  (about 125 MB per worker against about 596 MB for North York).
 - **Engine choice is measured, not assumed.** On 50 corridor trips, the
   in-process evidence router chose the same routes as pgRouting (same rules in
   SQL) with a p95 about 75 times lower. Valhalla's and OpenTripPlanner's

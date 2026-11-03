@@ -6,7 +6,7 @@ import { check } from "k6";
 import { SharedArray } from "k6/data";
 
 const API = __ENV.API_URL || "http://localhost:8000";
-const trips = new SharedArray("trips", () => JSON.parse(open("./trips.json")));
+const trips = new SharedArray("trips", () => JSON.parse(open(__ENV.TRIPS || "./trips.json")));
 const prefs = JSON.parse(open("../../contracts/fixtures/default-preferences.json"));
 
 export const options = {

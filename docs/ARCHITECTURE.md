@@ -114,8 +114,8 @@ deployment.
 
 ## Known gaps
 
-- Only the demo corridor is loaded in PostGIS; the full North York build has not
-  been run.
+- North York is fully built (105,069 edges). Each API worker holds the graph in
+  memory, about 596 MB, which is more than free tiers allow.
 - The photo upload pipeline is not built (ADR 0003).
 - OpenTelemetry tracing is not wired yet. Responses carry `x-request-id` and
   `server-timing` headers.

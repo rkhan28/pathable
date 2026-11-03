@@ -20,9 +20,12 @@ on them.
 | Graph | Edges | API worker memory | Database size |
 | --- | ---: | ---: | ---: |
 | Demo corridor | 6,067 | 125 MB RSS (1 worker, after 5 routes) | 28 MB |
-| All of North York | 105,069 | see below | see below |
+| All of North York | 105,069 | about 596 MB RSS per worker (6 workers, under load) | about 0.5 GB, estimated from the corridor ratio; not yet measured |
 
-A 512 MB free instance can serve the corridor with one or two workers. With
+A 512 MB free instance can serve the corridor with one or two workers. It
+cannot hold all of North York in memory, so a free deployment serves the demo
+corridor and says so. The North York build needs a paid instance with about
+1 GB per worker, or the compact graph described in PERFORMANCE.md. With
 0.1 CPU, expect routing to be several times slower than the local benchmark,
 and the first request after idle to wait for the instance to wake. The site
 labels the live data with its version and says when the service is waking or

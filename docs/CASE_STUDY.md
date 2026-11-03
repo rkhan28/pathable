@@ -110,7 +110,9 @@ All measured on 2026-11-03:
 
 - **Re-run the engine benchmark on all of North York,** and give OpenTripPlanner
   and Valhalla the lidar terrain model.
-- **Build the full North York graph.** Only the corridor is loaded today.
+- **Shrink the in-memory graph** (compact arrays, contracted chains) so all of
+  North York fits a small instance. It is built and fast (p95 273 ms), but it
+  takes about 596 MB per worker.
 - **Deploy the live demo,** and run Lighthouse and a field test on a mid-range
   Android phone.
 - **Field-check the 10 slope sites.** Then run the five-participant user study.

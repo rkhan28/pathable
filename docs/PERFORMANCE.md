@@ -50,9 +50,28 @@ Run 3 meets all three.
     p95, and routes improve too.
   - The API image now defaults to `WEB_CONCURRENCY=4`, set per deployment.
 
-**Not yet measured:**
-- Latency on the deployed host. There is no deployment yet.
-- A full North York graph. Only the corridor is loaded.
+### With the full North York graph
+
+- **Graph:** 105,069 edges and 1,396 measured hazards.
+- **Build:** 10 minutes, 1.33 GB peak, reading lidar in 2 km tiles.
+- **Load:** about 4 s when an API worker starts, and about 596 MB of resident
+  memory per worker.
+- **Setup:** 6 workers, same k6 profile as above.
+- **Router:** A* with a straight-line heuristic, grid snapping and precomputed
+  components (see ADR 0002).
+
+| Trips | `/v1/routes` p95 | `/v1/routes` p99 | `/v1/hazards` p95 | Success | Throughput |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 50 corridor trips (`trips.json`) | 225 ms | 247 ms | 4.7 ms | 100% | 553 req/s |
+| 50 trips across North York (`trips-north-york.json`, median 2.7 km straight line) | 273 ms | 345 ms | 6.2 ms | 100% | 465 req/s |
+
+All targets pass, but the North York p95 is within 30 ms of the 300 ms target.
+The same corridor trips take about twice as long on the full graph as on the
+corridor-only graph (121 ms). The next step, if needed, is a compact array
+graph (CSR) with SciPy's Dijkstra, or contracting chains of degree-2 nodes.
+Either would also cut memory.
+
+**Not yet measured:** latency on a deployed host. There is no deployment yet.
 
 The Rust (PyO3) hot path from the spec remains a stretch goal only. On this data
 Python meets the targets, so moving to Rust is not justified yet.
