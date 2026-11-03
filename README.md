@@ -59,7 +59,7 @@ shares of walkable length are:
 | `/v1/routes` latency, 50 corridor trips, k6 | p95 **121 ms**, p99 **137 ms**, 6 workers ([details](docs/PERFORMANCE.md)) |
 | `/v1/hazards` latency | p95 **4.6 ms** |
 | Colour contrast | 156 token pairs pass AA, and AAA text in high-contrast themes |
-| Lighthouse | not yet measured |
+| Lighthouse, landing | mobile **88** (target 85), desktop **100**; Accessibility 100; CLS 0 ([details](docs/PERFORMANCE.md)) |
 
 ## Architecture
 
@@ -131,8 +131,7 @@ make bench      # k6 against a running API
   and blurring of faces and plates. Photo analysis is honestly unavailable.
 - **No WCAG conformance is claimed.** There has been no manual audit and no user
   testing; [the plan is written](docs/ACCESSIBILITY_TESTING.md).
-- **Not built yet:** the command palette, OpenTelemetry tracing, Lighthouse CI
-  and a CSP.
+- **Not built yet:** the command palette, OpenTelemetry tracing and a CSP.
 
 ## Documentation
 

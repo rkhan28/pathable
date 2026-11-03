@@ -57,18 +57,44 @@ Run 3 meets all three.
 The Rust (PyO3) hot path from the spec remains a stretch goal only. On this data
 Python meets the targets, so moving to Rust is not justified yet.
 
-## Web
+## Web: Lighthouse 12
 
-| Measure | Result | How |
-| --- | --- | --- |
-| Lighthouse (mobile/desktop) | not yet measured | `@lhci/cli` is planned for CI |
-| Field test on a mid-range Android phone | not done | needs a device |
+**Setup.** Landing page `/en-CA`, production build, local server, default
+Lighthouse throttling for mobile (simulated slow 4G, 4× CPU) and the desktop
+preset. Reports are in `docs/lighthouse/`. Run with `npm run lighthouse`.
 
-Choices made for performance:
-- The landing headline and the search field are server-rendered and never
-  animated, so the LCP is text.
-- The hero map loads only after hydration, and only when WebGL works and motion
-  is allowed. Until then the server-rendered SVG of the same routes is shown.
-- The hero ships precomputed, simplified geometry (one point every 35 m), not the
-  545 KB corridor fixture.
-- MapLibre and its worker are lazy-loaded. Only two font weights ship.
+| Run | Form factor | Performance | Accessibility | Best practices | SEO | LCP | TBT | CLS |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | mobile | **59** | 100 | 100 | 100 | 3.7 s | 3,575 ms | 0 |
+| 1 | desktop | 100 | 100 | 100 | 100 | 0.77 s | 40 ms | 0 |
+| 3 | mobile | **88** | 100 | 100 | 100 | 3.7 s | 144 ms | 0 |
+| 3 | desktop | 100 | 100 | 100 | 100 | 0.75 s | 0 ms | 0.000008 |
+
+Targets: mobile Performance ≥ 85, desktop ≥ 95, Accessibility 100, CLS 0.
+
+**What changed between runs.**
+- **Run 1 to run 2.** MapLibre (1.1 MB of JavaScript) was evaluated on page
+  load on mobile, even though the hero map sits below the fold there. That was
+  2.8 s of scripting under throttling. The live map now mounts only when its
+  frame comes within 200 px of the viewport and the browser is idle. Until
+  then, the server-rendered SVG of the same routes shows. Mobile went from 59
+  to 89.
+- **Run 2 to run 3.** Mobile CLS was 0.0008. The cause: the header's language
+  button sat behind a Suspense boundary because it read `useSearchParams`
+  during render. It now reads the query only when a language is chosen, so it
+  renders on the server and nothing moves.
+- **Variance:** run-to-run variance for mobile Performance is about ±2 points
+  (89 and 88 across the last two runs).
+
+**Accessibility 100 on other pages** (Lighthouse accessibility and best
+practices only): `/navigate`, `/settings`, `/coverage`.
+
+**Not measured yet:**
+- A deployed host.
+- A field test on a mid-range Android phone. That needs a device.
+
+**Other performance choices:**
+- The LCP element is the server-rendered `h1`, which never animates.
+- The hero ships precomputed, simplified geometry (one point every 35 m), not
+  the 545 KB corridor fixture.
+- Only two font weights ship.

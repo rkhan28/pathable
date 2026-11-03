@@ -16,7 +16,8 @@
     "check:copy": "node scripts/check-copy.mjs",
     "check": "npm run contrast && npm run check:copy && npm run lint && npm run typecheck && npm run test",
     "test:e2e": "playwright test",
-    "contracts": "node --experimental-strip-types scripts/build-openapi.mjs"
+    "contracts": "node --experimental-strip-types scripts/build-openapi.mjs",
+    "lighthouse": "node scripts/lighthouse.mjs"
   },
   "dependencies": {
     "@fontsource/atkinson-hyperlegible-mono": "^5.3.0",
@@ -54,6 +55,7 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "intl-messageformat": "^12.1.4",
     "jsdom": "^29.1.1",
+    "lighthouse": "^12.8.2",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^5.1.0"

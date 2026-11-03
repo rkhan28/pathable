@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { FixtureBanner } from "@/components/site/fixture-banner";
 import type { KnowledgeState } from "@/lib/api/contracts";
@@ -23,11 +23,34 @@ export function HeroMap({ data }: { data: HeroData }) {
   const t = useTranslations();
   const [profile, setProfile] = useState<HeroProfile>("wheelchair");
   // The live map only replaces the drawing when WebGL works and motion is allowed.
-  const live = useSyncExternalStore(
+  const capable = useSyncExternalStore(
     noopSubscribe,
     () => hasWebGL() && !prefersReducedMotion(),
     () => false,
   );
+  // MapLibre is about 1 MB of JavaScript. Load it only once the frame is near
+  // the viewport and the browser is idle; until then the SVG of the same routes shows.
+  const frameRef = useRef<HTMLDivElement>(null);
+  const [near, setNear] = useState(false);
+  useEffect(() => {
+    if (!capable || !frameRef.current) return;
+    let idle = 0;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        const ric = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 200));
+        idle = ric(() => setNear(true)) as number;
+      },
+      { rootMargin: "200px" },
+    );
+    observer.observe(frameRef.current);
+    return () => {
+      observer.disconnect();
+      window.cancelIdleCallback?.(idle);
+    };
+  }, [capable]);
+  const live = capable && near;
 
   const ranking = data.profiles[profile];
   const routes: MapRoute[] = useMemo(
@@ -48,7 +71,7 @@ export function HeroMap({ data }: { data: HeroData }) {
 
   return (
     <div className="pa-hero-map">
-      <div className="pa-hero-canvas domes-edge">
+      <div ref={frameRef} className="pa-hero-canvas domes-edge">
         <FixtureBanner generatedAt={data.generatedAt} className="pa-fixture-overlay" />
         <HeroSvg data={data} profile={profile} title={t("landing.heroMapLabel")} />
         {live && (

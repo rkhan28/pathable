@@ -3,7 +3,6 @@
 import { Check, Languages } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { DropdownMenu } from "radix-ui";
-import { useSearchParams } from "next/navigation";
 import { LOCALES } from "@/i18n/locales";
 import { usePathname, useRouter } from "@/i18n/navigation";
 
@@ -13,7 +12,6 @@ export function LanguageSwitcher() {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
-  const params = useSearchParams();
   const current = LOCALES.find((l) => l.code === locale)!;
 
   return (
@@ -35,7 +33,8 @@ export function LanguageSwitcher() {
               lang={l.code}
               dir={l.dir}
               onSelect={() => {
-                const query = Object.fromEntries(params.entries());
+                // Read the query only when switching, so the button renders on the server with no layout shift.
+                const query = Object.fromEntries(new URLSearchParams(window.location.search).entries());
                 router.replace({ pathname, query }, { locale: l.code, scroll: false });
               }}
             >
