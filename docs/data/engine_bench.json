@@ -1,0 +1,74 @@
+{
+  "trips": 50,
+  "runs_per_trip": 3,
+  "preferences": {
+    "maxRunningSlopePct": 5,
+    "minWidthM": 1.2,
+    "avoidStairs": true,
+    "avoidMissingRamps": true,
+    "avoidDamagedSurfaces": true,
+    "avoidReportedObstacles": true,
+    "avoidNarrow": true,
+    "preferVerified": false,
+    "preferShorter": false
+  },
+  "engines": {
+    "pathable": {
+      "routes": 50,
+      "failures": 0,
+      "latency_ms": {
+        "p50": 2.5,
+        "p95": 9.5,
+        "p99": 10.1
+      },
+      "routes_with_barriers": 34,
+      "routes_using_steps": 5,
+      "share_pct": {
+        "verified": 64.9,
+        "barrier": 3.9,
+        "unknown": 31.2,
+        "unmatched": 0.0
+      },
+      "total_km": 124.29,
+      "evidence_cost_km": 157.99
+    },
+    "pgrouting": {
+      "routes": 50,
+      "failures": 0,
+      "latency_ms": {
+        "p50": 510.1,
+        "p95": 726.3,
+        "p99": 739.3
+      },
+      "routes_with_barriers": 35,
+      "routes_using_steps": 5,
+      "share_pct": {
+        "verified": 64.8,
+        "barrier": 3.9,
+        "unknown": 31.3,
+        "unmatched": 0.0
+      },
+      "total_km": 124.25,
+      "evidence_cost_km": 158.0
+    },
+    "valhalla": {
+      "routes": 50,
+      "failures": 0,
+      "latency_ms": {
+        "p50": 3.0,
+        "p95": 5.1,
+        "p99": 5.5
+      },
+      "routes_with_barriers": 43,
+      "routes_using_steps": 2,
+      "share_pct": {
+        "verified": 22.3,
+        "barrier": 14.5,
+        "unknown": 40.6,
+        "unmatched": 22.6
+      },
+      "total_km": 117.03,
+      "evidence_cost_km": 187.26
+    }
+  }
+}

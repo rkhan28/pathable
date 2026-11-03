@@ -38,6 +38,9 @@ def area_for(name: str, ways, nodes):
         return line.buffer(400)
     if name == "york-u-finch-west":
         return LineString([s["York University"], s["Finch West"]]).buffer(600)
+    if name == "north-york":
+        b = gpd.read_file(RAW / "toronto" / "boundary.gpkg").to_crs(METRIC)
+        return b.loc[b.AREA_NAME == "NORTH YORK", "geometry"].iloc[0]
     if name == "north-york-centre-sheppard-yonge":
         return LineString([s["North York Centre"], s["Sheppard-Yonge"]]).buffer(600)
     raise ValueError(name)

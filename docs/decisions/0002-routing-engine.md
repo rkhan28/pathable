@@ -1,8 +1,8 @@
-# 0002. Routing engine: in-process evidence router now, benchmark before choosing an engine
+# 0002. Routing engine: keep the in-process evidence router
 
-- Status: accepted as interim; the engine benchmark is still open
+- Status: accepted. Benchmarked 2026-11-03 against pgRouting and Valhalla; OpenTripPlanner not yet run.
 - Date: 2026-11-03
-- Evidence: [PERFORMANCE.md](../PERFORMANCE.md), `services/api/tests/test_api.py`
+- Evidence: `docs/data/engine_bench.json` (from `services/api/scripts/engine_bench.py`), [PERFORMANCE.md](../PERFORMANCE.md)
 
 ## Context
 
@@ -62,3 +62,60 @@ cannot drift apart. A test asserts they agree.
 - **Limits:** routing is CPU-bound Python. Under 2 workers, hazard requests
   queued behind it (p95 153 ms). Worker count must exceed the expected
   concurrent route requests.
+
+## Benchmark results (2026-11-03)
+
+**Setup.**
+- The same 50 corridor trips as the k6 benchmark, with the default preferences.
+- Latency is for the best single path: 3 warm runs per trip, measured from the
+  caller.
+- Every route is judged against PathAble's evidence. Its geometry is sampled
+  every 5 m and matched to the nearest evidence edge within 8 m, then
+  classified with the shared rules.
+- "Evidence cost" is Σ length × state weight (ROUTE_RANKING.md). Lower is
+  better.
+
+| Engine | How costs are set | p50 | p95 | p99 | Verified | Barrier | Unknown | Off our network | Routes with a barrier | Routes using steps | Evidence cost |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| PathAble in-process | shared rules, cached per preference set | 2.5 ms | 9.5 ms | 10.1 ms | 64.9% | 3.9% | 31.2% | 0% | 34 / 50 | 5 | 158.0 km |
+| pgRouting 4.0.2 | the same rules in PL/pgSQL, per request | 510 ms | 726 ms | 739 ms | 64.8% | 3.9% | 31.3% | 0% | 35 / 50 | 5 | 158.0 km |
+| Valhalla 3.9.1 | `pedestrian`, `type: wheelchair` | 3.0 ms | 5.1 ms | 5.5 ms | 22.3% | 14.5% | 40.6% | 22.6% | 43 / 50 | 2 | 187.3 km |
+
+**Correctness check for pgRouting.** The PL/pgSQL state function agrees with
+the Python and TypeScript rules on all 24 shared segment cases. It also finds
+the same routes as the in-process router, which confirms the cost function was
+reproduced faithfully.
+
+**Reading the results.**
+- **pgRouting** has the flexibility: any per-request cost written in SQL. But
+  computing evidence costs per request for the trip's subgraph costs about
+  0.5 s at p50, roughly 200× the in-process router.
+  - Precomputing a weight table per preference set would close part of that gap.
+  - It would also bring back the cache the in-process router already has, in
+    the database instead.
+- **Valhalla** is the fastest engine and very robust, but it cannot see the
+  evidence. Judged by PathAble's evidence:
+  - its wheelchair routes are 18.5% more expensive;
+  - 14.5% of their length is a known barrier, against 3.9%;
+  - only 22.3% is verified, against 64.9%;
+  - 22.6% runs on ways outside PathAble's network, such as road centrelines
+    where a separate sidewalk exists. Those stretches cannot be described, so
+    they could not be shown honestly.
+  - Making Valhalla evidence-aware would mean a custom costing model in C++.
+- **The in-process router** is evidence-aware by construction, fast enough with
+  a large margin, and needs no extra service.
+
+**Decision.** Keep the in-process router. Re-run this benchmark when the full
+North York graph is loaded, and if a preference set needs hard constraints
+rather than costs.
+
+**Not yet benchmarked: OpenTripPlanner 2.** Its wheelchair model reads slope
+from its own elevation input. A fair run means building its graph with the same
+lidar terrain model, which is still to do.
+
+**Product finding.** With the default preferences, 5 of 50 PathAble routes
+still use steps, and 34 of 50 cross at least one barrier. Barriers are a cost
+(×6), not a prohibition, so when no alternative exists the planner shows the
+least-bad route and marks it "has known barriers". This is honest. It also
+argues for an opt-in "never" setting for steps, which would make the person's
+hard limits hard.

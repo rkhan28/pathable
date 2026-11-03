@@ -42,6 +42,13 @@ def metres(a: LonLat, b: LonLat) -> float:
     return math.hypot(x, y) * 6_371_000
 
 
+CELL_DEG = 0.002  # about 160 m east-west and 220 m north-south at Toronto's latitude
+
+
+def cell(p: LonLat) -> tuple[int, int]:
+    return (math.floor(p[0] / CELL_DEG), math.floor(p[1] / CELL_DEG))
+
+
 def key(p: LonLat) -> LonLat:
     return (round(p[0], 7), round(p[1], 7))
 
@@ -55,17 +62,33 @@ class EvidenceGraph:
                 ka, kb = key(a), key(b)
                 if ka != kb:
                     self.g.add_edge(ka, kb, piece=p.id, length=metres(a, b))
-        self._nodes = list(self.g.nodes)
+        # Component id per node, so "is there any path?" is a dict lookup, not a search.
+        self._component: dict[LonLat, int] = {}
+        for i, nodes in enumerate(nx.connected_components(self.g)):
+            for n in nodes:
+                self._component[n] = i
+        # Nodes bucketed into ~200 m cells, so snapping looks at a few cells instead of every node.
+        self._cells: dict[tuple[int, int], list[LonLat]] = {}
+        for n in self.g.nodes:
+            self._cells.setdefault(cell(n), []).append(n)
 
     def nearest(self, p: LonLat) -> tuple[LonLat, float]:
-        best = min(self._nodes, key=lambda n: metres(n, p))
+        cx, cy = cell(p)
+        candidates = [n for dx in (-1, 0, 1) for dy in (-1, 0, 1) for n in self._cells.get((cx + dx, cy + dy), ())]
+        if not candidates:
+            return p, math.inf
+        best = min(candidates, key=lambda n: metres(n, p))
         return best, metres(best, p)
+
+    def _path(self, src: LonLat, dst: LonLat, weight) -> list:
+        # A* with straight-line distance: admissible because every cost is length x a multiplier of at least 1.
+        return nx.astar_path(self.g, src, dst, heuristic=lambda a, _b: metres(a, dst), weight=weight)
 
     def route(self, origin: LonLat, destination: LonLat, prefs: Mapping) -> list[dict] | None:
         """Up to three structurally different, ranked alternatives, or None."""
         src, d1 = self.nearest(origin)
         dst, d2 = self.nearest(destination)
-        if max(d1, d2) > SNAP_RADIUS_M or not nx.has_path(self.g, src, dst):
+        if max(d1, d2) > SNAP_RADIUS_M or self._component[src] != self._component[dst]:
             return None
         multiplier = self._multipliers(tuple(sorted(prefs.items())))
         paths = self._alternatives(src, dst, multiplier)
@@ -98,8 +121,8 @@ class EvidenceGraph:
         def by_state(_a, _b, d):
             return d["length"] * multiplier[d["piece"]]
 
-        found = [nx.shortest_path(self.g, src, dst, weight=by_state)]
-        shortest = nx.shortest_path(self.g, src, dst, weight="length")
+        found = [self._path(src, dst, by_state)]
+        shortest = self._path(src, dst, "length")
         if overlap(shortest, found[0]) < MAX_OVERLAP:
             found.append(shortest)
         penalty = 2.0
@@ -109,7 +132,7 @@ class EvidenceGraph:
             def weight(_a, _b, d, used=used, penalty=penalty):
                 return d["length"] * multiplier[d["piece"]] * (penalty if d["piece"] in used else 1)
 
-            candidate = nx.shortest_path(self.g, src, dst, weight=weight)
+            candidate = self._path(src, dst, weight)
             if all(overlap(candidate, p) < MAX_OVERLAP for p in found):
                 found.append(candidate)
             penalty *= 2

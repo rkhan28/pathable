@@ -117,30 +117,48 @@ def widths_with_dates(pieces: gpd.GeoDataFrame, polygons: gpd.GeoDataFrame) -> p
     return pd.DataFrame.from_dict(rows, orient="index")
 
 
+TILE_M = 2000  # slope is read in 2 km tiles so a whole-borough build stays within memory
+
+
 def slopes(pieces: gpd.GeoDataFrame, area) -> pd.DataFrame:
+    """Steepest 10 m running slope per piece, from both lidar surveys.
+
+    Pieces are grouped by the 2 km tile their midpoint falls in, and each tile
+    reads only its own window (plus a margin for pieces that cross the edge).
+    For the corridor this is a handful of reads; for all of North York it keeps
+    memory to a few tens of megabytes instead of several gigabytes.
+    """
+    del area  # the tiles come from the pieces themselves
     to_3979 = Transformer.from_crs(METRIC, 3979, always_xy=True)
-    minx, miny, maxx, maxy = area.bounds
-    xs, ys = to_3979.transform([minx, maxx, minx, maxx], [miny, miny, maxy, maxy])
-    bounds = (min(xs) - 20, min(ys) - 20, max(xs) + 20, max(ys) + 20)
-    dtms = {"2023": read_dtm(DTM_2023, bounds), "2015": read_dtm(DTM_2015, bounds)}
+    mids = pieces.geometry.interpolate(0.5, normalized=True)
+    tile = (
+        (mids.x // TILE_M).astype(int).astype(str)
+        + ":"
+        + (mids.y // TILE_M).astype(int).astype(str)
+    )
     rows = {}
-    for idx, row in pieces.iterrows():
-        geom = row.geometry
-        flagged = any(
-            isinstance(v, str) and v not in ("no", "0")
-            for v in (row.bridge, row.tunnel, row.indoor, row.level)
-        )
-        if flagged or row.highway == "steps" or geom.length < SLOPE_STEP_M + PROFILE_STEP_M:
-            continue
-        pts = measure.split_line(geom, PROFILE_STEP_M)
-        x, y = to_3979.transform(pts[:, 0], pts[:, 1])
-        spacing = geom.length / (len(pts) - 1)
-        rec = {}
-        for name, (grid, transform, nodata) in dtms.items():
-            z = measure.bilinear(grid, transform, np.asarray(x), np.asarray(y), nodata)
-            s = measure.window_slopes(z, spacing, SLOPE_STEP_M)
-            rec[f"slope_{name}"] = float(np.nanmax(s)) if np.isfinite(s).any() else np.nan
-        rows[idx] = rec
+    for _, group in pieces.groupby(tile.values):
+        minx, miny, maxx, maxy = group.total_bounds
+        xs, ys = to_3979.transform([minx, maxx, minx, maxx], [miny, miny, maxy, maxy])
+        bounds = (min(xs) - 20, min(ys) - 20, max(xs) + 20, max(ys) + 20)
+        dtms = {"2023": read_dtm(DTM_2023, bounds), "2015": read_dtm(DTM_2015, bounds)}
+        for idx, row in group.iterrows():
+            geom = row.geometry
+            flagged = any(
+                isinstance(v, str) and v not in ("no", "0")
+                for v in (row.bridge, row.tunnel, row.indoor, row.level)
+            )
+            if flagged or row.highway == "steps" or geom.length < SLOPE_STEP_M + PROFILE_STEP_M:
+                continue
+            pts = measure.split_line(geom, PROFILE_STEP_M)
+            x, y = to_3979.transform(pts[:, 0], pts[:, 1])
+            spacing = geom.length / (len(pts) - 1)
+            rec = {}
+            for name, (grid, transform, nodata) in dtms.items():
+                z = measure.bilinear(grid, transform, np.asarray(x), np.asarray(y), nodata)
+                s = measure.window_slopes(z, spacing, SLOPE_STEP_M)
+                rec[f"slope_{name}"] = float(np.nanmax(s)) if np.isfinite(s).any() else np.nan
+            rows[idx] = rec
     return pd.DataFrame.from_dict(rows, orient="index")
 
 
