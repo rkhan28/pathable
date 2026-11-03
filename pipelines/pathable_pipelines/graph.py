@@ -9,6 +9,7 @@ share an OSM node connect.
 
 from __future__ import annotations
 
+import itertools
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -65,7 +66,9 @@ def walkable_ways(ways: gpd.GeoDataFrame, area) -> gpd.GeoDataFrame:
     road = ways.highway.isin(ROAD_EDGE_HIGHWAYS) & ~separate & ~ways.access.isin(["private", "no"])
     keep = ways[(ped | road) & ~ways.foot.isin(["no", "private"]) & ways.intersects(area)].copy()
     keep["geometry"] = keep.geometry.intersection(area)
-    keep = keep[~keep.geometry.is_empty & keep.geometry.geom_type.isin(["LineString", "MultiLineString"])]
+    keep = keep[
+        ~keep.geometry.is_empty & keep.geometry.geom_type.isin(["LineString", "MultiLineString"])
+    ]
     keep["length_m"] = keep.length
     return keep
 
@@ -147,8 +150,10 @@ def aps_near(pieces: gpd.GeoDataFrame, signals: gpd.GeoDataFrame) -> pd.Series:
     if crossings.empty:
         return pd.Series(dtype=object)
     joined = gpd.sjoin_nearest(
-        crossings[["geometry"]], signals[["geometry", "AUDIBLEPEDSIGNAL"]],
-        max_distance=APS_RADIUS_M, how="left",
+        crossings[["geometry"]],
+        signals[["geometry", "AUDIBLEPEDSIGNAL"]],
+        max_distance=APS_RADIUS_M,
+        how="left",
     )
     joined = joined[~joined.index.duplicated()]
     return joined.AUDIBLEPEDSIGNAL.map(lambda v: True if v == 1 else None)
@@ -174,56 +179,91 @@ def evidence_for(row) -> list[dict]:
         sides = row.sidewalk
         present = None if not isinstance(sides, str) else sides in ("both", "left", "right", "yes")
         rows.append(
-            {"attribute": "presence", "value": present,
-             "source": "osm" if present is not None else None,
-             "observedOn": when if present is not None else None}
+            {
+                "attribute": "presence",
+                "value": present,
+                "source": "osm" if present is not None else None,
+                "observedOn": when if present is not None else None,
+            }
         )
     surface = row.surface if isinstance(row.surface, str) else None
     rows.append(
-        {"attribute": "surface", "value": surface, "source": "osm" if surface else None,
-         "observedOn": when if surface else None}
+        {
+            "attribute": "surface",
+            "value": surface,
+            "source": "osm" if surface else None,
+            "observedOn": when if surface else None,
+        }
     )
     if row.kind == "sidewalk":
         w = row.width_median
         has = isinstance(w, float) and np.isfinite(w)
         rows.append(
-            {"attribute": "width", "value": round(w, 2) if has else None, "unit": "m",
-             "error": WIDTH_ERROR_M, "source": "toronto-sidewalk-polygons" if has else None,
-             "observedOn": row.width_observed if has else None}
+            {
+                "attribute": "width",
+                "value": round(w, 2) if has else None,
+                "unit": "m",
+                "error": WIDTH_ERROR_M,
+                "source": "toronto-sidewalk-polygons" if has else None,
+                "observedOn": row.width_observed if has else None,
+            }
         )
     elif row.kind in ("path", "road_edge"):
         # Width applies here too; without a mapped value it is no data, never skipped.
         tagged = measure.parse_width_m(row.width)
         rows.append(
-            {"attribute": "width", "value": tagged, "unit": "m", "error": 0.0,
-             "source": "osm" if tagged else None, "observedOn": when if tagged else None}
+            {
+                "attribute": "width",
+                "value": tagged,
+                "unit": "m",
+                "error": 0.0,
+                "source": "osm" if tagged else None,
+                "observedOn": when if tagged else None,
+            }
         )
     if row.kind != "steps":
         s23, s15 = row.slope_2023, row.slope_2015
         has23 = isinstance(s23, float) and np.isfinite(s23)
-        ev = {"attribute": "running_slope", "value": round(s23, 1) if has23 else None,
-              "unit": "pct", "error": SLOPE_ERROR_PP,
-              "source": "nrcan-hrdem-2023" if has23 else None,
-              "observedOn": DTM_DATES["nrcan-hrdem-2023"] if has23 else None}
+        ev = {
+            "attribute": "running_slope",
+            "value": round(s23, 1) if has23 else None,
+            "unit": "pct",
+            "error": SLOPE_ERROR_PP,
+            "source": "nrcan-hrdem-2023" if has23 else None,
+            "observedOn": DTM_DATES["nrcan-hrdem-2023"] if has23 else None,
+        }
         if has23 and isinstance(s15, float) and np.isfinite(s15):
-            ev["corroboration"] = {"value": round(s15, 1), "source": "nrcan-hrdem-2015",
-                                   "observedOn": DTM_DATES["nrcan-hrdem-2015"]}
+            ev["corroboration"] = {
+                "value": round(s15, 1),
+                "source": "nrcan-hrdem-2015",
+                "observedOn": DTM_DATES["nrcan-hrdem-2015"],
+            }
         rows.append(ev)
     if row.kind == "crossing":
         kerbs = row.kerb_value if isinstance(row.kerb_value, str) else None
         rows.append(
-            {"attribute": "kerbs", "value": kerbs, "source": "osm" if kerbs else None,
-             "observedOn": when if kerbs else None}
+            {
+                "attribute": "kerbs",
+                "value": kerbs,
+                "source": "osm" if kerbs else None,
+                "observedOn": when if kerbs else None,
+            }
         )
         aps = row.aps if isinstance(row.aps, bool) else None
         rows.append(
-            {"attribute": "aps", "value": aps, "source": "toronto-traffic-signals" if aps else None,
-             "observedOn": "2026-10-31" if aps else None}
+            {
+                "attribute": "aps",
+                "value": aps,
+                "source": "toronto-traffic-signals" if aps else None,
+                "observedOn": "2026-10-31" if aps else None,
+            }
         )
     return rows
 
 
-def build(area_wgs84, ways: gpd.GeoDataFrame | None = None, nodes: gpd.GeoDataFrame | None = None) -> Graph:
+def build(
+    area_wgs84, ways: gpd.GeoDataFrame | None = None, nodes: gpd.GeoDataFrame | None = None
+) -> Graph:
     """Build the evidence graph for ``area_wgs84`` (a shapely geometry in EPSG:4326)."""
     if ways is None or nodes is None:
         w, n = osm.load(RAW / "osm" / "north_york.osm.pbf")
@@ -251,7 +291,7 @@ def build(area_wgs84, ways: gpd.GeoDataFrame | None = None, nodes: gpd.GeoDataFr
     g = nx.Graph()
     for idx, geom in zip(pieces.index, pieces.geometry, strict=True):
         coords = list(geom.coords)
-        for a, b in zip(coords, coords[1:], strict=False):
+        for a, b in itertools.pairwise(coords):
             ka, kb = node_key(*a), node_key(*b)
             if ka == kb:
                 continue

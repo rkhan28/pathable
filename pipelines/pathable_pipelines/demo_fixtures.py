@@ -37,7 +37,9 @@ def main() -> None:
     ways, nodes = ways.to_crs(METRIC), nodes.to_crs(METRIC)
     st = stations(nodes)
     replication = (RAW / "osm" / "ontario-latest.osm.pbf").stat().st_mtime
-    data_version = f"osm-{datetime.fromtimestamp(replication, UTC).date()}+toronto-2026-10-31+hrdem-2023"
+    data_version = (
+        f"osm-{datetime.fromtimestamp(replication, UTC).date()}+toronto-2026-10-31+hrdem-2023"
+    )
 
     for trip, (a, b) in TRIPS.items():
         doc = export(area_for(trip, ways, nodes), ways, nodes, data_version)
@@ -55,7 +57,13 @@ def main() -> None:
             for step in r["steps"]:
                 step["segmentIds"] = [s.replace(old, r["id"], 1) for s in step["segmentIds"]]
         out = {
-            "trip": {"id": trip, "origin": list(origin), "destination": list(destination), "originName": a, "destinationName": b},
+            "trip": {
+                "id": trip,
+                "origin": list(origin),
+                "destination": list(destination),
+                "originName": a,
+                "destinationName": b,
+            },
             "preferences": DEFAULT_PREFS,
             "response": {
                 "source": "development-fixture",

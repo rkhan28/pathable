@@ -69,8 +69,16 @@ def export(area_metric, ways, nodes, version: str) -> dict:
         if np.isfinite(s23) and np.isfinite(s15) and min(s23, s15) >= STEEP_HAZARD_PCT:
             mid = coords[len(coords) // 2]
             hazards.append(
-                {"id": f"steep-{row.edge_id}", "kind": "steep_change", "status": "verified", "source": "nrcan-hrdem-2023",
-                 "observedOn": "2023-05-11", "expiresAt": None, "edge_id": row.edge_id, "location": mid}
+                {
+                    "id": f"steep-{row.edge_id}",
+                    "kind": "steep_change",
+                    "status": "verified",
+                    "source": "nrcan-hrdem-2023",
+                    "observedOn": "2023-05-11",
+                    "expiresAt": None,
+                    "edge_id": row.edge_id,
+                    "location": mid,
+                }
             )
     # Coverage is where the graph exists, plus 30 m so edge endpoints on the boundary are inside it.
     coverage = gpd.GeoSeries([area_metric.buffer(30)], crs=METRIC).to_crs(4326).iloc[0]
@@ -80,9 +88,18 @@ def export(area_metric, ways, nodes, version: str) -> dict:
 def pieces(doc: dict) -> list[Piece]:
     by_edge: dict[str, list[dict]] = {}
     for h in doc["hazards"]:
-        by_edge.setdefault(h["edge_id"], []).append({k: v for k, v in h.items() if k != "edge_id"} | {"segmentId": None})
+        by_edge.setdefault(h["edge_id"], []).append(
+            {k: v for k, v in h.items() if k != "edge_id"} | {"segmentId": None}
+        )
     return [
-        Piece(e["id"], e["kind"], e["street"], tuple(tuple(c) for c in e["coords"]), tuple(e["evidence"]), tuple(by_edge.get(e["id"], ())))
+        Piece(
+            e["id"],
+            e["kind"],
+            e["street"],
+            tuple(tuple(c) for c in e["coords"]),
+            tuple(e["evidence"]),
+            tuple(by_edge.get(e["id"], ())),
+        )
         for e in doc["edges"]
     ]
 
@@ -96,14 +113,23 @@ def main() -> None:
     args = ap.parse_args()
     ways, nodes = osm.load(RAW / "osm" / "north_york.osm.pbf")
     ways, nodes = ways.to_crs(METRIC), nodes.to_crs(METRIC)
-    doc = export(area_for(args.area, ways, nodes), ways, nodes, args.version or f"{args.area}-2026-11-03")
+    doc = export(
+        area_for(args.area, ways, nodes), ways, nodes, args.version or f"{args.area}-2026-11-03"
+    )
     print(f"{args.area}: {len(doc['edges'])} edges, {len(doc['hazards'])} hazards")
     if args.out:
         args.out.write_text(json.dumps(doc, separators=(",", ":")) + "\n")
     if args.load:
         from pathable_api.db import load_graph
 
-        load_graph(args.load, doc["version"], doc["coverage_wkt"], doc["edges"], doc["hazards"], notes=f"area={args.area}")
+        load_graph(
+            args.load,
+            doc["version"],
+            doc["coverage_wkt"],
+            doc["edges"],
+            doc["hazards"],
+            notes=f"area={args.area}",
+        )
         print("loaded", doc["version"])
 
 

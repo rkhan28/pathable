@@ -148,7 +148,9 @@ def crossing_kerbs_raw(ways: gpd.GeoDataFrame, nodes: gpd.GeoDataFrame) -> pd.Se
             out[idx] = f"{row.kerb};{row.kerb}"
         else:
             kerbs = [kerb_by_node[n] for n in row.node_ids if n in kerb_by_node]
-            out[idx] = f"{kerbs[0]};{kerbs[-1]}" if len(kerbs) >= 2 else (kerbs[0] if kerbs else None)
+            out[idx] = (
+                f"{kerbs[0]};{kerbs[-1]}" if len(kerbs) >= 2 else (kerbs[0] if kerbs else None)
+            )
     return pd.Series(out, dtype="object")
 
 
