@@ -152,7 +152,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.post("/v1/photos", status_code=201)
     async def upload_photo(request: Request, photo: Annotated[UploadFile, File()]):
-        state.limiter.check("reports", client(request), settings.reports_per_minute)
+        # Its own budget: a report with a photo should not cost two reports.
+        state.limiter.check("photos", client(request), settings.reports_per_minute)
         if state.photos is None:
             raise ApiError("unavailable")
         data = await photo.read(MAX_BYTES + 1)

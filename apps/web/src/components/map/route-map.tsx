@@ -59,6 +59,8 @@ export type MapStatus = "loading" | "ready" | "fallback-style" | "no-webgl";
 const noopSubscribe = () => () => {};
 const DEFAULT_PADDING: Padding = { top: 48, bottom: 48, left: 48, right: 48 };
 const FLOW_PERIOD_MS = 7000;
+const FLOW_TICK_MS = 100;
+const DRAW_STEPS = 8;
 
 function distanceKm(a: [number, number], b: [number, number]) {
   const k = Math.PI / 180;
@@ -99,6 +101,7 @@ export function RouteMap({
   const mapRef = useRef<MlMap | null>(null);
   const colorsRef = useRef<MapColors | null>(null);
   const styleFailedRef = useRef(false);
+  const drawingRef = useRef(false);
   const [status, setStatus] = useState<MapStatus>("loading");
   const [styleVersion, setStyleVersion] = useState(0);
   const [hazardEls, setHazardEls] = useState<{ hazard: Hazard; el: HTMLElement }[]>([]);
@@ -190,16 +193,29 @@ export function RouteMap({
       setDrawProgress(map, 1);
       return;
     }
+    // Each filter change makes MapLibre re-process the route data, so reveal the
+    // line in a few steps rather than on every frame: it reads as a draw-on at a
+    // fraction of the cost.
     let frame = 0;
+    let lastStep = -1;
+    drawingRef.current = true;
     const start = performance.now();
     const total = duration.route * 1000;
     const tick = (now: number) => {
       const p = Math.min(1, (now - start) / total);
-      setDrawProgress(map, easeOutCubic(p));
+      const step = Math.ceil(easeOutCubic(p) * DRAW_STEPS);
+      if (step !== lastStep) {
+        setDrawProgress(map, step / DRAW_STEPS);
+        lastStep = step;
+      }
       if (p < 1) frame = requestAnimationFrame(tick);
+      else drawingRef.current = false;
     };
     frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(frame);
+      drawingRef.current = false;
+    };
   }, [routes, selectedRoute?.id, styleVersion, drawOn]);
 
   useEffect(() => {
@@ -214,8 +230,10 @@ export function RouteMap({
     if (!map || styleVersion === 0 || !flow || prefersReducedMotion()) return;
     let frame = 0;
     let last = 0;
+    // Updating a line gradient re-uploads it to the GPU, so the flow ticks at
+    // 10 fps and pauses while the route draws on, the camera moves, or the tab is hidden.
     const tick = (now: number) => {
-      if (now - last > 50 && document.visibilityState === "visible") {
+      if (now - last > FLOW_TICK_MS && document.visibilityState === "visible" && !drawingRef.current && !map.isMoving()) {
         setFlowPhase(map, (now % FLOW_PERIOD_MS) / FLOW_PERIOD_MS, colorsRef.current?.casing ?? "#ffffff");
         last = now;
       }

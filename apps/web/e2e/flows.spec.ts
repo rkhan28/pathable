@@ -43,7 +43,7 @@ test("photo analysis is honestly unavailable and an unsent report stays a draft"
   await page.getByLabel("Describe it").fill("Sign post in the middle of the sidewalk");
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: "Send report" }).click();
-  await expect(page.getByText(/Your report was not sent/)).toBeVisible();
+  await expect(page.locator(".pa-notice").getByText(/Your report was not sent/)).toBeVisible();
   await page.goto("/en-CA/settings");
   await expect(page.getByText("Draft, not sent")).toBeVisible();
 });

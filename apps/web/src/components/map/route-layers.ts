@@ -66,6 +66,11 @@ const lineLayout = { "line-cap": "round", "line-join": "round" } as const;
 const width = (base: number) => ["interpolate", ["linear"], ["zoom"], 11, base * 0.5, 15, base, 18, base * 1.6] as never;
 
 /** Install sources and layers. Safe to call again after a style swap. */
+/** False once the map is removed or between style swaps; animations must not touch it then. */
+function alive(map: MlMap): boolean {
+  return Boolean((map as unknown as { style?: unknown }).style) && Boolean(map.getLayer("pa-sel-casing"));
+}
+
 export function installRouteLayers(map: MlMap, c: MapColors): void {
   const empty: GeoJSON.FeatureCollection = { type: "FeatureCollection", features: [] };
   for (const id of Object.values(SOURCES)) {
@@ -104,6 +109,7 @@ export function installRouteLayers(map: MlMap, c: MapColors): void {
 }
 
 export function setRoutes(map: MlMap, routes: MapRoute[], selectedId: string | null): void {
+  if (!alive(map)) return;
   const selected = routes.find((r) => r.id === selectedId) ?? routes[0];
   const others = routes.filter((r) => r !== selected);
   (map.getSource(SOURCES.alternatives) as GeoJSONSource | undefined)?.setData(alternativeFeatures(others));
@@ -121,6 +127,7 @@ const SELECTED_LAYERS = [L.casing, L.verified, L.barrier, L.barrierStripe, L.unv
 
 /** Reveal the selected route up to fraction p (0–1) of its length. */
 export function setDrawProgress(map: MlMap, p: number): void {
+  if (!alive(map)) return;
   const filter = (state?: KnowledgeState) =>
     (state ? ["all", ["==", ["get", "state"], state], ["<=", ["get", "start"], p]] : ["<=", ["get", "start"], p]) as never;
   map.setFilter(L.casing, filter());
@@ -134,6 +141,7 @@ export function setDrawProgress(map: MlMap, p: number): void {
 
 /** Hovering or focusing a card isolates that route by dimming everything else. */
 export function setIsolation(map: MlMap, isolatedId: string | null, selectedId: string | null): void {
+  if (!alive(map)) return;
   const dimSelected = isolatedId !== null && isolatedId !== selectedId;
   for (const id of SELECTED_LAYERS) map.setPaintProperty(id, "line-opacity", dimSelected ? 0.25 : 1);
   map.setPaintProperty(L.alt, "line-opacity", isolatedId === null ? 0.9 : ["case", ["==", ["get", "routeId"], isolatedId], 1, 0.15] as never);
@@ -163,7 +171,7 @@ export function flowGradient(phase: number, light: string): unknown[] {
 }
 
 export function setFlowPhase(map: MlMap, phase: number, light: string): void {
-  if (map.getLayer(L.flow)) map.setPaintProperty(L.flow, "line-gradient", flowGradient(phase, light) as never);
+  if (alive(map) && map.getLayer(L.flow)) map.setPaintProperty(L.flow, "line-gradient", flowGradient(phase, light) as never);
 }
 
 export function routeBounds(routes: Pick<Route, "geometry">[]): [[number, number], [number, number]] | null {

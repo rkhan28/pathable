@@ -71,7 +71,7 @@ test("a report with a photo is sent, appears near the route, and can be withdraw
   await page.getByLabel("Describe it").fill("Sandwich board across the sidewalk (live e2e)");
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: "Send report" }).click();
-  await expect(page.getByText(/^Report sent/)).toBeVisible();
+  await expect(page.locator(".pa-notice").getByText(/^Report sent/)).toBeVisible();
 
   const box = `${lon - 0.002},${lat - 0.002},${lon + 0.002},${lat + 0.002}`;
   const mine = (await (await request.get(`${API}/v1/hazards?bbox=${box}`)).json()).hazards.filter((h: { source: string }) => h.source === "community-report");

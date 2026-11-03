@@ -112,6 +112,48 @@ practices only): `/navigate`, `/settings`, `/coverage`.
 - A deployed host.
 - A field test on a mid-range Android phone. That needs a device.
 
+## Web: interaction latency
+
+**Setup.** Measured on the production containers, with the CPU throttled 4× to
+approximate a mid-range Android phone (`scripts/interaction-latency.mjs`, plus
+Chrome traces of single interactions).
+
+**What was slow, and what changed.**
+- **The bottom sheet re-rendered the whole planner on every animation frame.**
+  It reported its height through React state. The height now lives in a tiny
+  external store that only the map subscribes to. The sheet also owns its snap
+  position.
+- **Every route switch re-rendered every route card.** The cards are now
+  memoized, with id-based callbacks.
+- **A new empty array was created on every render for hazards,** which tore
+  down and rebuilt the map's hazard markers each time.
+- **Map animations were expensive per frame:**
+  - The draw-on changed filters on six layers every frame. It now reveals the
+    route in 8 steps.
+  - The flow highlight rewrote a line gradient 20 times a second. It now ticks
+    10 times a second and pauses during the draw-on, camera moves and hidden
+    tabs.
+
+**Result for a route switch on the mobile planner** (Chrome trace, 1.5 s after
+the tap, 4× CPU throttle):
+
+| | Before | After |
+| --- | ---: | ---: |
+| Main-thread busy time | 660 ms | 435–451 ms |
+| Longest task | 133 ms | 59–70 ms |
+
+The input itself costs 30–50 ms: the click, React's update, and starting the map
+transition. The longest remaining tasks are map frames.
+
+**Measurement caveats, stated plainly:**
+- Headless Chromium draws WebGL on the CPU (SwiftShader). Map frames here are
+  much more expensive than on a phone's GPU.
+- In mobile emulation, the Event Timing API also reported presentation delays of
+  up to about 500 ms. These did not correspond to main-thread work: the same tap
+  traced with WebGL disabled has a longest task of 29 ms.
+- A real mid-range Android device test is still needed before claiming an INP
+  figure.
+
 **Other performance choices:**
 - The LCP element is the server-rendered `h1`, which never animates.
 - The hero ships precomputed, simplified geometry (one point every 35 m), not

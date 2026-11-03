@@ -25,21 +25,21 @@ function heights(viewport: number): Record<Snap, number> {
  */
 export function BottomSheet({
   children,
-  snap,
-  onSnapChange,
+  initialSnap = "half",
   onVisibleHeight,
   onSettled,
   label,
 }: {
   children: ReactNode;
-  snap: Snap;
-  onSnapChange: (s: Snap) => void;
+  initialSnap?: Snap;
   onVisibleHeight: (px: number) => void;
   /** Called once the sheet has finished moving to a snap point. */
   onSettled?: (s: Snap) => void;
   label: string;
 }) {
   const t = useTranslations("planner");
+  // The sheet owns its position: a snap re-renders only the sheet, not the page around it.
+  const [snap, setSnap] = useState<Snap>(initialSnap);
   const [viewport, setViewport] = useState(800);
   const h = heights(viewport);
   // y is the sheet's offset from fully open: 0 = full, larger = lower.
@@ -53,7 +53,8 @@ export function BottomSheet({
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  const settle = useCallback(
+  /** Animate the sheet to a snap point without changing which snap is chosen. */
+  const moveTo = useCallback(
     (target: Snap) => {
       const offset = h.full - h[target];
       if (prefersReducedMotion()) {
@@ -62,16 +63,24 @@ export function BottomSheet({
       } else {
         void animate(y, offset, { ...spring.sheet, velocity: drag.current?.velocity ?? 0 }).then(() => onSettled?.(target));
       }
-      onSnapChange(target);
     },
-    [h, y, onSnapChange, onSettled],
+    [h, y, onSettled],
   );
 
+  const settle = useCallback(
+    (target: Snap) => {
+      setSnap(target);
+      moveTo(target);
+    },
+    [moveTo],
+  );
+
+  // The viewport changed size (rotation, browser chrome): keep the same snap, at its new height.
   useEffect(() => {
-    settle(snap);
-    // Re-snap when the viewport changes or the parent changes snap.
+    moveTo(snap);
+    // Only a viewport change should re-run this; snap changes move the sheet themselves.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [snap, viewport]);
+  }, [viewport]);
 
   useMotionValueEvent(y, "change", (v) => onVisibleHeight(Math.max(0, h.full - v)));
 

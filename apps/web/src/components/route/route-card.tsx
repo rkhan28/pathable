@@ -3,6 +3,7 @@
 import { ChevronRight } from "lucide-react";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
+import { memo } from "react";
 import type { Route } from "@/lib/api/contracts";
 import { cn } from "@/lib/cn";
 import { useRouteFormat } from "@/lib/format";
@@ -15,7 +16,7 @@ import { WhyThisRoute } from "./why-this-route";
  * One alternative. The whole card is a label for a native radio input, so the
  * list is a real radio group: arrow keys change the route and the map follows.
  */
-export function RouteCard({
+export const RouteCard = memo(function RouteCard({
   route,
   total,
   name,
@@ -30,9 +31,9 @@ export function RouteCard({
   name: string;
   selected: boolean;
   fixture: boolean;
-  onSelect: () => void;
-  onIsolate: (on: boolean) => void;
-  onDetails: () => void;
+  onSelect: (id: string) => void;
+  onIsolate: (id: string | null) => void;
+  onDetails: (id: string) => void;
 }) {
   const t = useTranslations();
   const f = useRouteFormat();
@@ -43,8 +44,8 @@ export function RouteCard({
       layoutId={`route-card-${route.id}`}
       transition={spring.ui}
       className={cn("pa-route-card", selected && "is-selected")}
-      onMouseEnter={() => onIsolate(true)}
-      onMouseLeave={() => onIsolate(false)}
+      onMouseEnter={() => onIsolate(route.id)}
+      onMouseLeave={() => onIsolate(null)}
     >
       <div className="flex items-start gap-3">
         <input
@@ -52,9 +53,9 @@ export function RouteCard({
           type="radio"
           name={name}
           checked={selected}
-          onChange={onSelect}
-          onFocus={() => onIsolate(true)}
-          onBlur={() => onIsolate(false)}
+          onChange={() => onSelect(route.id)}
+          onFocus={() => onIsolate(route.id)}
+          onBlur={() => onIsolate(null)}
           className="pa-route-radio"
           aria-describedby={`${inputId}-meta`}
         />
@@ -90,7 +91,7 @@ export function RouteCard({
             {t("route.freshness", { oldest: f.date(route.oldestObservation), newest: f.date(route.newestObservation) })}
           </p>
           <WhyThisRoute reasons={route.reasons} rank={route.rank} total={total} />
-          <button type="button" className="pa-link-button mt-1 justify-between" onClick={onDetails}>
+          <button type="button" className="pa-link-button mt-1 justify-between" onClick={() => onDetails(route.id)}>
             {t("route.details")}
             <ChevronRight aria-hidden size={18} className="rtl:rotate-180" />
           </button>
@@ -98,4 +99,4 @@ export function RouteCard({
       )}
     </motion.li>
   );
-}
+});

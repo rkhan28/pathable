@@ -6,7 +6,7 @@ import { LayoutGroup } from "motion/react";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { toast } from "sonner";
 import { Wordmark } from "@/components/brand/wordmark";
 import { CoveragePatterns } from "@/components/route/coverage-bar";
@@ -24,16 +24,50 @@ import { announce } from "@/lib/announce";
 import { formatLonLat, parseLinkParam } from "@/lib/geo";
 import { usePreferences } from "@/stores/preferences";
 import { useTrip, type Place } from "@/stores/trip";
-import { BottomSheet, type Snap } from "./bottom-sheet";
+import { BottomSheet } from "./bottom-sheet";
 import { PlaceSearch } from "./place-search";
 import { useDemoTrips } from "./use-demo-trips";
 import { NearbyReports } from "./nearby-reports";
 import { WhereTheyDiffer } from "./where-they-differ";
-import type { Padding } from "@/components/map/route-map";
+import type { Padding, RouteMapProps } from "@/components/map/route-map";
 import { HazardMarker } from "@/components/map/hazard-marker";
 import type { Hazard } from "@/lib/api/contracts";
 
 const renderHazard = (h: Hazard) => <HazardMarker hazard={h} />;
+const NO_HAZARDS: Hazard[] = [];
+
+/**
+ * The sheet reports its height on every animation frame. Keeping it in React
+ * state re-rendered the whole planner each frame; this tiny store lets only
+ * the map, which needs it for padding, subscribe.
+ */
+const sheetHeight = (() => {
+  let value = 0;
+  const listeners = new Set<() => void>();
+  return {
+    get: () => value,
+    set: (px: number) => {
+      value = px;
+      listeners.forEach((l) => l());
+    },
+    subscribe: (l: () => void) => {
+      listeners.add(l);
+      return () => listeners.delete(l);
+    },
+  };
+})();
+
+function PlannerMap({ desktop, collapsed, ...props }: Omit<RouteMapProps, "padding"> & { desktop: boolean; collapsed: boolean }) {
+  const height = useSyncExternalStore(sheetHeight.subscribe, sheetHeight.get, () => 0);
+  const padding = useMemo<Padding>(
+    () =>
+      desktop
+        ? { top: 64, bottom: 64, left: collapsed ? 64 : 432, right: 96 }
+        : { top: 72, bottom: Math.max(height, 136) + 24, left: 32, right: 72 },
+    [desktop, collapsed, height],
+  );
+  return <RouteMap {...props} padding={padding} />;
+}
 
 const RouteMap = dynamic(() => import("@/components/map/route-map").then((m) => m.RouteMap), { ssr: false });
 
@@ -81,10 +115,8 @@ export function Planner() {
   const [picking, setPicking] = useState<null | "origin" | "destination">(null);
   const [focusPoint, setFocusPoint] = useState<{ position: LonLat; key: number } | null>(null);
   const [collapsed, setCollapsed] = useState(false);
-  const [snap, setSnap] = useState<Snap>("half");
   // Counts sheet settles so the map re-fits once the sheet stops moving.
   const [settles, setSettles] = useState(0);
-  const [sheetHeight, setSheetHeight] = useState(0);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const kind = serviceKind();
 
@@ -156,6 +188,14 @@ export function Planner() {
     if (view === "list") headingRef.current?.focus({ preventScroll: true });
   }, [view]);
 
+  const openDetails = useCallback(
+    (id: string) => {
+      select(id);
+      setView("details");
+    },
+    [select],
+  );
+
   const choose = useCallback(
     (which: "origin" | "destination", place: Place) => (which === "origin" ? setOrigin(place) : setDestination(place)),
     [setOrigin, setDestination],
@@ -174,9 +214,6 @@ export function Planner() {
     toast(t("planner.shared"));
   };
 
-  const padding: Padding = desktop
-    ? { top: 64, bottom: 64, left: collapsed ? 64 : 432, right: 96 }
-    : { top: 72, bottom: Math.max(sheetHeight, 136) + 24, left: 32, right: 72 };
 
   const errorMessage = (e: PathAbleError) =>
     e.code === "no_route" && kind === "development-fixture" ? t("errors.no_route_fixture") : t(`errors.${e.code}`);
@@ -331,12 +368,9 @@ export function Planner() {
                         name={radioName}
                         selected={r.id === selected?.id}
                         fixture={fixture}
-                        onSelect={() => select(r.id)}
-                        onIsolate={(on) => setIsolated(on ? r.id : null)}
-                        onDetails={() => {
-                          select(r.id);
-                          setView("details");
-                        }}
+                        onSelect={select}
+                        onIsolate={setIsolated}
+                        onDetails={openDetails}
                       />
                     ))}
                   </ul>
@@ -356,17 +390,18 @@ export function Planner() {
       <CoveragePatterns />
       <CommandPalette />
       <div id="map" className="pa-planner-map">
-        <RouteMap
+        <PlannerMap
+          desktop={desktop}
+          collapsed={collapsed}
           routes={routes}
           selectedId={selected?.id ?? null}
           isolatedId={isolated}
           origin={origin?.position}
           destination={destination?.position}
-          padding={padding}
           fitTrigger={desktop ? `d-${collapsed}` : `m-${settles}`}
           label={t("landing.heroMapLabel")}
           focusPoint={focusPoint}
-          hazards={selected?.hazards ?? []}
+          hazards={selected?.hazards ?? NO_HAZARDS}
           renderHazard={renderHazard}
           onPick={
             picking
@@ -403,7 +438,7 @@ export function Planner() {
           {!collapsed && panel}
         </aside>
       ) : (
-        <BottomSheet snap={snap} onSnapChange={setSnap} onVisibleHeight={setSheetHeight} onSettled={() => setSettles((n) => n + 1)} label={t("planner.title")}>
+        <BottomSheet initialSnap="half" onVisibleHeight={sheetHeight.set} onSettled={() => setSettles((n) => n + 1)} label={t("planner.title")}>
           {panel}
         </BottomSheet>
       )}

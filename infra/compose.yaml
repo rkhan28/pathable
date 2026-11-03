@@ -26,6 +26,8 @@ services:
       CORS_ORIGINS: http://localhost:3000
       S3_ENDPOINT: http://s3:8333
       S3_BUCKET: pathable-report-photos
+      # Local stack only: end-to-end loops send several reports a minute. Production keeps the default of 6.
+      REPORTS_PER_MINUTE: "60"
     ports: ["8000:8000"]
     depends_on: { db: { condition: service_healthy }, redis: { condition: service_started }, s3: { condition: service_started } }
   web:
