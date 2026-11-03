@@ -1,0 +1,11 @@
+{
+  "maxRunningSlopePct": 5,
+  "minWidthM": 1.2,
+  "avoidStairs": true,
+  "avoidMissingRamps": true,
+  "avoidDamagedSurfaces": true,
+  "avoidReportedObstacles": true,
+  "avoidNarrow": true,
+  "preferVerified": false,
+  "preferShorter": false
+}

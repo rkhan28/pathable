@@ -1,0 +1,2760 @@
+[
+ {
+  "name": "every segment, baseline",
+  "kind": "segments",
+  "preferences": {
+   "maxRunningSlopePct": 5,
+   "minWidthM": 1.2,
+   "avoidStairs": true,
+   "avoidMissingRamps": true,
+   "avoidDamagedSurfaces": true,
+   "avoidReportedObstacles": true,
+   "avoidNarrow": true,
+   "preferVerified": false,
+   "preferShorter": false
+  },
+  "input": {
+   "segments": [
+    {
+     "id": "s-good",
+     "lengthM": 100,
+     "kind": "sidewalk",
+     "evidence": [
+      {
+       "attribute": "presence",
+       "value": true,
+       "source": "toronto-sidewalk-inventory",
+       "observedOn": "2015-05-01"
+      },
+      {
+       "attribute": "surface",
+       "value": "concrete",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "width",
+       "value": 1.8,
+       "unit": "m",
+       "error": 0.12,
+       "source": "toronto-sidewalk-polygons",
+       "observedOn": "2023-04-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 2.1,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 2.3,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    },
+    {
+     "id": "s-nosurface",
+     "lengthM": 80,
+     "kind": "sidewalk",
+     "evidence": [
+      {
+       "attribute": "presence",
+       "value": true,
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "surface",
+       "value": null,
+       "source": null,
+       "observedOn": null
+      },
+      {
+       "attribute": "width",
+       "value": 1.8,
+       "unit": "m",
+       "error": 0.12,
+       "source": "toronto-sidewalk-polygons",
+       "observedOn": "2023-04-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 1.0,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 1.1,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    },
+    {
+     "id": "s-near",
+     "lengthM": 50,
+     "kind": "sidewalk",
+     "evidence": [
+      {
+       "attribute": "surface",
+       "value": "asphalt",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 5.1,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 4.95,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    },
+    {
+     "id": "s-steep",
+     "lengthM": 40,
+     "kind": "path",
+     "evidence": [
+      {
+       "attribute": "surface",
+       "value": "asphalt",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 7.4,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 7.2,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    },
+    {
+     "id": "s-disagree",
+     "lengthM": 40,
+     "kind": "path",
+     "evidence": [
+      {
+       "attribute": "surface",
+       "value": "asphalt",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 2.0,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 9.0,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    },
+    {
+     "id": "s-single",
+     "lengthM": 40,
+     "kind": "path",
+     "evidence": [
+      {
+       "attribute": "surface",
+       "value": "asphalt",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 2.0,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11"
+      }
+     ]
+    },
+    {
+     "id": "s-steps",
+     "lengthM": 12,
+     "kind": "steps",
+     "evidence": [
+      {
+       "attribute": "steps",
+       "value": true,
+       "source": "osm",
+       "observedOn": "2022-09-01"
+      },
+      {
+       "attribute": "surface",
+       "value": "concrete",
+       "source": "osm",
+       "observedOn": "2022-09-01"
+      }
+     ]
+    },
+    {
+     "id": "s-xgood",
+     "lengthM": 20,
+     "kind": "crossing",
+     "evidence": [
+      {
+       "attribute": "surface",
+       "value": "asphalt",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "kerbs",
+       "value": "lowered;flush",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 1.0,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 1.2,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      },
+      {
+       "attribute": "aps",
+       "value": true,
+       "source": "toronto-traffic-signals",
+       "observedOn": "2026-10-31"
+      }
+     ]
+    },
+    {
+     "id": "s-xunknown",
+     "lengthM": 20,
+     "kind": "crossing",
+     "evidence": [
+      {
+       "attribute": "surface",
+       "value": "asphalt",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "kerbs",
+       "value": null,
+       "source": null,
+       "observedOn": null
+      },
+      {
+       "attribute": "running_slope",
+       "value": 1.0,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 1.2,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    },
+    {
+     "id": "s-xraised",
+     "lengthM": 20,
+     "kind": "crossing",
+     "evidence": [
+      {
+       "attribute": "surface",
+       "value": "asphalt",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "kerbs",
+       "value": "lowered;raised",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 1.0,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 1.2,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    },
+    {
+     "id": "s-narrow",
+     "lengthM": 30,
+     "kind": "sidewalk",
+     "evidence": [
+      {
+       "attribute": "surface",
+       "value": "concrete",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "width",
+       "value": 0.85,
+       "unit": "m",
+       "error": 0.12,
+       "source": "toronto-sidewalk-polygons",
+       "observedOn": "2023-04-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 1.0,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 1.2,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    },
+    {
+     "id": "s-gravel",
+     "lengthM": 60,
+     "kind": "path",
+     "evidence": [
+      {
+       "attribute": "surface",
+       "value": "gravel",
+       "source": "osm",
+       "observedOn": "2021-03-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 1.0,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 1.2,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    }
+   ],
+   "hazards": []
+  },
+  "expected": {
+   "s-good": "verified",
+   "s-nosurface": "unknown",
+   "s-near": "unknown",
+   "s-steep": "barrier",
+   "s-disagree": "unknown",
+   "s-single": "unknown",
+   "s-steps": "barrier",
+   "s-xgood": "verified",
+   "s-xunknown": "unknown",
+   "s-xraised": "barrier",
+   "s-narrow": "barrier",
+   "s-gravel": "barrier"
+  }
+ },
+ {
+  "name": "every segment, cane",
+  "kind": "segments",
+  "preferences": {
+   "maxRunningSlopePct": 8.3,
+   "minWidthM": 0.9,
+   "avoidStairs": false,
+   "avoidMissingRamps": false,
+   "avoidDamagedSurfaces": true,
+   "avoidReportedObstacles": true,
+   "avoidNarrow": false,
+   "preferVerified": false,
+   "preferShorter": true
+  },
+  "input": {
+   "segments": [
+    {
+     "id": "s-good",
+     "lengthM": 100,
+     "kind": "sidewalk",
+     "evidence": [
+      {
+       "attribute": "presence",
+       "value": true,
+       "source": "toronto-sidewalk-inventory",
+       "observedOn": "2015-05-01"
+      },
+      {
+       "attribute": "surface",
+       "value": "concrete",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "width",
+       "value": 1.8,
+       "unit": "m",
+       "error": 0.12,
+       "source": "toronto-sidewalk-polygons",
+       "observedOn": "2023-04-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 2.1,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 2.3,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    },
+    {
+     "id": "s-nosurface",
+     "lengthM": 80,
+     "kind": "sidewalk",
+     "evidence": [
+      {
+       "attribute": "presence",
+       "value": true,
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "surface",
+       "value": null,
+       "source": null,
+       "observedOn": null
+      },
+      {
+       "attribute": "width",
+       "value": 1.8,
+       "unit": "m",
+       "error": 0.12,
+       "source": "toronto-sidewalk-polygons",
+       "observedOn": "2023-04-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 1.0,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 1.1,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    },
+    {
+     "id": "s-near",
+     "lengthM": 50,
+     "kind": "sidewalk",
+     "evidence": [
+      {
+       "attribute": "surface",
+       "value": "asphalt",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 5.1,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 4.95,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    },
+    {
+     "id": "s-steep",
+     "lengthM": 40,
+     "kind": "path",
+     "evidence": [
+      {
+       "attribute": "surface",
+       "value": "asphalt",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 7.4,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 7.2,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    },
+    {
+     "id": "s-disagree",
+     "lengthM": 40,
+     "kind": "path",
+     "evidence": [
+      {
+       "attribute": "surface",
+       "value": "asphalt",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 2.0,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 9.0,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    },
+    {
+     "id": "s-single",
+     "lengthM": 40,
+     "kind": "path",
+     "evidence": [
+      {
+       "attribute": "surface",
+       "value": "asphalt",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 2.0,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11"
+      }
+     ]
+    },
+    {
+     "id": "s-steps",
+     "lengthM": 12,
+     "kind": "steps",
+     "evidence": [
+      {
+       "attribute": "steps",
+       "value": true,
+       "source": "osm",
+       "observedOn": "2022-09-01"
+      },
+      {
+       "attribute": "surface",
+       "value": "concrete",
+       "source": "osm",
+       "observedOn": "2022-09-01"
+      }
+     ]
+    },
+    {
+     "id": "s-xgood",
+     "lengthM": 20,
+     "kind": "crossing",
+     "evidence": [
+      {
+       "attribute": "surface",
+       "value": "asphalt",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "kerbs",
+       "value": "lowered;flush",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 1.0,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 1.2,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      },
+      {
+       "attribute": "aps",
+       "value": true,
+       "source": "toronto-traffic-signals",
+       "observedOn": "2026-10-31"
+      }
+     ]
+    },
+    {
+     "id": "s-xunknown",
+     "lengthM": 20,
+     "kind": "crossing",
+     "evidence": [
+      {
+       "attribute": "surface",
+       "value": "asphalt",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "kerbs",
+       "value": null,
+       "source": null,
+       "observedOn": null
+      },
+      {
+       "attribute": "running_slope",
+       "value": 1.0,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 1.2,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    },
+    {
+     "id": "s-xraised",
+     "lengthM": 20,
+     "kind": "crossing",
+     "evidence": [
+      {
+       "attribute": "surface",
+       "value": "asphalt",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "kerbs",
+       "value": "lowered;raised",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 1.0,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 1.2,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    },
+    {
+     "id": "s-narrow",
+     "lengthM": 30,
+     "kind": "sidewalk",
+     "evidence": [
+      {
+       "attribute": "surface",
+       "value": "concrete",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "width",
+       "value": 0.85,
+       "unit": "m",
+       "error": 0.12,
+       "source": "toronto-sidewalk-polygons",
+       "observedOn": "2023-04-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 1.0,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 1.2,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    },
+    {
+     "id": "s-gravel",
+     "lengthM": 60,
+     "kind": "path",
+     "evidence": [
+      {
+       "attribute": "surface",
+       "value": "gravel",
+       "source": "osm",
+       "observedOn": "2021-03-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 1.0,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 1.2,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    }
+   ],
+   "hazards": []
+  },
+  "expected": {
+   "s-good": "verified",
+   "s-nosurface": "unknown",
+   "s-near": "verified",
+   "s-steep": "verified",
+   "s-disagree": "unknown",
+   "s-single": "unknown",
+   "s-steps": "verified",
+   "s-xgood": "verified",
+   "s-xunknown": "verified",
+   "s-xraised": "verified",
+   "s-narrow": "verified",
+   "s-gravel": "barrier"
+  }
+ },
+ {
+  "name": "reported hazard makes a segment unverified",
+  "kind": "segments",
+  "preferences": {
+   "maxRunningSlopePct": 5,
+   "minWidthM": 1.2,
+   "avoidStairs": true,
+   "avoidMissingRamps": true,
+   "avoidDamagedSurfaces": true,
+   "avoidReportedObstacles": true,
+   "avoidNarrow": true,
+   "preferVerified": false,
+   "preferShorter": false
+  },
+  "input": {
+   "segments": [
+    {
+     "id": "s-good",
+     "lengthM": 100,
+     "kind": "sidewalk",
+     "evidence": [
+      {
+       "attribute": "presence",
+       "value": true,
+       "source": "toronto-sidewalk-inventory",
+       "observedOn": "2015-05-01"
+      },
+      {
+       "attribute": "surface",
+       "value": "concrete",
+       "source": "osm",
+       "observedOn": "2024-06-01"
+      },
+      {
+       "attribute": "width",
+       "value": 1.8,
+       "unit": "m",
+       "error": 0.12,
+       "source": "toronto-sidewalk-polygons",
+       "observedOn": "2023-04-01"
+      },
+      {
+       "attribute": "running_slope",
+       "value": 2.1,
+       "unit": "pct",
+       "error": 0.17,
+       "source": "nrcan-hrdem-2023",
+       "observedOn": "2023-05-11",
+       "corroboration": {
+        "value": 2.3,
+        "source": "nrcan-hrdem-2015",
+        "observedOn": "2015-04-25"
+       }
+      }
+     ]
+    }
+   ],
+   "hazards": [
+    {
+     "id": "h-1",
+     "kind": "obstacle",
+     "status": "reported",
+     "location": [
+      -79.45,
+      43.77
+     ],
+     "source": "community-report",
+     "observedOn": "2026-10-30",
+     "expiresAt": "2026-11-13T00:00:00Z",
+     "segmentId": "s-good"
+    }
+   ]
+  },
+  "expected": {
+   "s-good": "unverified"
+  }
+ },
+ {
+  "name": "rank three alternatives, baseline",
+  "kind": "routes",
+  "preferences": {
+   "maxRunningSlopePct": 5,
+   "minWidthM": 1.2,
+   "avoidStairs": true,
+   "avoidMissingRamps": true,
+   "avoidDamagedSurfaces": true,
+   "avoidReportedObstacles": true,
+   "avoidNarrow": true,
+   "preferVerified": false,
+   "preferShorter": false
+  },
+  "input": {
+   "routes": [
+    {
+     "id": "A_short_with_steps",
+     "distanceM": 252,
+     "segments": [
+      {
+       "id": "A_short_with_steps-0-s-good",
+       "lengthM": 100,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "toronto-sidewalk-inventory",
+         "observedOn": "2015-05-01"
+        },
+        {
+         "attribute": "surface",
+         "value": "concrete",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 2.1,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 2.3,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "A_short_with_steps-1-s-steps",
+       "lengthM": 12,
+       "kind": "steps",
+       "evidence": [
+        {
+         "attribute": "steps",
+         "value": true,
+         "source": "osm",
+         "observedOn": "2022-09-01"
+        },
+        {
+         "attribute": "surface",
+         "value": "concrete",
+         "source": "osm",
+         "observedOn": "2022-09-01"
+        }
+       ]
+      },
+      {
+       "id": "A_short_with_steps-2-s-xgood",
+       "lengthM": 20,
+       "kind": "crossing",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "asphalt",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "kerbs",
+         "value": "lowered;flush",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.2,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        },
+        {
+         "attribute": "aps",
+         "value": true,
+         "source": "toronto-traffic-signals",
+         "observedOn": "2026-10-31"
+        }
+       ]
+      },
+      {
+       "id": "A_short_with_steps-3-s-nosurface",
+       "lengthM": 80,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "surface",
+         "value": null,
+         "source": null,
+         "observedOn": null
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.1,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      }
+     ],
+     "hazards": []
+    },
+    {
+     "id": "B_long_verified",
+     "distanceM": 420,
+     "segments": [
+      {
+       "id": "B_long_verified-0-s-good",
+       "lengthM": 100,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "toronto-sidewalk-inventory",
+         "observedOn": "2015-05-01"
+        },
+        {
+         "attribute": "surface",
+         "value": "concrete",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 2.1,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 2.3,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "B_long_verified-1-s-xgood",
+       "lengthM": 20,
+       "kind": "crossing",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "asphalt",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "kerbs",
+         "value": "lowered;flush",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.2,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        },
+        {
+         "attribute": "aps",
+         "value": true,
+         "source": "toronto-traffic-signals",
+         "observedOn": "2026-10-31"
+        }
+       ]
+      },
+      {
+       "id": "B_long_verified-2-s-good",
+       "lengthM": 100,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "toronto-sidewalk-inventory",
+         "observedOn": "2015-05-01"
+        },
+        {
+         "attribute": "surface",
+         "value": "concrete",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 2.1,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 2.3,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "B_long_verified-3-s-xgood",
+       "lengthM": 20,
+       "kind": "crossing",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "asphalt",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "kerbs",
+         "value": "lowered;flush",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.2,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        },
+        {
+         "attribute": "aps",
+         "value": true,
+         "source": "toronto-traffic-signals",
+         "observedOn": "2026-10-31"
+        }
+       ]
+      },
+      {
+       "id": "B_long_verified-4-s-good",
+       "lengthM": 100,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "toronto-sidewalk-inventory",
+         "observedOn": "2015-05-01"
+        },
+        {
+         "attribute": "surface",
+         "value": "concrete",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 2.1,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 2.3,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "B_long_verified-5-s-gravel",
+       "lengthM": 60,
+       "kind": "path",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "gravel",
+         "source": "osm",
+         "observedOn": "2021-03-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.2,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      }
+     ],
+     "hazards": []
+    },
+    {
+     "id": "C_mixed_unknowns",
+     "distanceM": 300,
+     "segments": [
+      {
+       "id": "C_mixed_unknowns-0-s-nosurface",
+       "lengthM": 80,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "surface",
+         "value": null,
+         "source": null,
+         "observedOn": null
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.1,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "C_mixed_unknowns-1-s-xunknown",
+       "lengthM": 20,
+       "kind": "crossing",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "asphalt",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "kerbs",
+         "value": null,
+         "source": null,
+         "observedOn": null
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.2,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "C_mixed_unknowns-2-s-near",
+       "lengthM": 50,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "asphalt",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 5.1,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 4.95,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "C_mixed_unknowns-3-s-good",
+       "lengthM": 100,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "toronto-sidewalk-inventory",
+         "observedOn": "2015-05-01"
+        },
+        {
+         "attribute": "surface",
+         "value": "concrete",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 2.1,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 2.3,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "C_mixed_unknowns-4-s-single",
+       "lengthM": 40,
+       "kind": "path",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "asphalt",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 2.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11"
+        }
+       ]
+      }
+     ],
+     "hazards": []
+    }
+   ]
+  },
+  "expected": [
+   {
+    "id": "C_mixed_unknowns",
+    "rank": 1,
+    "compatibility": "unknowns",
+    "score": 337.5,
+    "barrierCount": 0,
+    "lengthByState": {
+     "verified": 100,
+     "barrier": 0,
+     "unverified": 0,
+     "unknown": 190
+    },
+    "reasons": [
+     {
+      "code": "fewest_barriers",
+      "value": 0
+     },
+     {
+      "code": "avoids_steps"
+     },
+     {
+      "code": "unknown_kerbs",
+      "value": 1
+     }
+    ]
+   },
+   {
+    "id": "A_short_with_steps",
+    "rank": 2,
+    "compatibility": "incompatible",
+    "score": 292.0,
+    "barrierCount": 1,
+    "lengthByState": {
+     "verified": 120,
+     "barrier": 12,
+     "unverified": 0,
+     "unknown": 80
+    },
+    "reasons": [
+     {
+      "code": "shortest",
+      "value": 252.0
+     },
+     {
+      "code": "has_barriers",
+      "value": 1
+     }
+    ]
+   },
+   {
+    "id": "B_long_verified",
+    "rank": 3,
+    "compatibility": "incompatible",
+    "score": 700.0,
+    "barrierCount": 1,
+    "lengthByState": {
+     "verified": 340,
+     "barrier": 60,
+     "unverified": 0,
+     "unknown": 0
+    },
+    "reasons": [
+     {
+      "code": "most_verified",
+      "value": 81.0
+     },
+     {
+      "code": "avoids_steps"
+     },
+     {
+      "code": "has_barriers",
+      "value": 1
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "rank three alternatives, cane",
+  "kind": "routes",
+  "preferences": {
+   "maxRunningSlopePct": 8.3,
+   "minWidthM": 0.9,
+   "avoidStairs": false,
+   "avoidMissingRamps": false,
+   "avoidDamagedSurfaces": true,
+   "avoidReportedObstacles": true,
+   "avoidNarrow": false,
+   "preferVerified": false,
+   "preferShorter": true
+  },
+  "input": {
+   "routes": [
+    {
+     "id": "A_short_with_steps",
+     "distanceM": 252,
+     "segments": [
+      {
+       "id": "A_short_with_steps-0-s-good",
+       "lengthM": 100,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "toronto-sidewalk-inventory",
+         "observedOn": "2015-05-01"
+        },
+        {
+         "attribute": "surface",
+         "value": "concrete",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 2.1,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 2.3,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "A_short_with_steps-1-s-steps",
+       "lengthM": 12,
+       "kind": "steps",
+       "evidence": [
+        {
+         "attribute": "steps",
+         "value": true,
+         "source": "osm",
+         "observedOn": "2022-09-01"
+        },
+        {
+         "attribute": "surface",
+         "value": "concrete",
+         "source": "osm",
+         "observedOn": "2022-09-01"
+        }
+       ]
+      },
+      {
+       "id": "A_short_with_steps-2-s-xgood",
+       "lengthM": 20,
+       "kind": "crossing",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "asphalt",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "kerbs",
+         "value": "lowered;flush",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.2,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        },
+        {
+         "attribute": "aps",
+         "value": true,
+         "source": "toronto-traffic-signals",
+         "observedOn": "2026-10-31"
+        }
+       ]
+      },
+      {
+       "id": "A_short_with_steps-3-s-nosurface",
+       "lengthM": 80,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "surface",
+         "value": null,
+         "source": null,
+         "observedOn": null
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.1,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      }
+     ],
+     "hazards": []
+    },
+    {
+     "id": "B_long_verified",
+     "distanceM": 420,
+     "segments": [
+      {
+       "id": "B_long_verified-0-s-good",
+       "lengthM": 100,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "toronto-sidewalk-inventory",
+         "observedOn": "2015-05-01"
+        },
+        {
+         "attribute": "surface",
+         "value": "concrete",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 2.1,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 2.3,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "B_long_verified-1-s-xgood",
+       "lengthM": 20,
+       "kind": "crossing",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "asphalt",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "kerbs",
+         "value": "lowered;flush",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.2,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        },
+        {
+         "attribute": "aps",
+         "value": true,
+         "source": "toronto-traffic-signals",
+         "observedOn": "2026-10-31"
+        }
+       ]
+      },
+      {
+       "id": "B_long_verified-2-s-good",
+       "lengthM": 100,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "toronto-sidewalk-inventory",
+         "observedOn": "2015-05-01"
+        },
+        {
+         "attribute": "surface",
+         "value": "concrete",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 2.1,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 2.3,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "B_long_verified-3-s-xgood",
+       "lengthM": 20,
+       "kind": "crossing",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "asphalt",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "kerbs",
+         "value": "lowered;flush",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.2,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        },
+        {
+         "attribute": "aps",
+         "value": true,
+         "source": "toronto-traffic-signals",
+         "observedOn": "2026-10-31"
+        }
+       ]
+      },
+      {
+       "id": "B_long_verified-4-s-good",
+       "lengthM": 100,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "toronto-sidewalk-inventory",
+         "observedOn": "2015-05-01"
+        },
+        {
+         "attribute": "surface",
+         "value": "concrete",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 2.1,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 2.3,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "B_long_verified-5-s-gravel",
+       "lengthM": 60,
+       "kind": "path",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "gravel",
+         "source": "osm",
+         "observedOn": "2021-03-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.2,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      }
+     ],
+     "hazards": []
+    },
+    {
+     "id": "C_mixed_unknowns",
+     "distanceM": 300,
+     "segments": [
+      {
+       "id": "C_mixed_unknowns-0-s-nosurface",
+       "lengthM": 80,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "surface",
+         "value": null,
+         "source": null,
+         "observedOn": null
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.1,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "C_mixed_unknowns-1-s-xunknown",
+       "lengthM": 20,
+       "kind": "crossing",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "asphalt",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "kerbs",
+         "value": null,
+         "source": null,
+         "observedOn": null
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.2,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "C_mixed_unknowns-2-s-near",
+       "lengthM": 50,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "asphalt",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 5.1,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 4.95,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "C_mixed_unknowns-3-s-good",
+       "lengthM": 100,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "toronto-sidewalk-inventory",
+         "observedOn": "2015-05-01"
+        },
+        {
+         "attribute": "surface",
+         "value": "concrete",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 2.1,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 2.3,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "C_mixed_unknowns-4-s-single",
+       "lengthM": 40,
+       "kind": "path",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "asphalt",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 2.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11"
+        }
+       ]
+      }
+     ],
+     "hazards": []
+    }
+   ]
+  },
+  "expected": [
+   {
+    "id": "A_short_with_steps",
+    "rank": 1,
+    "compatibility": "unknowns",
+    "score": 222.0,
+    "barrierCount": 0,
+    "lengthByState": {
+     "verified": 132,
+     "barrier": 0,
+     "unverified": 0,
+     "unknown": 80
+    },
+    "reasons": [
+     {
+      "code": "shortest",
+      "value": 252.0
+     }
+    ]
+   },
+   {
+    "id": "C_mixed_unknowns",
+    "rank": 2,
+    "compatibility": "unknowns",
+    "score": 305.0,
+    "barrierCount": 0,
+    "lengthByState": {
+     "verified": 170,
+     "barrier": 0,
+     "unverified": 0,
+     "unknown": 120
+    },
+    "reasons": [
+     {
+      "code": "avoids_steps"
+     }
+    ]
+   },
+   {
+    "id": "B_long_verified",
+    "rank": 3,
+    "compatibility": "incompatible",
+    "score": 550.0,
+    "barrierCount": 1,
+    "lengthByState": {
+     "verified": 340,
+     "barrier": 60,
+     "unverified": 0,
+     "unknown": 0
+    },
+    "reasons": [
+     {
+      "code": "most_verified",
+      "value": 81.0
+     },
+     {
+      "code": "avoids_steps"
+     },
+     {
+      "code": "has_barriers",
+      "value": 1
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "rank three alternatives, prefer verified",
+  "kind": "routes",
+  "preferences": {
+   "maxRunningSlopePct": 5,
+   "minWidthM": 1.2,
+   "avoidStairs": true,
+   "avoidMissingRamps": true,
+   "avoidDamagedSurfaces": true,
+   "avoidReportedObstacles": true,
+   "avoidNarrow": true,
+   "preferVerified": true,
+   "preferShorter": false
+  },
+  "input": {
+   "routes": [
+    {
+     "id": "A_short_with_steps",
+     "distanceM": 252,
+     "segments": [
+      {
+       "id": "A_short_with_steps-0-s-good",
+       "lengthM": 100,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "toronto-sidewalk-inventory",
+         "observedOn": "2015-05-01"
+        },
+        {
+         "attribute": "surface",
+         "value": "concrete",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 2.1,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 2.3,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "A_short_with_steps-1-s-steps",
+       "lengthM": 12,
+       "kind": "steps",
+       "evidence": [
+        {
+         "attribute": "steps",
+         "value": true,
+         "source": "osm",
+         "observedOn": "2022-09-01"
+        },
+        {
+         "attribute": "surface",
+         "value": "concrete",
+         "source": "osm",
+         "observedOn": "2022-09-01"
+        }
+       ]
+      },
+      {
+       "id": "A_short_with_steps-2-s-xgood",
+       "lengthM": 20,
+       "kind": "crossing",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "asphalt",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "kerbs",
+         "value": "lowered;flush",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.2,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        },
+        {
+         "attribute": "aps",
+         "value": true,
+         "source": "toronto-traffic-signals",
+         "observedOn": "2026-10-31"
+        }
+       ]
+      },
+      {
+       "id": "A_short_with_steps-3-s-nosurface",
+       "lengthM": 80,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "surface",
+         "value": null,
+         "source": null,
+         "observedOn": null
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.1,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      }
+     ],
+     "hazards": []
+    },
+    {
+     "id": "B_long_verified",
+     "distanceM": 420,
+     "segments": [
+      {
+       "id": "B_long_verified-0-s-good",
+       "lengthM": 100,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "toronto-sidewalk-inventory",
+         "observedOn": "2015-05-01"
+        },
+        {
+         "attribute": "surface",
+         "value": "concrete",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 2.1,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 2.3,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "B_long_verified-1-s-xgood",
+       "lengthM": 20,
+       "kind": "crossing",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "asphalt",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "kerbs",
+         "value": "lowered;flush",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.2,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        },
+        {
+         "attribute": "aps",
+         "value": true,
+         "source": "toronto-traffic-signals",
+         "observedOn": "2026-10-31"
+        }
+       ]
+      },
+      {
+       "id": "B_long_verified-2-s-good",
+       "lengthM": 100,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "toronto-sidewalk-inventory",
+         "observedOn": "2015-05-01"
+        },
+        {
+         "attribute": "surface",
+         "value": "concrete",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 2.1,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 2.3,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "B_long_verified-3-s-xgood",
+       "lengthM": 20,
+       "kind": "crossing",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "asphalt",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "kerbs",
+         "value": "lowered;flush",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.2,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        },
+        {
+         "attribute": "aps",
+         "value": true,
+         "source": "toronto-traffic-signals",
+         "observedOn": "2026-10-31"
+        }
+       ]
+      },
+      {
+       "id": "B_long_verified-4-s-good",
+       "lengthM": 100,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "toronto-sidewalk-inventory",
+         "observedOn": "2015-05-01"
+        },
+        {
+         "attribute": "surface",
+         "value": "concrete",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 2.1,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 2.3,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "B_long_verified-5-s-gravel",
+       "lengthM": 60,
+       "kind": "path",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "gravel",
+         "source": "osm",
+         "observedOn": "2021-03-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.2,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      }
+     ],
+     "hazards": []
+    },
+    {
+     "id": "C_mixed_unknowns",
+     "distanceM": 300,
+     "segments": [
+      {
+       "id": "C_mixed_unknowns-0-s-nosurface",
+       "lengthM": 80,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "surface",
+         "value": null,
+         "source": null,
+         "observedOn": null
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.1,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "C_mixed_unknowns-1-s-xunknown",
+       "lengthM": 20,
+       "kind": "crossing",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "asphalt",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "kerbs",
+         "value": null,
+         "source": null,
+         "observedOn": null
+        },
+        {
+         "attribute": "running_slope",
+         "value": 1.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 1.2,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "C_mixed_unknowns-2-s-near",
+       "lengthM": 50,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "asphalt",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 5.1,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 4.95,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "C_mixed_unknowns-3-s-good",
+       "lengthM": 100,
+       "kind": "sidewalk",
+       "evidence": [
+        {
+         "attribute": "presence",
+         "value": true,
+         "source": "toronto-sidewalk-inventory",
+         "observedOn": "2015-05-01"
+        },
+        {
+         "attribute": "surface",
+         "value": "concrete",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "width",
+         "value": 1.8,
+         "unit": "m",
+         "error": 0.12,
+         "source": "toronto-sidewalk-polygons",
+         "observedOn": "2023-04-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 2.1,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11",
+         "corroboration": {
+          "value": 2.3,
+          "source": "nrcan-hrdem-2015",
+          "observedOn": "2015-04-25"
+         }
+        }
+       ]
+      },
+      {
+       "id": "C_mixed_unknowns-4-s-single",
+       "lengthM": 40,
+       "kind": "path",
+       "evidence": [
+        {
+         "attribute": "surface",
+         "value": "asphalt",
+         "source": "osm",
+         "observedOn": "2024-06-01"
+        },
+        {
+         "attribute": "running_slope",
+         "value": 2.0,
+         "unit": "pct",
+         "error": 0.17,
+         "source": "nrcan-hrdem-2023",
+         "observedOn": "2023-05-11"
+        }
+       ]
+      }
+     ],
+     "hazards": []
+    }
+   ]
+  },
+  "expected": [
+   {
+    "id": "C_mixed_unknowns",
+    "rank": 1,
+    "compatibility": "unknowns",
+    "score": 404.0,
+    "barrierCount": 0,
+    "lengthByState": {
+     "verified": 100,
+     "barrier": 0,
+     "unverified": 0,
+     "unknown": 190
+    },
+    "reasons": [
+     {
+      "code": "fewest_barriers",
+      "value": 0
+     },
+     {
+      "code": "avoids_steps"
+     },
+     {
+      "code": "unknown_kerbs",
+      "value": 1
+     }
+    ]
+   },
+   {
+    "id": "A_short_with_steps",
+    "rank": 2,
+    "compatibility": "incompatible",
+    "score": 320.0,
+    "barrierCount": 1,
+    "lengthByState": {
+     "verified": 120,
+     "barrier": 12,
+     "unverified": 0,
+     "unknown": 80
+    },
+    "reasons": [
+     {
+      "code": "shortest",
+      "value": 252.0
+     },
+     {
+      "code": "has_barriers",
+      "value": 1
+     }
+    ]
+   },
+   {
+    "id": "B_long_verified",
+    "rank": 3,
+    "compatibility": "incompatible",
+    "score": 700.0,
+    "barrierCount": 1,
+    "lengthByState": {
+     "verified": 340,
+     "barrier": 60,
+     "unverified": 0,
+     "unknown": 0
+    },
+    "reasons": [
+     {
+      "code": "most_verified",
+      "value": 81.0
+     },
+     {
+      "code": "avoids_steps"
+     },
+     {
+      "code": "has_barriers",
+      "value": 1
+     }
+    ]
+   }
+  ]
+ }
+]
