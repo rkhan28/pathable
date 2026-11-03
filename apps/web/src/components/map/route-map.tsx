@@ -42,6 +42,8 @@ export interface RouteMapProps {
   controls?: boolean;
   drawOn?: boolean;
   flow?: boolean;
+  /** Re-fit the camera to the selected route whenever this value changes. */
+  fitTrigger?: string | number;
   /** Changing `key` flies the camera to `position` ("show on map"). */
   focusPoint?: { position: LonLat; key: number } | null;
   /** When set, the next map click is reported here (choose on map). */
@@ -86,6 +88,7 @@ export function RouteMap({
   flow = true,
   onPick,
   focusPoint = null,
+  fitTrigger = 0,
   fallback,
   className,
   onStatus,
@@ -222,8 +225,32 @@ export function RouteMap({
     return () => cancelAnimationFrame(frame);
   }, [flow, styleVersion, selectedRoute?.id]);
 
-  // Camera follows the selected route and the padding (the sheet height on mobile).
-  const fitKey = `${selectedRoute?.id}|${padding.top}|${padding.bottom}|${padding.left}|${padding.right}`;
+  // The route stays framed above the sheet as it moves: each padding change
+  // re-frames instantly (no animation, so nothing restarts dozens of times a
+  // second during a drag). Padding is only ever passed to fitBounds; MapLibre
+  // adds setPadding() padding on top of it, which double-counted the sheet.
+  // A change during a camera animation waits for it to finish.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const apply = () => {
+      const { routes: rs, selectedId: sel, padding: pad } = latest.current;
+      const route = rs.find((r) => r.id === sel) ?? rs[0];
+      const b = route ? routeBounds([route]) : null;
+      if (b) map.fitBounds(b, { padding: pad, duration: 0 });
+    };
+    if (map.isMoving()) {
+      map.once("moveend", apply);
+      return () => {
+        map.off("moveend", apply);
+      };
+    }
+    apply();
+  }, [padding.top, padding.bottom, padding.left, padding.right]);
+
+  // The camera re-fits when the selected route changes or when `fitTrigger`
+  // changes (the sheet settling at a new snap point).
+  const fitKey = `${selectedRoute?.id}|${fitTrigger}`;
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !selectedRoute) return;
@@ -231,12 +258,12 @@ export function RouteMap({
     if (!b) return;
     const reduced = prefersReducedMotion();
     map.fitBounds(b, {
-      padding,
+      padding: latest.current.padding,
       duration: reduced ? 0 : cameraDuration(distanceKm(b[0], b[1])),
       easing: easeOutCubic,
       essential: false,
     });
-    // fitKey captures padding and selection.
+    // fitKey captures the selection and the trigger; padding is read at fit time.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fitKey, styleVersion === 0]);
 

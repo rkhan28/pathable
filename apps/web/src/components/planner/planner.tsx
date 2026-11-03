@@ -81,6 +81,8 @@ export function Planner() {
   const [focusPoint, setFocusPoint] = useState<{ position: LonLat; key: number } | null>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [snap, setSnap] = useState<Snap>("half");
+  // Counts sheet settles so the map re-fits once the sheet stops moving.
+  const [settles, setSettles] = useState(0);
   const [sheetHeight, setSheetHeight] = useState(0);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const kind = serviceKind();
@@ -345,6 +347,7 @@ export function Planner() {
           origin={origin?.position}
           destination={destination?.position}
           padding={padding}
+          fitTrigger={desktop ? `d-${collapsed}` : `m-${settles}`}
           label={t("landing.heroMapLabel")}
           focusPoint={focusPoint}
           hazards={selected?.hazards ?? []}
@@ -384,7 +387,7 @@ export function Planner() {
           {!collapsed && panel}
         </aside>
       ) : (
-        <BottomSheet snap={snap} onSnapChange={setSnap} onVisibleHeight={setSheetHeight} label={t("planner.title")}>
+        <BottomSheet snap={snap} onSnapChange={setSnap} onVisibleHeight={setSheetHeight} onSettled={() => setSettles((n) => n + 1)} label={t("planner.title")}>
           {panel}
         </BottomSheet>
       )}

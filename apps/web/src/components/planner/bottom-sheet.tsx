@@ -28,12 +28,15 @@ export function BottomSheet({
   snap,
   onSnapChange,
   onVisibleHeight,
+  onSettled,
   label,
 }: {
   children: ReactNode;
   snap: Snap;
   onSnapChange: (s: Snap) => void;
   onVisibleHeight: (px: number) => void;
+  /** Called once the sheet has finished moving to a snap point. */
+  onSettled?: (s: Snap) => void;
   label: string;
 }) {
   const t = useTranslations("planner");
@@ -53,11 +56,15 @@ export function BottomSheet({
   const settle = useCallback(
     (target: Snap) => {
       const offset = h.full - h[target];
-      if (prefersReducedMotion()) y.set(offset);
-      else animate(y, offset, { ...spring.sheet, velocity: drag.current?.velocity ?? 0 });
+      if (prefersReducedMotion()) {
+        y.set(offset);
+        onSettled?.(target);
+      } else {
+        void animate(y, offset, { ...spring.sheet, velocity: drag.current?.velocity ?? 0 }).then(() => onSettled?.(target));
+      }
       onSnapChange(target);
     },
-    [h, y, onSnapChange],
+    [h, y, onSnapChange, onSettled],
   );
 
   useEffect(() => {
