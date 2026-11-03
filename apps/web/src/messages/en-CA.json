@@ -445,5 +445,54 @@
     "notFoundTitle": "Page not found",
     "updated": "Last updated {date}",
     "draft": "Draft. This document has not been reviewed by a lawyer and is not in effect."
+  },
+  "coverage": {
+    "title": "Coverage and data status",
+    "lede": "PathAble covers North York, the former municipality in Toronto’s north. Everything below is measured by the pipeline in our repository and dated; nothing is estimated by hand.",
+    "area": "Pilot area: {area} km², measured on {date}.",
+    "statusTitle": "What we know, attribute by attribute",
+    "attribute": "Attribute",
+    "measure": "Coverage",
+    "status": "Status",
+    "statusUsed": "Used",
+    "statusPartial": "Used where present",
+    "statusEstimate": "Estimate, labelled",
+    "statusMissing": "Not available",
+    "rows": {
+      "presence": "Sidewalk presence",
+      "surface": "Surface",
+      "width": "Width",
+      "slope": "Running slope",
+      "crossSlope": "Cross slope",
+      "kerbs": "Curb ramps at crossings",
+      "aps": "Accessible pedestrian signals",
+      "tactile": "Tactile paving"
+    },
+    "presenceValue": "OpenStreetMap represents {pct}% of the City inventory’s {km} km of sidewalk sides",
+    "surfaceValue": "{pct}% of sidewalk length tagged",
+    "widthValue": "{pct}% of sidewalk length; median error {err} m against mapped widths",
+    "slopeValue": "{pct}% of corridor length where two lidar surveys agree",
+    "crossSlopeValue": "Not measurable from a 1 m terrain model",
+    "kerbsValue": "{pct}% of crossings have both ends mapped",
+    "apsValue": "{pct}% of {count} signals in North York",
+    "tactileValue": "{pct}% of mapped crossing points",
+    "mapTitle": "Sidewalk mapping by neighbourhood",
+    "mapAlt": "Map of North York neighbourhoods shaded by how much of the City’s sidewalk inventory OpenStreetMap represents. Most neighbourhoods are above 80%; Humber Summit is lowest at about 41%.",
+    "mapCaption": "Median across {count} neighbourhoods: {median}%. Lowest: {min}.",
+    "outsideTitle": "Outside North York",
+    "outsideBody": "Requests outside the pilot area return “outside coverage” and the planner says so. We do not show routes we cannot describe.",
+    "reportLink": "Full data report with methods"
+  },
+  "help": {
+    "title": "Help",
+    "lede": "Answers to common questions. Search, or browse below.",
+    "search": "Search help",
+    "results": "{count, plural, =0 {No answers match} one {# answer} other {# answers}}"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The link may be old. Try the planner or the help centre.",
+    "planner": "Open the planner",
+    "help": "Go to help"
   }
 }

@@ -24,3 +24,11 @@ describe("trust pages", () => {
     expect(PAGES["en-CA"].terms.draft).toBe(true);
   });
 });
+
+import { HELP } from "./help";
+
+describe("help centre", () => {
+  it("has the same entries in both languages", () => {
+    expect(HELP["fr-CA"]).toHaveLength(HELP["en-CA"].length);
+  });
+});

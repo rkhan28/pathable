@@ -299,3 +299,10 @@
   .pa-table th { text-align: start; font-weight: 700; color: var(--ink-muted); padding: 0.625rem 1rem 0.625rem 0; border-block-end: 1px solid var(--line); white-space: nowrap; }
   .pa-table td { padding: 0.75rem 1rem 0.75rem 0; border-block-end: 1px solid var(--line-subtle); vertical-align: top; }
 }
+
+@layer components {
+  .pa-empty-state { padding: 2.5rem; border-radius: var(--r-sheet); border: 1px solid var(--line-subtle); }
+  .pa-empty-state.domes { background-color: var(--surface); }
+  .pa-faq { display: grid; max-inline-size: var(--measure); }
+  .pa-faq > div { padding-block: 1.25rem; border-block-start: 1px solid var(--line-subtle); }
+}

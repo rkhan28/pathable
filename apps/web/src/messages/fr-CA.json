@@ -445,5 +445,54 @@
     "notFoundTitle": "Page introuvable",
     "updated": "Dernière mise à jour : {date}",
     "draft": "Ébauche. Ce document n’a pas été révisé par un juriste et n’est pas en vigueur."
+  },
+  "coverage": {
+    "title": "Couverture et état des données",
+    "lede": "PathAble couvre North York, l’ancienne municipalité du nord de Toronto. Tout ce qui suit est mesuré par le pipeline de notre dépôt et daté; rien n’est estimé à la main.",
+    "area": "Secteur pilote : {area} km², mesuré le {date}.",
+    "statusTitle": "Ce que nous savons, attribut par attribut",
+    "attribute": "Attribut",
+    "measure": "Couverture",
+    "status": "État",
+    "statusUsed": "Utilisé",
+    "statusPartial": "Utilisé là où il existe",
+    "statusEstimate": "Estimation, signalée",
+    "statusMissing": "Non disponible",
+    "rows": {
+      "presence": "Présence du trottoir",
+      "surface": "Revêtement",
+      "width": "Largeur",
+      "slope": "Pente longitudinale",
+      "crossSlope": "Dévers",
+      "kerbs": "Bateaux de trottoir aux traverses",
+      "aps": "Signaux sonores pour piétons",
+      "tactile": "Surfaces podotactiles"
+    },
+    "presenceValue": "OpenStreetMap représente {pct} % des {km} km de côtés de trottoir de l’inventaire municipal",
+    "surfaceValue": "{pct} % de la longueur des trottoirs étiquetée",
+    "widthValue": "{pct} % de la longueur des trottoirs; erreur médiane de {err} m par rapport aux largeurs cartographiées",
+    "slopeValue": "{pct} % de la longueur du corridor là où deux relevés lidar concordent",
+    "crossSlopeValue": "Impossible à mesurer avec un modèle de terrain de 1 m",
+    "kerbsValue": "{pct} % des traverses ont leurs deux extrémités cartographiées",
+    "apsValue": "{pct} % des {count} feux de North York",
+    "tactileValue": "{pct} % des points de traverse cartographiés",
+    "mapTitle": "Cartographie des trottoirs par quartier",
+    "mapAlt": "Carte des quartiers de North York ombrés selon la part de l’inventaire municipal des trottoirs que représente OpenStreetMap. La plupart dépassent 80 %; Humber Summit est le plus bas, à environ 41 %.",
+    "mapCaption": "Médiane sur {count} quartiers : {median} %. Le plus bas : {min}.",
+    "outsideTitle": "Hors de North York",
+    "outsideBody": "Les demandes hors du secteur pilote reçoivent la réponse « hors couverture », et le planificateur l’indique. Nous n’affichons pas d’itinéraires que nous ne pouvons pas décrire.",
+    "reportLink": "Rapport complet sur les données et méthodes"
+  },
+  "help": {
+    "title": "Aide",
+    "lede": "Réponses aux questions courantes. Faites une recherche ou parcourez la liste.",
+    "search": "Rechercher dans l’aide",
+    "results": "{count, plural, =0 {Aucune réponse ne correspond} one {# réponse} other {# réponses}}"
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "body": "Le lien est peut-être périmé. Essayez le planificateur ou le centre d’aide.",
+    "planner": "Ouvrir le planificateur",
+    "help": "Aller à l’aide"
   }
 }

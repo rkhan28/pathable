@@ -41,7 +41,7 @@ const IDENTICAL_ALLOWED: Record<string, string[]> = {
   "fr-CA": [
     "common.source", "common.minutes", "nav.menu", "nav.footer", "search.label", "route.distance",
     "hazards.kinds.obstacle", "settings.contrastNormal", "palette.groupActions", "meta.title",
-    "meta.titleTemplate", "sources.osm",
+    "meta.titleTemplate", "sources.osm", "landing.trust.licence",
   ],
 };
 
