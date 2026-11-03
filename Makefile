@@ -2,6 +2,9 @@
 COMPOSE := docker compose -f infra/compose.yaml
 DB_URL  := postgresql://pathable:pathable@localhost:5432/pathable
 AREA    ?= corridor
+# Testcontainers mounts the Docker socket into its helper container; this is the
+# path inside the VM for both Docker Desktop and Colima.
+export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE ?= /var/run/docker.sock
 
 .PHONY: up down data load fixtures contracts check check-web check-api check-pipelines e2e bench screenshots
 
@@ -20,8 +23,9 @@ data:          ## Download sources (Toronto Open Data, Geofabrik) and clip OSM t
 	curl -L -C - -o data/raw/osm/ontario-latest.osm.pbf https://download.geofabrik.de/north-america/canada/ontario-latest.osm.pbf
 	osmium extract -p data/raw/osm/north_york.geojson -s smart -O -o data/raw/osm/north_york.osm.pbf data/raw/osm/ontario-latest.osm.pbf
 
-load:          ## Build the evidence graph for $(AREA) and load it into PostGIS
+load:          ## Build the evidence graph for $(AREA) and load it, plus the TTC schedule, into PostGIS
 	cd pipelines && uv run python -m pathable_pipelines.export_graph --area $(AREA) --load $(DB_URL)
+	cd pipelines && uv run python -m pathable_pipelines.transit --load $(DB_URL)
 
 fixtures:      ## Recompute development fixtures and the reality check
 	cd pipelines && uv run python -m pathable_pipelines.reality_check && uv run python -m pathable_pipelines.demo_fixtures

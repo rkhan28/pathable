@@ -93,6 +93,93 @@
         }
       }
     },
+    "/v1/transit": {
+      "post": {
+        "operationId": "transit",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransitRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Up to three accessible walk-ride-walk options",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/hazards": {
       "get": {
         "operationId": "hazards",
@@ -1378,6 +1465,865 @@
         },
         "required": [
           "photoId"
+        ],
+        "additionalProperties": false
+      },
+      "TransitRequest": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "origin": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              }
+            ],
+            "items": false,
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "destination": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              }
+            ],
+            "items": false,
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "preferences": {
+            "type": "object",
+            "properties": {
+              "maxRunningSlopePct": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 15
+              },
+              "minWidthM": {
+                "type": "number",
+                "minimum": 0.6,
+                "maximum": 3
+              },
+              "avoidStairs": {
+                "type": "boolean"
+              },
+              "avoidMissingRamps": {
+                "type": "boolean"
+              },
+              "avoidDamagedSurfaces": {
+                "type": "boolean"
+              },
+              "avoidReportedObstacles": {
+                "type": "boolean"
+              },
+              "avoidNarrow": {
+                "type": "boolean"
+              },
+              "preferVerified": {
+                "type": "boolean"
+              },
+              "preferShorter": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "maxRunningSlopePct",
+              "minWidthM",
+              "avoidStairs",
+              "avoidMissingRamps",
+              "avoidDamagedSurfaces",
+              "avoidReportedObstacles",
+              "avoidNarrow",
+              "preferVerified",
+              "preferShorter"
+            ],
+            "additionalProperties": false
+          },
+          "departAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          }
+        },
+        "required": [
+          "origin",
+          "destination",
+          "preferences"
+        ],
+        "additionalProperties": false
+      },
+      "TransitResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": [
+              "live",
+              "development-fixture"
+            ]
+          },
+          "feedVersion": {
+            "type": "string"
+          },
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          },
+          "options": {
+            "maxItems": 3,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "legs": {
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "type": "string",
+                            "const": "walk"
+                          },
+                          "route": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "geometry": {
+                                "minItems": 2,
+                                "type": "array",
+                                "items": {
+                                  "type": "array",
+                                  "prefixItems": [
+                                    {
+                                      "type": "number",
+                                      "minimum": -180,
+                                      "maximum": 180
+                                    },
+                                    {
+                                      "type": "number",
+                                      "minimum": -90,
+                                      "maximum": 90
+                                    }
+                                  ],
+                                  "items": false,
+                                  "minItems": 2,
+                                  "maxItems": 2
+                                }
+                              },
+                              "distanceM": {
+                                "type": "number",
+                                "minimum": 0
+                              },
+                              "durationS": {
+                                "type": "number",
+                                "minimum": 0
+                              },
+                              "segments": {
+                                "minItems": 1,
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "from": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "to": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "lengthM": {
+                                      "type": "number",
+                                      "minimum": 0
+                                    },
+                                    "kind": {
+                                      "type": "string",
+                                      "enum": [
+                                        "sidewalk",
+                                        "crossing",
+                                        "path",
+                                        "steps",
+                                        "road_edge"
+                                      ]
+                                    },
+                                    "streetName": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ]
+                                    },
+                                    "state": {
+                                      "type": "string",
+                                      "enum": [
+                                        "verified",
+                                        "barrier",
+                                        "unverified",
+                                        "unknown"
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "attribute": {
+                                            "type": "string",
+                                            "enum": [
+                                              "presence",
+                                              "surface",
+                                              "width",
+                                              "running_slope",
+                                              "kerbs",
+                                              "steps",
+                                              "aps"
+                                            ]
+                                          },
+                                          "value": {
+                                            "type": [
+                                              "number",
+                                              "string",
+                                              "boolean",
+                                              "null"
+                                            ]
+                                          },
+                                          "unit": {
+                                            "type": "string",
+                                            "enum": [
+                                              "m",
+                                              "pct"
+                                            ]
+                                          },
+                                          "source": {
+                                            "anyOf": [
+                                              {
+                                                "type": "string",
+                                                "enum": [
+                                                  "osm",
+                                                  "toronto-sidewalk-inventory",
+                                                  "toronto-sidewalk-polygons",
+                                                  "toronto-traffic-signals",
+                                                  "nrcan-hrdem-2023",
+                                                  "nrcan-hrdem-2015",
+                                                  "community-report"
+                                                ]
+                                              },
+                                              {
+                                                "type": "null"
+                                              }
+                                            ]
+                                          },
+                                          "observedOn": {
+                                            "anyOf": [
+                                              {
+                                                "type": "string",
+                                                "format": "date",
+                                                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                              },
+                                              {
+                                                "type": "null"
+                                              }
+                                            ]
+                                          },
+                                          "error": {
+                                            "type": "number",
+                                            "minimum": 0
+                                          },
+                                          "corroboration": {
+                                            "type": "object",
+                                            "properties": {
+                                              "value": {
+                                                "type": "number"
+                                              },
+                                              "source": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "osm",
+                                                  "toronto-sidewalk-inventory",
+                                                  "toronto-sidewalk-polygons",
+                                                  "toronto-traffic-signals",
+                                                  "nrcan-hrdem-2023",
+                                                  "nrcan-hrdem-2015",
+                                                  "community-report"
+                                                ]
+                                              },
+                                              "observedOn": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                              }
+                                            },
+                                            "required": [
+                                              "value",
+                                              "source",
+                                              "observedOn"
+                                            ],
+                                            "additionalProperties": false
+                                          }
+                                        },
+                                        "required": [
+                                          "attribute",
+                                          "value",
+                                          "source",
+                                          "observedOn"
+                                        ],
+                                        "additionalProperties": false
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "from",
+                                    "to",
+                                    "lengthM",
+                                    "kind",
+                                    "streetName",
+                                    "state",
+                                    "evidence"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "hazards": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "kind": {
+                                      "type": "string",
+                                      "enum": [
+                                        "obstacle",
+                                        "surface_damage",
+                                        "construction",
+                                        "missing_ramp",
+                                        "blocked_ramp",
+                                        "snow",
+                                        "ice",
+                                        "steep_change"
+                                      ]
+                                    },
+                                    "status": {
+                                      "type": "string",
+                                      "enum": [
+                                        "verified",
+                                        "reported"
+                                      ]
+                                    },
+                                    "location": {
+                                      "type": "array",
+                                      "prefixItems": [
+                                        {
+                                          "type": "number",
+                                          "minimum": -180,
+                                          "maximum": 180
+                                        },
+                                        {
+                                          "type": "number",
+                                          "minimum": -90,
+                                          "maximum": 90
+                                        }
+                                      ],
+                                      "items": false,
+                                      "minItems": 2,
+                                      "maxItems": 2
+                                    },
+                                    "source": {
+                                      "type": "string",
+                                      "enum": [
+                                        "osm",
+                                        "toronto-sidewalk-inventory",
+                                        "toronto-sidewalk-polygons",
+                                        "toronto-traffic-signals",
+                                        "nrcan-hrdem-2023",
+                                        "nrcan-hrdem-2015",
+                                        "community-report"
+                                      ]
+                                    },
+                                    "observedOn": {
+                                      "type": "string",
+                                      "format": "date",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                    },
+                                    "expiresAt": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "format": "date-time",
+                                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "segmentId": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "kind",
+                                    "status",
+                                    "location",
+                                    "source",
+                                    "observedOn",
+                                    "expiresAt",
+                                    "segmentId"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "steps": {
+                                "minItems": 2,
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "maneuver": {
+                                      "type": "string",
+                                      "enum": [
+                                        "depart",
+                                        "continue",
+                                        "turn_left",
+                                        "turn_right",
+                                        "slight_left",
+                                        "slight_right",
+                                        "cross",
+                                        "arrive"
+                                      ]
+                                    },
+                                    "streetName": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ]
+                                    },
+                                    "distanceM": {
+                                      "type": "number",
+                                      "minimum": 0
+                                    },
+                                    "segmentIds": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "at": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "notes": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string",
+                                        "enum": [
+                                          "aps_present",
+                                          "aps_absent",
+                                          "kerbs_lowered",
+                                          "kerbs_unknown",
+                                          "kerb_raised",
+                                          "slope_steep",
+                                          "slope_unknown",
+                                          "surface_unknown",
+                                          "width_narrow",
+                                          "steps",
+                                          "hazard_reported"
+                                        ]
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "maneuver",
+                                    "streetName",
+                                    "distanceM",
+                                    "segmentIds",
+                                    "at",
+                                    "notes"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "lengthByState": {
+                                "type": "object",
+                                "propertyNames": {
+                                  "type": "string",
+                                  "enum": [
+                                    "verified",
+                                    "barrier",
+                                    "unverified",
+                                    "unknown"
+                                  ]
+                                },
+                                "additionalProperties": {
+                                  "type": "number",
+                                  "minimum": 0
+                                },
+                                "required": [
+                                  "verified",
+                                  "barrier",
+                                  "unverified",
+                                  "unknown"
+                                ]
+                              },
+                              "barrierCount": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "reportCount": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "oldestObservation": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "date",
+                                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "newestObservation": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "date",
+                                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "compatibility": {
+                                "type": "string",
+                                "enum": [
+                                  "compatible",
+                                  "unknowns",
+                                  "incompatible"
+                                ]
+                              },
+                              "rank": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "score": {
+                                "type": "number"
+                              },
+                              "reasons": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "code": {
+                                      "type": "string",
+                                      "enum": [
+                                        "fewest_barriers",
+                                        "most_verified",
+                                        "shortest",
+                                        "avoids_steps",
+                                        "has_barriers",
+                                        "steepest_section",
+                                        "unknown_kerbs",
+                                        "reported_hazards"
+                                      ]
+                                    },
+                                    "value": {
+                                      "type": "number"
+                                    }
+                                  },
+                                  "required": [
+                                    "code"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "geometry",
+                              "distanceM",
+                              "durationS",
+                              "segments",
+                              "hazards",
+                              "steps",
+                              "lengthByState",
+                              "barrierCount",
+                              "reportCount",
+                              "oldestObservation",
+                              "newestObservation",
+                              "compatibility",
+                              "rank",
+                              "score",
+                              "reasons"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "route"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "type": "string",
+                            "const": "ride"
+                          },
+                          "mode": {
+                            "type": "string",
+                            "enum": [
+                              "bus",
+                              "streetcar",
+                              "lrt",
+                              "subway",
+                              "rail"
+                            ]
+                          },
+                          "line": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "color": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "pattern": "^#[0-9A-Fa-f]{6}$"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "headsign": {
+                            "type": "string"
+                          },
+                          "from": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "location": {
+                                "type": "array",
+                                "prefixItems": [
+                                  {
+                                    "type": "number",
+                                    "minimum": -180,
+                                    "maximum": 180
+                                  },
+                                  {
+                                    "type": "number",
+                                    "minimum": -90,
+                                    "maximum": 90
+                                  }
+                                ],
+                                "items": false,
+                                "minItems": 2,
+                                "maxItems": 2
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "location"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "to": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "location": {
+                                "type": "array",
+                                "prefixItems": [
+                                  {
+                                    "type": "number",
+                                    "minimum": -180,
+                                    "maximum": 180
+                                  },
+                                  {
+                                    "type": "number",
+                                    "minimum": -90,
+                                    "maximum": 90
+                                  }
+                                ],
+                                "items": false,
+                                "minItems": 2,
+                                "maxItems": 2
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "location"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "departAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                          },
+                          "arriveAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                          },
+                          "stops": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "geometry": {
+                            "minItems": 2,
+                            "type": "array",
+                            "items": {
+                              "type": "array",
+                              "prefixItems": [
+                                {
+                                  "type": "number",
+                                  "minimum": -180,
+                                  "maximum": 180
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": -90,
+                                  "maximum": 90
+                                }
+                              ],
+                              "items": false,
+                              "minItems": 2,
+                              "maxItems": 2
+                            }
+                          },
+                          "stepFree": {
+                            "type": "string",
+                            "enum": [
+                              "yes",
+                              "unknown"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "mode",
+                          "line",
+                          "name",
+                          "color",
+                          "headsign",
+                          "from",
+                          "to",
+                          "departAt",
+                          "arriveAt",
+                          "stops",
+                          "geometry",
+                          "stepFree"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                },
+                "departAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                },
+                "arriveAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                },
+                "durationS": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "walkingM": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "barrierCount": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "stepFree": {
+                  "type": "string",
+                  "enum": [
+                    "yes",
+                    "unknown"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "legs",
+                "departAt",
+                "arriveAt",
+                "durationS",
+                "walkingM",
+                "barrierCount",
+                "stepFree"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "source",
+          "feedVersion",
+          "generatedAt",
+          "options"
         ],
         "additionalProperties": false
       },

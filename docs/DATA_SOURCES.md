@@ -16,6 +16,7 @@ every run. It records what it fetched, with a SHA-256 checksum, in
 | `traffic_signals` | Traffic Signals Tabular: Traffic Signal | City of Toronto, Transportation Services | OGL – Toronto | 2026-10-31 | signals, accessible pedestrian signals |
 | `pedestrian_crossovers` | Traffic Signals Tabular: Pedestrian Crossover | City of Toronto | OGL – Toronto | 2026-10-31 | crossovers |
 | `dtm_2023` | HRDEM lidar `TRCA-GTA_2023-1m` | NRCan / TRCA | [OGL – Canada 2.0](https://open.canada.ca/en/open-government-licence-canada) | acquired 2023-05-11 | running slope |
+| `ttc_gtfs` | Merged GTFS – TTC Routes and Schedules (feed S1000544, service 2026-11-01 to 2026-12-19) | Toronto Transit Commission | OGL – Toronto | 2026-10-30 | accessible bus, streetcar, LRT and subway options (stops, trips, wheelchair flags, vehicle paths) |
 | `dtm_2015` | HRDEM lidar `NRCAN-GTA2015-1m` | NRCan | OGL – Canada 2.0 | acquired 2015-04-25 | slope corroboration |
 
 ## Evaluated and not used

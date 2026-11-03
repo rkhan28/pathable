@@ -1,5 +1,7 @@
 """Structured errors with the contract's codes. Human text is rendered by the client."""
 
+import logging
+
 from fastapi import Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
@@ -14,6 +16,7 @@ STATUS = {
     "internal": 500,
 }
 RETRYABLE = {"rate_limited", "unavailable", "internal"}
+log = logging.getLogger("pathable.api")
 
 
 class ApiError(Exception):
@@ -39,5 +42,7 @@ def install(app) -> None:
         return JSONResponse(body("invalid_request", getattr(request.state, "request_id", None)), status_code=400)
 
     @app.exception_handler(Exception)
-    async def _internal(request: Request, _exc: Exception):
+    async def _internal(request: Request, exc: Exception):
+        # The client only sees the code and request id; the details stay in our logs.
+        log.error("unhandled error on %s %s", request.method, request.url.path, exc_info=exc)
         return JSONResponse(body("internal", getattr(request.state, "request_id", None)), status_code=500)

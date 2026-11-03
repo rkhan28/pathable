@@ -65,6 +65,12 @@ TORONTO_SOURCES: tuple[CkanSource, ...] = (
         "Pedestrian Crossover - 4326.gpkg",
         "Pedestrian crossovers (PXOs)",
     ),
+    CkanSource(
+        "ttc_gtfs",
+        "merged-gtfs-ttc-routes-and-schedules",
+        "Complete GTFS",
+        "TTC schedule with wheelchair flags, for accessible bus, streetcar, LRT and subway options",
+    ),
 )
 
 GEOFABRIK_ONTARIO = "https://download.geofabrik.de/north-america/canada/ontario-latest.osm.pbf"

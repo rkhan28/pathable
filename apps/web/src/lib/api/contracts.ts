@@ -195,6 +195,59 @@ export const RouteResponse = z.object({
 });
 export type RouteResponse = z.infer<typeof RouteResponse>;
 
+/** A stop on a transit leg. Names are the operator's published stop names. */
+const TransitStop = z.object({ name: z.string(), location: LonLat });
+
+export const TransitMode = z.enum(["bus", "streetcar", "lrt", "subway", "rail"]);
+export type TransitMode = z.infer<typeof TransitMode>;
+
+/** "yes" only when the schedule marks the trip and both stops accessible; never guessed. */
+export const StepFree = z.enum(["yes", "unknown"]);
+
+export const WalkLeg = z.object({ kind: z.literal("walk"), route: Route });
+export const RideLeg = z.object({
+  kind: z.literal("ride"),
+  mode: TransitMode,
+  line: z.string(),
+  name: z.string(),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/).nullable(),
+  headsign: z.string(),
+  from: TransitStop,
+  to: TransitStop,
+  departAt: IsoDateTime,
+  arriveAt: IsoDateTime,
+  stops: z.number().int().positive(),
+  geometry: z.array(LonLat).min(2),
+  stepFree: StepFree,
+});
+export const TransitLeg = z.discriminatedUnion("kind", [WalkLeg, RideLeg]);
+export type WalkLeg = z.infer<typeof WalkLeg>;
+export type RideLeg = z.infer<typeof RideLeg>;
+export type TransitLeg = z.infer<typeof TransitLeg>;
+
+export const TransitOption = z.object({
+  id: z.string(),
+  legs: z.array(TransitLeg).min(1),
+  departAt: IsoDateTime,
+  arriveAt: IsoDateTime,
+  durationS: z.number().int().nonnegative(),
+  walkingM: z.number().nonnegative(),
+  barrierCount: z.number().int().nonnegative(),
+  stepFree: StepFree,
+});
+export type TransitOption = z.infer<typeof TransitOption>;
+
+export const TransitRequest = RouteRequest.extend({ departAt: IsoDateTime.optional() });
+export type TransitRequest = z.infer<typeof TransitRequest>;
+
+export const TransitResponse = z.object({
+  source: ResponseSource,
+  feedVersion: z.string(),
+  generatedAt: IsoDateTime,
+  options: z.array(TransitOption).max(3),
+});
+export type TransitResponse = z.infer<typeof TransitResponse>;
+
 export const HazardsResponse = z.object({
   source: ResponseSource,
   generatedAt: IsoDateTime,

@@ -18,11 +18,12 @@ from starlette.concurrency import run_in_threadpool
 from . import errors
 from .db import Database
 from .errors import ApiError
-from .models import ReportCreate, RouteRequest
+from .models import ReportCreate, RouteRequest, TransitRequest
 from .photos import MAX_BYTES, InvalidPhoto, LocalStorage, S3Storage, clean_jpeg
 from .ratelimit import RateLimiter
 from .routing import EvidenceGraph
 from .settings import Settings
+from .transit import TransitPlanner
 
 log = logging.getLogger("pathable.api")
 NORTH_YORK_BBOX = (-79.5853, 43.6929, -79.2991, 43.8157)
@@ -34,6 +35,7 @@ class State:
     version: str | None = None
     limiter: RateLimiter
     photos: LocalStorage | S3Storage | None = None
+    transit: TransitPlanner | None = None
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -55,6 +57,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             started = time.perf_counter()
             state.graph = EvidenceGraph(state.db.pieces(latest["id"]))
             state.version = latest["id"]
+            state.transit = TransitPlanner(state.db, state.graph)
             log.info(
                 "loaded graph %s: %d edges in %.1fs",
                 latest["id"],
@@ -125,6 +128,30 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "dataVersion": state.version,
             "generatedAt": datetime.now(UTC).replace(microsecond=0).isoformat(),
             "routes": result,
+        }
+
+    @app.post("/v1/transit")
+    async def transit(body: TransitRequest, request: Request):
+        state.limiter.check("routes", client(request), settings.routes_per_minute)
+        if state.transit is None or state.version is None:
+            raise ApiError("unavailable")
+        feed = state.transit.feed()
+        when = body.departAt or datetime.now(UTC)
+        if feed is None or not (feed["valid_from"] <= when.date() <= feed["valid_to"]):
+            # No schedule loaded, or the loaded one does not cover this day: say so, never guess times.
+            raise ApiError("unavailable")
+        for lon, lat in (body.origin, body.destination):
+            w, s, e, n = NORTH_YORK_BBOX
+            if not (w <= lon <= e and s <= lat <= n) or not state.db.in_coverage(state.version, lon, lat):
+                raise ApiError("outside_coverage")
+        options = await run_in_threadpool(
+            state.transit.plan, tuple(body.origin), tuple(body.destination), body.preferences.model_dump(), when
+        )
+        return {
+            "source": "live",
+            "feedVersion": feed["id"],
+            "generatedAt": datetime.now(UTC).replace(microsecond=0).isoformat(),
+            "options": options,
         }
 
     @app.get("/v1/hazards")

@@ -323,3 +323,83 @@ def test_photo_upload_rejects_non_images_and_bad_ids(client):
         "observedOn": date.today().isoformat(),
     }
     assert client.post("/v1/reports", json=bad).status_code == 400
+
+
+# Transit runs on a real slice of the TTC schedule (contracts/fixtures/transit-york-u-finch-west.json):
+# Wednesday 4 November 2026, departures between 08:00 and 08:40 Toronto time.
+RUSH_HOUR = "2026-11-04T13:00:00Z"  # 08:00 in Toronto
+
+
+def transit(client, **extra):
+    return client.post("/v1/transit", json={**TRIP, "departAt": RUSH_HOUR, **extra})
+
+
+def test_transit_options_are_real_and_in_order(client):
+    res = transit(client)
+    assert res.status_code == 200, res.text
+    body = res.json()
+    valid("TransitResponse", body)
+    assert body["source"] == "live" and body["feedVersion"]
+    options = body["options"]
+    assert options, "York U to Finch West is one subway stop; there must be an option"
+    lines = {leg["line"] for o in options for leg in o["legs"] if leg["kind"] == "ride"}
+    assert "1" in lines
+    for o in options:
+        rides = [leg for leg in o["legs"] if leg["kind"] == "ride"]
+        assert len(rides) == 1  # single-vehicle trips only, for now
+        ride = rides[0]
+        # Nobody is told to catch a vehicle that has already left, and times run forwards.
+        assert RUSH_HOUR <= o["departAt"] <= ride["departAt"] < ride["arriveAt"] <= o["arriveAt"]
+        assert len(ride["geometry"]) >= 2 and ride["stops"] >= 1
+        assert o["stepFree"] == ride["stepFree"]
+        walked = sum(leg["route"]["distanceM"] for leg in o["legs"] if leg["kind"] == "walk")
+        assert o["walkingM"] == pytest.approx(walked, abs=0.2)
+
+
+def test_transit_ride_follows_the_vehicle_path(client):
+    subway = next(
+        leg
+        for o in transit(client).json()["options"]
+        for leg in o["legs"]
+        if leg["kind"] == "ride" and leg["line"] == "1"
+    )
+    assert subway["mode"] == "subway"
+    # The drawn ride starts at the boarding stop and ends at the alighting stop.
+    for end, stop in ((subway["geometry"][0], subway["from"]), (subway["geometry"][-1], subway["to"])):
+        assert abs(end[0] - stop["location"][0]) < 0.002 and abs(end[1] - stop["location"][1]) < 0.002
+
+
+def test_transit_never_offers_a_trip_marked_inaccessible(client, migrated):
+    with psycopg.connect(migrated, autocommit=True) as c:
+        c.execute(
+            "UPDATE transit_trips SET wheelchair_accessible = 2"
+            " WHERE route_id IN (SELECT route_id FROM transit_routes WHERE short_name = '1')"
+        )
+        try:
+            body = transit(client).json()
+        finally:
+            c.execute(
+                "UPDATE transit_trips SET wheelchair_accessible = 1"
+                " WHERE route_id IN (SELECT route_id FROM transit_routes WHERE short_name = '1')"
+            )
+    lines = {leg["line"] for o in body["options"] for leg in o["legs"] if leg["kind"] == "ride"}
+    assert "1" not in lines
+
+
+def test_transit_without_a_schedule_for_the_day_is_unavailable(client):
+    res = transit(client, departAt="2027-02-01T13:00:00Z")
+    assert res.status_code == 503
+    valid("ApiError", res.json())
+    assert res.json()["error"]["code"] == "unavailable"
+
+
+def test_transit_late_at_night_is_empty_not_invented(client):
+    res = transit(client, departAt="2026-11-05T04:00:00Z")  # 23:00 Toronto; the slice has no trips then
+    assert res.status_code == 200
+    assert res.json()["options"] == []
+
+
+def test_transit_outside_coverage(client):
+    res = transit(client, origin=[-79.3832, 43.6532])
+    assert res.status_code == 422
+    assert res.json()["error"]["code"] == "outside_coverage"

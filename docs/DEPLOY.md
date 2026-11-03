@@ -21,9 +21,13 @@ on them.
 | --- | ---: | ---: | ---: |
 | Demo corridor | 6,067 | 125 MB RSS (1 worker, after 5 routes) | 28 MB |
 | All of North York | 105,069 | about 596 MB RSS per worker (6 workers, under load) | 113 MB for the whole database with both versions loaded |
+| TTC schedule (North York + 1 km) | 4,610 stops, 1.5 M stop times | no extra worker memory (queried in PostGIS) | 229 MB |
 
-Storage is not the problem: the whole database fits a free Postgres plan. API
-memory is. A 512 MB free instance can serve the corridor with one or two
+Without transit, storage is not the problem: the graph fits a free Postgres
+plan. With the full seven-week TTC schedule the database is about 250 MB for the
+corridor, which still fits a 0.5 GB free plan but leaves little room; loading
+one or two weeks of service instead would cut it to a fraction. API memory is
+the harder limit. A 512 MB free instance can serve the corridor with one or two
 workers. It cannot hold all of North York in memory, so a free deployment serves the demo
 corridor and says so. The North York build needs a paid instance with about
 1 GB per worker, or the compact graph described in PERFORMANCE.md. With

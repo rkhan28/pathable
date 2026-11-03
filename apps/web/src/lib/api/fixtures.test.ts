@@ -3,7 +3,8 @@ import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { rankRoutes } from "../scoring";
-import { Preferences, RouteResponse } from "./contracts";
+import { Preferences, RouteResponse, TransitResponse } from "./contracts";
+import { shiftTimes } from "./fixture-service";
 
 const dir = fileURLToPath(new URL("../../../../../contracts/fixtures/routes/", import.meta.url));
 const files = readdirSync(dir).filter((f) => f.endsWith(".json"));
@@ -57,5 +58,27 @@ describe("fixture trip endpoints", () => {
     expect(doc.trip.origin[1]).toBeCloseTo(trip.origin[1], 4);
     expect(doc.trip.destination[0]).toBeCloseTo(trip.destination[0], 4);
     expect(doc.trip.destination[1]).toBeCloseTo(trip.destination[1], 4);
+  });
+});
+
+const transitDir = fileURLToPath(new URL("../../../../../contracts/fixtures/transit/", import.meta.url));
+
+describe.each(readdirSync(transitDir).filter((f) => f.endsWith(".json")))("transit fixture %s", (file) => {
+  const doc = JSON.parse(readFileSync(transitDir + file, "utf8"));
+
+  it("matches the API contract and is labelled", () => {
+    const parsed = TransitResponse.safeParse(doc.response);
+    expect(parsed.error?.issues ?? []).toEqual([]);
+    expect(doc.response.source).toBe("development-fixture");
+  });
+
+  it("keeps real gaps and durations when shifted to now", () => {
+    const now = new Date("2027-03-01T17:30:00Z");
+    const shifted = shiftTimes(TransitResponse.parse(doc.response), doc.requestedAt, now);
+    const delta = now.getTime() - Date.parse(doc.requestedAt);
+    shifted.options.forEach((o, i) => {
+      expect(Date.parse(o.departAt) - Date.parse(doc.response.options[i].departAt)).toBe(delta);
+      expect(Date.parse(o.arriveAt) - Date.parse(o.departAt)).toBe(o.durationS * 1000);
+    });
   });
 });

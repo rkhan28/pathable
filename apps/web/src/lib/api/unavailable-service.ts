@@ -5,6 +5,7 @@ import type { PathAbleService } from "./service";
 export const unavailableService: PathAbleService = {
   kind: "unavailable",
   routes: () => Promise.reject(new PathAbleError("unavailable", false)),
+  transit: () => Promise.reject(new PathAbleError("unavailable", false)),
   hazards: () => Promise.reject(new PathAbleError("unavailable", false)),
   uploadPhoto: () => Promise.reject(new PathAbleError("unavailable", false)),
   createReport: () => Promise.reject(new PathAbleError("unavailable", false)),

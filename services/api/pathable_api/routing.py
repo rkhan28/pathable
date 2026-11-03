@@ -162,6 +162,28 @@ class EvidenceGraph:
             for pid, p in self.pieces.items()
         }
 
+    def walk_tree(self, origin: LonLat, prefs: Mapping, cutoff_m: float) -> tuple[LonLat, dict, dict] | None:
+        """Cheapest walks (by evidence cost) from origin to every node within cutoff_m of walking.
+
+        One search serves every nearby transit stop at once. Returns
+        (snapped origin node, cost by node, path by node), or None when the
+        origin is not near the network.
+        """
+        src, d = self.nearest(origin)
+        if d > SNAP_RADIUS_M:
+            return None
+        multiplier = self._multipliers(tuple(sorted(prefs.items())))
+        cost, paths = nx.single_source_dijkstra(
+            self.g, src, cutoff=cutoff_m * 2, weight=lambda _a, _b, e: e["length"] * multiplier[e["piece"]]
+        )
+        lengths = {n: sum(self.g.edges[a, b]["length"] for a, b in itertools.pairwise(p)) for n, p in paths.items()}
+        reachable = {n: p for n, p in paths.items() if lengths[n] <= cutoff_m}
+        return src, {n: cost[n] for n in reachable}, reachable
+
+    def walk_route(self, path: list, route_id: str, prefs: Mapping) -> dict:
+        """A single walking route along a node path, with states, steps and freshness."""
+        return finalize([self._to_route(path, route_id)], prefs)[0]
+
     def _alternatives(self, src, dst, multiplier: Mapping[str, float]) -> list[list]:
         def lengths(path):
             out: dict[str, float] = {}

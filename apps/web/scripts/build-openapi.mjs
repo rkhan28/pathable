@@ -14,6 +14,8 @@ const schemas = {
   ReportCreate: c.ReportCreate,
   ReportReceipt: c.ReportReceipt,
   PhotoReceipt: c.PhotoReceipt,
+  TransitRequest: c.TransitRequest,
+  TransitResponse: c.TransitResponse,
   AnalysisResponse: c.AnalysisResponse,
   ApiError: c.ApiError,
   Preferences: c.Preferences,
@@ -30,6 +32,9 @@ const doc = {
   info: { title: "PathAble API", version: "1.0.0", description: "Generated from apps/web/src/lib/api/contracts.ts. Do not edit." },
   paths: {
     "/v1/routes": { post: { operationId: "routes", requestBody: { required: true, ...json("RouteRequest") }, responses: { 200: { description: "Ranked alternatives", ...json("RouteResponse") }, ...errors } } },
+    "/v1/transit": {
+      post: { operationId: "transit", requestBody: { required: true, ...json("TransitRequest") }, responses: { 200: { description: "Up to three accessible walk-ride-walk options", ...json("TransitResponse") }, ...errors } },
+    },
     "/v1/hazards": {
       get: {
         operationId: "hazards",

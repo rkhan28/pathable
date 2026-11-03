@@ -6,7 +6,9 @@ import {
   PhotoReceipt,
   ReportReceipt,
   RouteResponse,
+  TransitResponse,
   type ReportCreate,
+  type TransitRequest,
   type RouteRequest,
 } from "./contracts";
 import { PathAbleError } from "./errors";
@@ -56,6 +58,9 @@ export function createHttpService(baseUrl: string, fetchImpl: typeof fetch = fet
     kind: "live",
     async routes(request: RouteRequest, signal?: AbortSignal) {
       return parseResponse(await send("/v1/routes", { ...json(request), signal }), RouteResponse);
+    },
+    async transit(request: TransitRequest, signal?: AbortSignal) {
+      return parseResponse(await send("/v1/transit", { ...json(request), signal }), TransitResponse);
     },
     async hazards(bbox, signal) {
       return parseResponse(await send(`/v1/hazards?bbox=${bbox.join(",")}`, { signal }), HazardsResponse);

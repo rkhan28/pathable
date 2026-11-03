@@ -1,6 +1,6 @@
 """Request models. Responses are plain dicts validated against contracts/openapi.json in tests."""
 
-from datetime import date
+from datetime import date, datetime
 from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -36,6 +36,10 @@ class RouteRequest(BaseModel):
     origin: LonLat
     destination: LonLat
     preferences: Preferences
+
+
+class TransitRequest(RouteRequest):
+    departAt: datetime | None = None
 
 
 class ReportCreate(BaseModel):
