@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,
+  output: "standalone",
   reactStrictMode: true,
   turbopack: {
     rules: {

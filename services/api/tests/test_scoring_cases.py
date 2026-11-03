@@ -11,9 +11,7 @@ import pytest
 
 from pathable_api.scoring import rank_routes, segment_state
 
-CASES = json.loads(
-    (Path(__file__).resolve().parents[3] / "contracts/fixtures/scoring-cases.json").read_text()
-)
+CASES = json.loads((Path(__file__).resolve().parents[3] / "contracts/fixtures/scoring-cases.json").read_text())
 
 
 @pytest.mark.parametrize("case", CASES, ids=[c["name"] for c in CASES])

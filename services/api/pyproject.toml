@@ -4,13 +4,24 @@ version = "0.1.0"
 description = "PathAble routing, hazards and reports API"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+  "alembic>=1.14",
   "fastapi>=0.115",
+  "networkx>=3.3",
+  "psycopg[binary,pool]>=3.2",
   "pydantic>=2.9",
+  "redis>=5.2",
+  "sqlalchemy>=2.0",
   "uvicorn[standard]>=0.32",
 ]
 
 [dependency-groups]
-dev = ["pytest>=8.3", "ruff>=0.7", "httpx>=0.27"]
+dev = [
+    "pytest>=8.3",
+    "ruff>=0.7",
+    "httpx>=0.27",
+    "testcontainers[postgres]>=4.9",
+    "jsonschema>=4.23",
+]
 
 [build-system]
 requires = ["hatchling"]
@@ -20,7 +31,7 @@ build-backend = "hatchling.build"
 packages = ["pathable_api"]
 
 [tool.ruff]
-line-length = 100
+line-length = 120
 target-version = "py312"
 
 [tool.ruff.lint]

@@ -1,0 +1,38 @@
+# `make up` starts everything. The graph is loaded separately (`make load`)
+# because it needs the downloaded source data (`make data`).
+name: pathable
+services:
+  db:
+    image: ${POSTGIS_IMAGE:-imresamu/postgis:16-3.5}
+    environment: { POSTGRES_USER: pathable, POSTGRES_PASSWORD: pathable, POSTGRES_DB: pathable }
+    ports: ["5432:5432"]
+    volumes: [db:/var/lib/postgresql/data]
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U pathable"], interval: 3s, retries: 20 }
+  redis:
+    image: redis:7.4-alpine
+    ports: ["6379:6379"]
+  # S3-compatible photo storage. MinIO no longer publishes public images, so
+  # SeaweedFS (Apache-2.0) stands in locally; see docs/decisions/0003.
+  s3:
+    image: chrislusf/seaweedfs:latest
+    command: server -s3 -dir=/data
+    ports: ["8333:8333"]
+    volumes: [s3:/data]
+  api:
+    build: { context: ../services/api }
+    environment:
+      DATABASE_URL: postgresql://pathable:pathable@db:5432/pathable
+      REDIS_URL: redis://redis:6379/0
+      CORS_ORIGINS: http://localhost:3000
+    ports: ["8000:8000"]
+    depends_on: { db: { condition: service_healthy }, redis: { condition: service_started } }
+  web:
+    build:
+      context: ..
+      dockerfile: apps/web/Dockerfile
+      args: { NEXT_PUBLIC_PATHABLE_API_URL: "http://localhost:8000", NEXT_PUBLIC_DEV_FIXTURES: "false" }
+    ports: ["3000:3000"]
+    depends_on: [api]
+volumes:
+  db: {}
+  s3: {}
