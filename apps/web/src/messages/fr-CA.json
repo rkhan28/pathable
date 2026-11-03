@@ -164,7 +164,9 @@
       "refreshed": "Mis à jour",
       "licence": "Licence",
       "corridorLabel": "Corridor de démonstration selon la longueur praticable, pente maximale de 5 % et largeur minimale de 1,5 m"
-    }
+    },
+    "profileSaved": "Enregistré sur cet appareil. Modifiable à tout moment dans le planificateur.",
+    "guideCaption": "Illustration du guidage sur un itinéraire calculé par le planificateur, de l’Université York à Finch West."
   },
   "search": {
     "label": "Destination",
@@ -213,7 +215,12 @@
     "offline": "Vous êtes hors ligne. Les itinéraires déjà chargés restent affichés.",
     "pickOnMap": "Touchez la carte pour définir {which}. Appuyez sur Échap pour annuler.",
     "updated": "{count, plural, one {# itinéraire mis à jour} other {# itinéraires mis à jour}} selon vos préférences",
-    "waking": "Le service d’itinéraires se réveille après une période d’inactivité. Cela peut prendre jusqu’à une minute."
+    "waking": "Le service d’itinéraires se réveille après une période d’inactivité. Cela peut prendre jusqu’à une minute.",
+    "chooseProfile": "Votre façon de vous déplacer",
+    "customProfile": "Personnalisé",
+    "locate": "Afficher ma position et la suivre",
+    "locationDenied": "La localisation est désactivée pour ce site. Activez-la dans votre navigateur pour vous voir sur la carte.",
+    "locationUnavailable": "Votre position n’est pas disponible pour le moment."
   },
   "route": {
     "label": "Itinéraire {label}",
@@ -289,7 +296,8 @@
       "surface_unknown": "Revêtement : aucune donnée",
       "width_narrow": "Passage étroit",
       "steps": "Marches",
-      "hazard_reported": "Danger signalé"
+      "hazard_reported": "Danger signalé",
+      "aps_unknown": "Feu : signal accessible non répertorié"
     }
   },
   "guidance": {
@@ -341,7 +349,7 @@
     "title": "Configurer vos préférences",
     "progress": "Étape {current} sur {total}",
     "skipAll": "Passer la configuration",
-    "profileTitle": "Avec quoi vous déplacez-vous habituellement?",
+    "profileTitle": "Comment vous déplacez-vous?",
     "profileHint": "Ce choix ne fait que proposer un point de départ. Vous pouvez modifier chaque réglage.",
     "profiles": {
       "manual_wheelchair": "Fauteuil roulant manuel",
@@ -351,7 +359,8 @@
       "cane": "Canne",
       "reduced_mobility": "Mobilité réduite",
       "stroller": "Poussette",
-      "custom": "Autre chose, ou je règle tout moi-même"
+      "custom": "Autre chose, ou je règle tout moi-même",
+      "blind_low_vision": "Personne aveugle ou malvoyante"
     },
     "limitsTitle": "Vos limites",
     "avoidTitle": "Ce qu’il faut éviter",
@@ -374,7 +383,8 @@
     "avoidReportedObstacles": "Éviter les obstacles signalés",
     "avoidNarrow": "Éviter les passages étroits",
     "preferVerified": "Privilégier les itinéraires vérifiés, même plus longs",
-    "preferShorter": "Privilégier les itinéraires plus courts"
+    "preferShorter": "Privilégier les itinéraires plus courts",
+    "avoidSignalsWithoutAps": "Éviter les feux sans signal piétonnier accessible (son et vibration)"
   },
   "report": {
     "title": "Signaler un obstacle",

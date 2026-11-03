@@ -2,149 +2,716 @@
   "description": "Inputs for the shared scoring cases. scripts/build-scoring-cases runs the Python rules to produce scoring-cases.json; the TypeScript and Python test suites both assert against it. Expected values are reviewed by hand in docs/ROUTE_RANKING.md.",
   "preferences": {
     "baseline": {
-      "maxRunningSlopePct": 5, "minWidthM": 1.2, "avoidStairs": true, "avoidMissingRamps": true,
-      "avoidDamagedSurfaces": true, "avoidReportedObstacles": true, "avoidNarrow": true,
-      "preferVerified": false, "preferShorter": false
+      "maxRunningSlopePct": 5,
+      "minWidthM": 1.2,
+      "avoidStairs": true,
+      "avoidMissingRamps": true,
+      "avoidDamagedSurfaces": true,
+      "avoidReportedObstacles": true,
+      "avoidNarrow": true,
+      "preferVerified": false,
+      "preferShorter": false,
+      "avoidSignalsWithoutAps": false
     },
     "cane": {
-      "maxRunningSlopePct": 8.3, "minWidthM": 0.9, "avoidStairs": false, "avoidMissingRamps": false,
-      "avoidDamagedSurfaces": true, "avoidReportedObstacles": true, "avoidNarrow": false,
-      "preferVerified": false, "preferShorter": true
+      "maxRunningSlopePct": 8.3,
+      "minWidthM": 0.9,
+      "avoidStairs": false,
+      "avoidMissingRamps": false,
+      "avoidDamagedSurfaces": true,
+      "avoidReportedObstacles": true,
+      "avoidNarrow": false,
+      "preferVerified": false,
+      "preferShorter": true,
+      "avoidSignalsWithoutAps": false
     },
     "prefer_verified": {
-      "maxRunningSlopePct": 5, "minWidthM": 1.2, "avoidStairs": true, "avoidMissingRamps": true,
-      "avoidDamagedSurfaces": true, "avoidReportedObstacles": true, "avoidNarrow": true,
-      "preferVerified": true, "preferShorter": false
+      "maxRunningSlopePct": 5,
+      "minWidthM": 1.2,
+      "avoidStairs": true,
+      "avoidMissingRamps": true,
+      "avoidDamagedSurfaces": true,
+      "avoidReportedObstacles": true,
+      "avoidNarrow": true,
+      "preferVerified": true,
+      "preferShorter": false,
+      "avoidSignalsWithoutAps": false
+    },
+    "blind_low_vision": {
+      "maxRunningSlopePct": 8.3,
+      "minWidthM": 0.9,
+      "avoidStairs": false,
+      "avoidMissingRamps": true,
+      "avoidDamagedSurfaces": true,
+      "avoidReportedObstacles": true,
+      "avoidNarrow": false,
+      "preferVerified": false,
+      "preferShorter": false,
+      "avoidSignalsWithoutAps": true
     }
   },
   "segments": {
     "all_known_good": {
-      "id": "s-good", "lengthM": 100, "kind": "sidewalk",
+      "id": "s-good",
+      "lengthM": 100,
+      "kind": "sidewalk",
       "evidence": [
-        { "attribute": "presence", "value": true, "source": "toronto-sidewalk-inventory", "observedOn": "2015-05-01" },
-        { "attribute": "surface", "value": "concrete", "source": "osm", "observedOn": "2024-06-01" },
-        { "attribute": "width", "value": 1.8, "unit": "m", "error": 0.12, "source": "toronto-sidewalk-polygons", "observedOn": "2023-04-01" },
-        { "attribute": "running_slope", "value": 2.1, "unit": "pct", "error": 0.17, "source": "nrcan-hrdem-2023", "observedOn": "2023-05-11",
-          "corroboration": { "value": 2.3, "source": "nrcan-hrdem-2015", "observedOn": "2015-04-25" } }
+        {
+          "attribute": "presence",
+          "value": true,
+          "source": "toronto-sidewalk-inventory",
+          "observedOn": "2015-05-01"
+        },
+        {
+          "attribute": "surface",
+          "value": "concrete",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "width",
+          "value": 1.8,
+          "unit": "m",
+          "error": 0.12,
+          "source": "toronto-sidewalk-polygons",
+          "observedOn": "2023-04-01"
+        },
+        {
+          "attribute": "running_slope",
+          "value": 2.1,
+          "unit": "pct",
+          "error": 0.17,
+          "source": "nrcan-hrdem-2023",
+          "observedOn": "2023-05-11",
+          "corroboration": {
+            "value": 2.3,
+            "source": "nrcan-hrdem-2015",
+            "observedOn": "2015-04-25"
+          }
+        }
       ]
     },
     "surface_missing": {
-      "id": "s-nosurface", "lengthM": 80, "kind": "sidewalk",
+      "id": "s-nosurface",
+      "lengthM": 80,
+      "kind": "sidewalk",
       "evidence": [
-        { "attribute": "presence", "value": true, "source": "osm", "observedOn": "2024-06-01" },
-        { "attribute": "surface", "value": null, "source": null, "observedOn": null },
-        { "attribute": "width", "value": 1.8, "unit": "m", "error": 0.12, "source": "toronto-sidewalk-polygons", "observedOn": "2023-04-01" },
-        { "attribute": "running_slope", "value": 1.0, "unit": "pct", "error": 0.17, "source": "nrcan-hrdem-2023", "observedOn": "2023-05-11",
-          "corroboration": { "value": 1.1, "source": "nrcan-hrdem-2015", "observedOn": "2015-04-25" } }
+        {
+          "attribute": "presence",
+          "value": true,
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "surface",
+          "value": null,
+          "source": null,
+          "observedOn": null
+        },
+        {
+          "attribute": "width",
+          "value": 1.8,
+          "unit": "m",
+          "error": 0.12,
+          "source": "toronto-sidewalk-polygons",
+          "observedOn": "2023-04-01"
+        },
+        {
+          "attribute": "running_slope",
+          "value": 1.0,
+          "unit": "pct",
+          "error": 0.17,
+          "source": "nrcan-hrdem-2023",
+          "observedOn": "2023-05-11",
+          "corroboration": {
+            "value": 1.1,
+            "source": "nrcan-hrdem-2015",
+            "observedOn": "2015-04-25"
+          }
+        }
       ]
     },
     "slope_near_threshold": {
-      "id": "s-near", "lengthM": 50, "kind": "sidewalk",
+      "id": "s-near",
+      "lengthM": 50,
+      "kind": "sidewalk",
       "evidence": [
-        { "attribute": "surface", "value": "asphalt", "source": "osm", "observedOn": "2024-06-01" },
-        { "attribute": "running_slope", "value": 5.1, "unit": "pct", "error": 0.17, "source": "nrcan-hrdem-2023", "observedOn": "2023-05-11",
-          "corroboration": { "value": 4.95, "source": "nrcan-hrdem-2015", "observedOn": "2015-04-25" } }
+        {
+          "attribute": "surface",
+          "value": "asphalt",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "running_slope",
+          "value": 5.1,
+          "unit": "pct",
+          "error": 0.17,
+          "source": "nrcan-hrdem-2023",
+          "observedOn": "2023-05-11",
+          "corroboration": {
+            "value": 4.95,
+            "source": "nrcan-hrdem-2015",
+            "observedOn": "2015-04-25"
+          }
+        }
       ]
     },
     "slope_steep_agreed": {
-      "id": "s-steep", "lengthM": 40, "kind": "path",
+      "id": "s-steep",
+      "lengthM": 40,
+      "kind": "path",
       "evidence": [
-        { "attribute": "surface", "value": "asphalt", "source": "osm", "observedOn": "2024-06-01" },
-        { "attribute": "running_slope", "value": 7.4, "unit": "pct", "error": 0.17, "source": "nrcan-hrdem-2023", "observedOn": "2023-05-11",
-          "corroboration": { "value": 7.2, "source": "nrcan-hrdem-2015", "observedOn": "2015-04-25" } }
+        {
+          "attribute": "surface",
+          "value": "asphalt",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "running_slope",
+          "value": 7.4,
+          "unit": "pct",
+          "error": 0.17,
+          "source": "nrcan-hrdem-2023",
+          "observedOn": "2023-05-11",
+          "corroboration": {
+            "value": 7.2,
+            "source": "nrcan-hrdem-2015",
+            "observedOn": "2015-04-25"
+          }
+        }
       ]
     },
     "slope_surveys_disagree": {
-      "id": "s-disagree", "lengthM": 40, "kind": "path",
+      "id": "s-disagree",
+      "lengthM": 40,
+      "kind": "path",
       "evidence": [
-        { "attribute": "surface", "value": "asphalt", "source": "osm", "observedOn": "2024-06-01" },
-        { "attribute": "running_slope", "value": 2.0, "unit": "pct", "error": 0.17, "source": "nrcan-hrdem-2023", "observedOn": "2023-05-11",
-          "corroboration": { "value": 9.0, "source": "nrcan-hrdem-2015", "observedOn": "2015-04-25" } }
+        {
+          "attribute": "surface",
+          "value": "asphalt",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "running_slope",
+          "value": 2.0,
+          "unit": "pct",
+          "error": 0.17,
+          "source": "nrcan-hrdem-2023",
+          "observedOn": "2023-05-11",
+          "corroboration": {
+            "value": 9.0,
+            "source": "nrcan-hrdem-2015",
+            "observedOn": "2015-04-25"
+          }
+        }
       ]
     },
     "slope_single_survey": {
-      "id": "s-single", "lengthM": 40, "kind": "path",
+      "id": "s-single",
+      "lengthM": 40,
+      "kind": "path",
       "evidence": [
-        { "attribute": "surface", "value": "asphalt", "source": "osm", "observedOn": "2024-06-01" },
-        { "attribute": "running_slope", "value": 2.0, "unit": "pct", "error": 0.17, "source": "nrcan-hrdem-2023", "observedOn": "2023-05-11" }
+        {
+          "attribute": "surface",
+          "value": "asphalt",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "running_slope",
+          "value": 2.0,
+          "unit": "pct",
+          "error": 0.17,
+          "source": "nrcan-hrdem-2023",
+          "observedOn": "2023-05-11"
+        }
       ]
     },
     "steps": {
-      "id": "s-steps", "lengthM": 12, "kind": "steps",
+      "id": "s-steps",
+      "lengthM": 12,
+      "kind": "steps",
       "evidence": [
-        { "attribute": "steps", "value": true, "source": "osm", "observedOn": "2022-09-01" },
-        { "attribute": "surface", "value": "concrete", "source": "osm", "observedOn": "2022-09-01" }
+        {
+          "attribute": "steps",
+          "value": true,
+          "source": "osm",
+          "observedOn": "2022-09-01"
+        },
+        {
+          "attribute": "surface",
+          "value": "concrete",
+          "source": "osm",
+          "observedOn": "2022-09-01"
+        }
       ]
     },
     "crossing_kerbs_good": {
-      "id": "s-xgood", "lengthM": 20, "kind": "crossing",
+      "id": "s-xgood",
+      "lengthM": 20,
+      "kind": "crossing",
       "evidence": [
-        { "attribute": "surface", "value": "asphalt", "source": "osm", "observedOn": "2024-06-01" },
-        { "attribute": "kerbs", "value": "lowered;flush", "source": "osm", "observedOn": "2024-06-01" },
-        { "attribute": "running_slope", "value": 1.0, "unit": "pct", "error": 0.17, "source": "nrcan-hrdem-2023", "observedOn": "2023-05-11",
-          "corroboration": { "value": 1.2, "source": "nrcan-hrdem-2015", "observedOn": "2015-04-25" } },
-        { "attribute": "aps", "value": true, "source": "toronto-traffic-signals", "observedOn": "2026-10-31" }
+        {
+          "attribute": "surface",
+          "value": "asphalt",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "kerbs",
+          "value": "lowered;flush",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "running_slope",
+          "value": 1.0,
+          "unit": "pct",
+          "error": 0.17,
+          "source": "nrcan-hrdem-2023",
+          "observedOn": "2023-05-11",
+          "corroboration": {
+            "value": 1.2,
+            "source": "nrcan-hrdem-2015",
+            "observedOn": "2015-04-25"
+          }
+        },
+        {
+          "attribute": "aps",
+          "value": true,
+          "source": "toronto-traffic-signals",
+          "observedOn": "2026-10-31"
+        }
       ]
     },
     "crossing_kerbs_unknown": {
-      "id": "s-xunknown", "lengthM": 20, "kind": "crossing",
+      "id": "s-xunknown",
+      "lengthM": 20,
+      "kind": "crossing",
       "evidence": [
-        { "attribute": "surface", "value": "asphalt", "source": "osm", "observedOn": "2024-06-01" },
-        { "attribute": "kerbs", "value": null, "source": null, "observedOn": null },
-        { "attribute": "running_slope", "value": 1.0, "unit": "pct", "error": 0.17, "source": "nrcan-hrdem-2023", "observedOn": "2023-05-11",
-          "corroboration": { "value": 1.2, "source": "nrcan-hrdem-2015", "observedOn": "2015-04-25" } }
+        {
+          "attribute": "surface",
+          "value": "asphalt",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "kerbs",
+          "value": null,
+          "source": null,
+          "observedOn": null
+        },
+        {
+          "attribute": "running_slope",
+          "value": 1.0,
+          "unit": "pct",
+          "error": 0.17,
+          "source": "nrcan-hrdem-2023",
+          "observedOn": "2023-05-11",
+          "corroboration": {
+            "value": 1.2,
+            "source": "nrcan-hrdem-2015",
+            "observedOn": "2015-04-25"
+          }
+        }
       ]
     },
     "crossing_kerb_raised": {
-      "id": "s-xraised", "lengthM": 20, "kind": "crossing",
+      "id": "s-xraised",
+      "lengthM": 20,
+      "kind": "crossing",
       "evidence": [
-        { "attribute": "surface", "value": "asphalt", "source": "osm", "observedOn": "2024-06-01" },
-        { "attribute": "kerbs", "value": "lowered;raised", "source": "osm", "observedOn": "2024-06-01" },
-        { "attribute": "running_slope", "value": 1.0, "unit": "pct", "error": 0.17, "source": "nrcan-hrdem-2023", "observedOn": "2023-05-11",
-          "corroboration": { "value": 1.2, "source": "nrcan-hrdem-2015", "observedOn": "2015-04-25" } }
+        {
+          "attribute": "surface",
+          "value": "asphalt",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "kerbs",
+          "value": "lowered;raised",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "running_slope",
+          "value": 1.0,
+          "unit": "pct",
+          "error": 0.17,
+          "source": "nrcan-hrdem-2023",
+          "observedOn": "2023-05-11",
+          "corroboration": {
+            "value": 1.2,
+            "source": "nrcan-hrdem-2015",
+            "observedOn": "2015-04-25"
+          }
+        }
       ]
     },
     "narrow": {
-      "id": "s-narrow", "lengthM": 30, "kind": "sidewalk",
+      "id": "s-narrow",
+      "lengthM": 30,
+      "kind": "sidewalk",
       "evidence": [
-        { "attribute": "surface", "value": "concrete", "source": "osm", "observedOn": "2024-06-01" },
-        { "attribute": "width", "value": 0.85, "unit": "m", "error": 0.12, "source": "toronto-sidewalk-polygons", "observedOn": "2023-04-01" },
-        { "attribute": "running_slope", "value": 1.0, "unit": "pct", "error": 0.17, "source": "nrcan-hrdem-2023", "observedOn": "2023-05-11",
-          "corroboration": { "value": 1.2, "source": "nrcan-hrdem-2015", "observedOn": "2015-04-25" } }
+        {
+          "attribute": "surface",
+          "value": "concrete",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "width",
+          "value": 0.85,
+          "unit": "m",
+          "error": 0.12,
+          "source": "toronto-sidewalk-polygons",
+          "observedOn": "2023-04-01"
+        },
+        {
+          "attribute": "running_slope",
+          "value": 1.0,
+          "unit": "pct",
+          "error": 0.17,
+          "source": "nrcan-hrdem-2023",
+          "observedOn": "2023-05-11",
+          "corroboration": {
+            "value": 1.2,
+            "source": "nrcan-hrdem-2015",
+            "observedOn": "2015-04-25"
+          }
+        }
       ]
     },
     "gravel": {
-      "id": "s-gravel", "lengthM": 60, "kind": "path",
+      "id": "s-gravel",
+      "lengthM": 60,
+      "kind": "path",
       "evidence": [
-        { "attribute": "surface", "value": "gravel", "source": "osm", "observedOn": "2021-03-01" },
-        { "attribute": "running_slope", "value": 1.0, "unit": "pct", "error": 0.17, "source": "nrcan-hrdem-2023", "observedOn": "2023-05-11",
-          "corroboration": { "value": 1.2, "source": "nrcan-hrdem-2015", "observedOn": "2015-04-25" } }
+        {
+          "attribute": "surface",
+          "value": "gravel",
+          "source": "osm",
+          "observedOn": "2021-03-01"
+        },
+        {
+          "attribute": "running_slope",
+          "value": 1.0,
+          "unit": "pct",
+          "error": 0.17,
+          "source": "nrcan-hrdem-2023",
+          "observedOn": "2023-05-11",
+          "corroboration": {
+            "value": 1.2,
+            "source": "nrcan-hrdem-2015",
+            "observedOn": "2015-04-25"
+          }
+        }
+      ]
+    },
+    "signal_with_aps": {
+      "id": "s-aps",
+      "lengthM": 20,
+      "kind": "crossing",
+      "evidence": [
+        {
+          "attribute": "surface",
+          "value": "asphalt",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "kerbs",
+          "value": "lowered;flush",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "running_slope",
+          "value": 1.0,
+          "unit": "pct",
+          "error": 0.17,
+          "source": "nrcan-hrdem-2023",
+          "observedOn": "2023-05-11",
+          "corroboration": {
+            "value": 1.2,
+            "source": "nrcan-hrdem-2015",
+            "observedOn": "2015-04-25"
+          }
+        },
+        {
+          "attribute": "aps",
+          "value": true,
+          "source": "toronto-traffic-signals",
+          "observedOn": "2026-10-31"
+        }
+      ]
+    },
+    "signal_without_aps": {
+      "id": "s-noaps",
+      "lengthM": 20,
+      "kind": "crossing",
+      "evidence": [
+        {
+          "attribute": "surface",
+          "value": "asphalt",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "kerbs",
+          "value": "lowered;flush",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "running_slope",
+          "value": 1.0,
+          "unit": "pct",
+          "error": 0.17,
+          "source": "nrcan-hrdem-2023",
+          "observedOn": "2023-05-11",
+          "corroboration": {
+            "value": 1.2,
+            "source": "nrcan-hrdem-2015",
+            "observedOn": "2015-04-25"
+          }
+        },
+        {
+          "attribute": "aps",
+          "value": false,
+          "source": "toronto-traffic-signals",
+          "observedOn": "2026-10-31"
+        }
+      ]
+    },
+    "crossing_no_signal": {
+      "id": "s-nosignal",
+      "lengthM": 20,
+      "kind": "crossing",
+      "evidence": [
+        {
+          "attribute": "surface",
+          "value": "asphalt",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "kerbs",
+          "value": "lowered;flush",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "running_slope",
+          "value": 1.0,
+          "unit": "pct",
+          "error": 0.17,
+          "source": "nrcan-hrdem-2023",
+          "observedOn": "2023-05-11",
+          "corroboration": {
+            "value": 1.2,
+            "source": "nrcan-hrdem-2015",
+            "observedOn": "2015-04-25"
+          }
+        }
+      ]
+    },
+    "signal_aps_blank": {
+      "id": "s-apsblank",
+      "lengthM": 20,
+      "kind": "crossing",
+      "evidence": [
+        {
+          "attribute": "surface",
+          "value": "asphalt",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "kerbs",
+          "value": "lowered;flush",
+          "source": "osm",
+          "observedOn": "2024-06-01"
+        },
+        {
+          "attribute": "running_slope",
+          "value": 1.0,
+          "unit": "pct",
+          "error": 0.17,
+          "source": "nrcan-hrdem-2023",
+          "observedOn": "2023-05-11",
+          "corroboration": {
+            "value": 1.2,
+            "source": "nrcan-hrdem-2015",
+            "observedOn": "2015-04-25"
+          }
+        },
+        {
+          "attribute": "aps",
+          "value": null,
+          "source": "toronto-traffic-signals",
+          "observedOn": "2026-10-31"
+        }
       ]
     }
   },
   "hazards": {
     "reported_on_good": {
-      "id": "h-1", "kind": "obstacle", "status": "reported", "location": [-79.45, 43.77],
-      "source": "community-report", "observedOn": "2026-10-30", "expiresAt": "2026-11-13T00:00:00Z", "segmentId": "s-good"
+      "id": "h-1",
+      "kind": "obstacle",
+      "status": "reported",
+      "location": [
+        -79.45,
+        43.77
+      ],
+      "source": "community-report",
+      "observedOn": "2026-10-30",
+      "expiresAt": "2026-11-13T00:00:00Z",
+      "segmentId": "s-good"
     }
   },
   "routes": {
-    "A_short_with_steps": { "distanceM": 252, "segments": ["all_known_good", "steps", "crossing_kerbs_good", "surface_missing"] },
-    "B_long_verified": { "distanceM": 420, "segments": ["all_known_good", "crossing_kerbs_good", "all_known_good", "crossing_kerbs_good", "all_known_good", "gravel"] },
-    "C_mixed_unknowns": { "distanceM": 300, "segments": ["surface_missing", "crossing_kerbs_unknown", "slope_near_threshold", "all_known_good", "slope_single_survey"] }
+    "A_short_with_steps": {
+      "distanceM": 252,
+      "segments": [
+        "all_known_good",
+        "steps",
+        "crossing_kerbs_good",
+        "surface_missing"
+      ]
+    },
+    "B_long_verified": {
+      "distanceM": 420,
+      "segments": [
+        "all_known_good",
+        "crossing_kerbs_good",
+        "all_known_good",
+        "crossing_kerbs_good",
+        "all_known_good",
+        "gravel"
+      ]
+    },
+    "C_mixed_unknowns": {
+      "distanceM": 300,
+      "segments": [
+        "surface_missing",
+        "crossing_kerbs_unknown",
+        "slope_near_threshold",
+        "all_known_good",
+        "slope_single_survey"
+      ]
+    }
   },
   "cases": [
-    { "name": "every segment, baseline", "kind": "segments", "preferences": "baseline",
-      "segments": ["all_known_good", "surface_missing", "slope_near_threshold", "slope_steep_agreed", "slope_surveys_disagree", "slope_single_survey", "steps", "crossing_kerbs_good", "crossing_kerbs_unknown", "crossing_kerb_raised", "narrow", "gravel"] },
-    { "name": "every segment, cane", "kind": "segments", "preferences": "cane",
-      "segments": ["all_known_good", "surface_missing", "slope_near_threshold", "slope_steep_agreed", "slope_surveys_disagree", "slope_single_survey", "steps", "crossing_kerbs_good", "crossing_kerbs_unknown", "crossing_kerb_raised", "narrow", "gravel"] },
-    { "name": "reported hazard makes a segment unverified", "kind": "segments", "preferences": "baseline",
-      "segments": ["all_known_good"], "hazards": ["reported_on_good"] },
-    { "name": "rank three alternatives, baseline", "kind": "routes", "preferences": "baseline",
-      "routes": ["A_short_with_steps", "B_long_verified", "C_mixed_unknowns"] },
-    { "name": "rank three alternatives, cane", "kind": "routes", "preferences": "cane",
-      "routes": ["A_short_with_steps", "B_long_verified", "C_mixed_unknowns"] },
-    { "name": "rank three alternatives, prefer verified", "kind": "routes", "preferences": "prefer_verified",
-      "routes": ["A_short_with_steps", "B_long_verified", "C_mixed_unknowns"] }
+    {
+      "name": "every segment, baseline",
+      "kind": "segments",
+      "preferences": "baseline",
+      "segments": [
+        "all_known_good",
+        "surface_missing",
+        "slope_near_threshold",
+        "slope_steep_agreed",
+        "slope_surveys_disagree",
+        "slope_single_survey",
+        "steps",
+        "crossing_kerbs_good",
+        "crossing_kerbs_unknown",
+        "crossing_kerb_raised",
+        "narrow",
+        "gravel"
+      ]
+    },
+    {
+      "name": "every segment, cane",
+      "kind": "segments",
+      "preferences": "cane",
+      "segments": [
+        "all_known_good",
+        "surface_missing",
+        "slope_near_threshold",
+        "slope_steep_agreed",
+        "slope_surveys_disagree",
+        "slope_single_survey",
+        "steps",
+        "crossing_kerbs_good",
+        "crossing_kerbs_unknown",
+        "crossing_kerb_raised",
+        "narrow",
+        "gravel"
+      ]
+    },
+    {
+      "name": "reported hazard makes a segment unverified",
+      "kind": "segments",
+      "preferences": "baseline",
+      "segments": [
+        "all_known_good"
+      ],
+      "hazards": [
+        "reported_on_good"
+      ]
+    },
+    {
+      "name": "rank three alternatives, baseline",
+      "kind": "routes",
+      "preferences": "baseline",
+      "routes": [
+        "A_short_with_steps",
+        "B_long_verified",
+        "C_mixed_unknowns"
+      ]
+    },
+    {
+      "name": "rank three alternatives, cane",
+      "kind": "routes",
+      "preferences": "cane",
+      "routes": [
+        "A_short_with_steps",
+        "B_long_verified",
+        "C_mixed_unknowns"
+      ]
+    },
+    {
+      "name": "rank three alternatives, prefer verified",
+      "kind": "routes",
+      "preferences": "prefer_verified",
+      "routes": [
+        "A_short_with_steps",
+        "B_long_verified",
+        "C_mixed_unknowns"
+      ]
+    },
+    {
+      "name": "accessible signals, blind or low vision",
+      "kind": "segments",
+      "preferences": "blind_low_vision",
+      "segments": [
+        "all_known_good",
+        "crossing_kerbs_good",
+        "signal_with_aps",
+        "signal_aps_blank",
+        "signal_without_aps",
+        "crossing_no_signal",
+        "steps"
+      ]
+    },
+    {
+      "name": "accessible signals ignored when the preference is off",
+      "kind": "segments",
+      "preferences": "baseline",
+      "segments": [
+        "all_known_good",
+        "crossing_kerbs_good",
+        "signal_with_aps",
+        "signal_aps_blank",
+        "signal_without_aps",
+        "crossing_no_signal",
+        "steps"
+      ]
+    }
   ]
 }

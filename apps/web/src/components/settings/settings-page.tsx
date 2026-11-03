@@ -14,6 +14,7 @@ import { useReports } from "@/stores/reports";
 import { useSettings, type ContrastSetting, type MotionSetting, type ThemeSetting } from "@/stores/settings";
 import { useTrip } from "@/stores/trip";
 import { MyReports } from "@/components/report/my-reports";
+import { ProfilePicker } from "./profile-picker";
 import { PreferenceFields } from "./preference-fields";
 
 export function SettingsPage() {
@@ -104,6 +105,7 @@ export function SettingsPage() {
 
       <section id="mobility" aria-labelledby="mobility-title" className="pa-settings-group">
         <h2 id="mobility-title" className="text-lg">{t("mobility")}</h2>
+        <ProfilePicker />
         <PreferenceFields />
       </section>
 

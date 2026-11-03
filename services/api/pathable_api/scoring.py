@@ -94,7 +94,13 @@ def check_evidence(e: Evidence, prefs: Prefs) -> Check | None:
             return "fail"
         return "pass" if len(ends) == 2 and all(k in GOOD_KERBS for k in ends) else "unknown"
     if attr == "aps":
-        return None
+        # Present only at signalled crossings. A recorded accessible signal passes, a signal
+        # recorded without one fails, and a blank record is unknown, never assumed either way.
+        if not prefs.get("avoidSignalsWithoutAps"):
+            return None
+        if not isinstance(value, bool):
+            return "unknown"
+        return "pass" if value else "fail"
     raise ValueError(f"unknown attribute {attr}")
 
 

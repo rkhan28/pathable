@@ -57,6 +57,18 @@ as accessible.
   stops. Times are scheduled, not real-time, and the screen says that too.
   Transfers are not planned yet ([ADR 0004](docs/decisions/0004-transit-options.md)).
 
+## For blind and low-vision travellers
+
+"How do you get around?" (on the landing, in the planner and in Settings)
+includes **Blind or low vision**. It turns on spoken guidance and asks for
+crossings at signals to have an accessible pedestrian signal (the button that
+sounds and vibrates). The City's signal list records that where it exists and
+leaves the field blank elsewhere, so a blank crossing counts as **no data**,
+never as safe and never as a barrier. Tactile paving is not modelled yet.
+
+The planner map has a **my location** button: the map follows you as you move
+until you drag it, and a second press stops sharing.
+
 ## What the data actually supports
 
 Measured in [docs/DATA_REPORT.md](docs/DATA_REPORT.md):
@@ -83,9 +95,9 @@ shares of walkable length are:
 | Check | Result |
 | --- | --- |
 | axe-core (WCAG 2.2 AA tags) | **0 violations**: 13 pages × 2 languages × 4 themes, plus open menus, dialogs, details and guidance |
-| End-to-end (Playwright, production build) | **150 passing**: guidance and transit flows, keyboard flows, 390 px at 150% text, 44 px targets, language switch keeps the trip, honest unavailable states |
-| Web unit tests (Vitest) | 64, including shared ranking cases, contract checks of every fixture, and position matching along a journey |
-| API integration tests (pytest, PostGIS via testcontainers) | 32, zero warnings, transit on a real slice of the TTC schedule; every response validated against the generated OpenAPI |
+| End-to-end (Playwright, production build) | **153 passing**: guidance, transit, profile and follow-my-location flows, keyboard flows, 390 px at 150% text, 44 px targets, language switch keeps the trip, honest unavailable states |
+| Web unit tests (Vitest) | 66, including shared ranking cases, contract checks of every fixture, and position matching along a journey |
+| API integration tests (pytest, PostGIS via testcontainers) | 34, zero warnings, transit on a real slice of the TTC schedule; every response validated against the generated OpenAPI |
 | Live end-to-end (production web image, API, PostGIS, object storage) | **14 passing**: live routes, live TTC transit with guidance, search, report with photo, map pick, withdraw, coverage refusal, French |
 | Pipeline tests | 27 |
 | `/v1/routes` latency, 50 corridor trips, k6 | p95 **121 ms**, p99 **137 ms**, 6 workers ([details](docs/PERFORMANCE.md)) |

@@ -70,7 +70,11 @@ export function checkEvidence(e: Evidence, prefs: Preferences): Check | null {
       return ends.length === 2 && ends.every((k) => GOOD_KERBS.has(k)) ? "pass" : "unknown";
     }
     case "aps":
-      return null;
+      // Present only at signalled crossings. A recorded accessible signal passes, a signal
+      // recorded without one fails, and a blank record is unknown, never assumed either way.
+      if (!prefs.avoidSignalsWithoutAps) return null;
+      if (typeof e.value !== "boolean") return "unknown";
+      return e.value ? "pass" : "fail";
   }
 }
 

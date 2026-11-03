@@ -15,7 +15,9 @@ import { RouteDetails } from "@/components/route/route-details";
 import { TransitCard } from "@/components/route/transit-card";
 import { Navigation } from "@/components/navigate/navigation";
 import { navCamera } from "@/components/navigate/nav-camera";
+import { useTrack } from "@/components/navigate/use-track";
 import { MODE_ICON } from "@/components/navigate/maneuver-icon";
+import { ProfilePicker } from "@/components/settings/profile-picker";
 import { FixtureBanner } from "@/components/site/fixture-banner";
 import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { CommandPalette } from "@/components/palette/command-palette";
@@ -67,8 +69,10 @@ const sheetHeight = (() => {
 })();
 
 function PlannerMap({ desktop, collapsed, navigating, ...props }: Omit<RouteMapProps, "padding"> & { desktop: boolean; collapsed: boolean; navigating: boolean }) {
+  const t = useTranslations("planner");
   const height = useSyncExternalStore(sheetHeight.subscribe, sheetHeight.get, () => 0);
   const camera = useSyncExternalStore(navCamera.subscribe, navCamera.get, navCamera.get);
+  const track = useTrack({ denied: t("locationDenied"), unavailable: t("locationUnavailable") });
   const padding = useMemo<Padding>(
     () =>
       desktop
@@ -77,7 +81,18 @@ function PlannerMap({ desktop, collapsed, navigating, ...props }: Omit<RouteMapP
     [desktop, collapsed, height],
   );
   if (navigating) return <RouteMap {...props} padding={padding} user={camera.user} follow={camera.follow} onFollowBreak={followBreak} controls={false} />;
-  return <RouteMap {...props} padding={padding} />;
+  return (
+    <RouteMap
+      {...props}
+      padding={padding}
+      user={track.user}
+      follow={track.state === "follow"}
+      followMode="track"
+      onFollowBreak={track.release}
+      onLocate={track.press}
+      locateState={track.state}
+    />
+  );
 }
 
 const RouteMap = dynamic(() => import("@/components/map/route-map").then((m) => m.RouteMap), { ssr: false });
@@ -326,9 +341,9 @@ export function Planner() {
 
           <div className="mt-3 flex flex-wrap gap-2">
             {!desktop && <LanguageSwitcher />}
-            <Link href="/settings#mobility" className="pa-chip-button">
+            <ProfilePicker compact />
+            <Link href="/settings#mobility" className="pa-chip-button" aria-label={t("planner.editPreferences")}>
               <SlidersHorizontal aria-hidden size={16} />
-              {t("planner.editPreferences")}
             </Link>
             {request && (
               <button type="button" className="pa-chip-button" onClick={share}>

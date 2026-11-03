@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import { getTranslations } from "next-intl/server";
 import { CoveragePatterns } from "@/components/route/coverage-bar";
 import { ExampleCard } from "@/components/landing/example-card";
-import { HeroMap } from "@/components/landing/hero-map";
+import { HeroGuide } from "@/components/landing/hero-guide";
 import { IntroMark, introScript } from "@/components/landing/intro";
 import { LandingSearch } from "@/components/landing/landing-search";
 import { PhotoPrivacy, TrustNumbers, WinterExample } from "@/components/landing/sections";
@@ -15,6 +15,7 @@ const STEP_ICONS = [SlidersHorizontal, Search, RouteIcon, Navigation];
 const rise = (i: number) => ({ "--i": i }) as CSSProperties;
 import { RouteResponse } from "@/lib/api/contracts";
 import { heroData } from "@/lib/hero-data";
+import { guideData } from "@/lib/guide-data";
 import realityCheck from "@/generated/reality-check.json";
 import sample from "@/generated/fixtures/routes/york-u-finch-west.json";
 
@@ -28,6 +29,7 @@ const LICENCE: Record<string, string> = {
 export default async function LandingPage() {
   const t = await getTranslations("landing");
   const data = heroData();
+  const guide = guideData();
   const s = realityCheck.corridor_states_pct_length;
   const shares = { verified: s.known_accessible, barrier: s.known_barrier, unverified: s.reported_unverified, unknown: s.no_data };
   const steps = (["s1", "s2", "s3", "s4"] as const).map((k) => ({ title: t(`how.${k}Title`), body: t(`how.${k}Body`) }));
@@ -78,7 +80,7 @@ export default async function LandingPage() {
             </p>
           </div>
           <div className="pa-rise min-w-0" style={rise(2)}>
-            <HeroMap data={data} />
+            <HeroGuide data={guide} />
           </div>
         </div>
       </section>

@@ -1,7 +1,7 @@
 "use client";
 
 import type { Map as MlMap, Marker } from "maplibre-gl";
-import { Crosshair, Minus, Plus, Scan } from "lucide-react";
+import { Crosshair, LocateFixed, Minus, Navigation2, Plus, Scan } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { createPortal } from "react-dom";
@@ -62,6 +62,11 @@ export interface RouteMapProps {
   follow?: boolean;
   /** Called when the person drags or zooms the map during guidance. */
   onFollowBreak?: () => void;
+  /** "navigate" tilts and turns the map to the way ahead; "track" keeps it flat and north-up. */
+  followMode?: "navigate" | "track";
+  /** Shows a "my location" button; its state says whether the map is following. */
+  onLocate?: () => void;
+  locateState?: "off" | "follow" | "free";
 }
 
 export interface UserMarker {
@@ -132,6 +137,9 @@ export function RouteMap({
   user = null,
   follow = false,
   onFollowBreak,
+  followMode = "navigate",
+  onLocate,
+  locateState = "off",
 }: RouteMapProps) {
   const t = useTranslations("planner");
   const locale = useLocale();
@@ -390,17 +398,18 @@ export function RouteMap({
     const reduced = prefersReducedMotion();
     const first = !followingRef.current;
     followingRef.current = true;
+    const navigate = followMode === "navigate";
     map.easeTo({
       center: user.position,
-      bearing: user.bearing,
-      pitch: FOLLOW_PITCH,
-      zoom: first ? FOLLOW_ZOOM : map.getZoom(),
-      padding: FOLLOW_PADDING,
+      bearing: navigate ? user.bearing : 0,
+      pitch: navigate ? FOLLOW_PITCH : 0,
+      zoom: first ? (navigate ? FOLLOW_ZOOM : Math.max(map.getZoom(), 16)) : map.getZoom(),
+      padding: navigate ? FOLLOW_PADDING : latest.current.padding,
       duration: reduced ? 0 : first ? 1200 : user.durationMs,
       easing: first ? easeOutCubic : (t) => t,
       essential: true,
     });
-  }, [user, follow]);
+  }, [user, follow, followMode]);
 
   // Guidance ended: level the map, drop the follow padding and frame the route again.
   useEffect(() => {
@@ -478,6 +487,17 @@ export function RouteMap({
           {selectedRoute && (
             <button type="button" className="pa-map-button" onClick={recenter} aria-label={t("recenter")}>
               <Scan aria-hidden size={20} />
+            </button>
+          )}
+          {onLocate && (
+            <button
+              type="button"
+              className={cn("pa-map-button", locateState === "follow" && "is-active")}
+              onClick={onLocate}
+              aria-label={t("locate")}
+              aria-pressed={locateState === "follow"}
+            >
+              {locateState === "off" ? <LocateFixed aria-hidden size={20} /> : <Navigation2 aria-hidden size={20} />}
             </button>
           )}
         </div>

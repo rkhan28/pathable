@@ -103,6 +103,7 @@ export type Maneuver = z.infer<typeof Maneuver>;
 export const StepNote = z.enum([
   "aps_present",
   "aps_absent",
+  "aps_unknown",
   "kerbs_lowered",
   "kerbs_unknown",
   "kerb_raised",
@@ -174,6 +175,8 @@ export const Preferences = z.object({
   avoidNarrow: z.boolean(),
   preferVerified: z.boolean(),
   preferShorter: z.boolean(),
+  /** For blind and low-vision travellers: signals without an accessible pedestrian signal count as barriers. */
+  avoidSignalsWithoutAps: z.boolean().default(false),
 });
 export type Preferences = z.infer<typeof Preferences>;
 

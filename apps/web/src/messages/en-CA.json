@@ -164,7 +164,9 @@
       "refreshed": "Refreshed",
       "licence": "Licence",
       "corridorLabel": "Demo corridor by walkable length, 5% slope limit and 1.5 m minimum width"
-    }
+    },
+    "profileSaved": "Saved on this device. Change it any time in the planner.",
+    "guideCaption": "Illustration of guidance on a route the planner computed, York University to Finch West."
   },
   "search": {
     "label": "Destination",
@@ -213,7 +215,12 @@
     "offline": "You are offline. Routes you already loaded are still shown.",
     "pickOnMap": "Click or tap the map to set {which}. Press Escape to cancel.",
     "updated": "{count, plural, one {# route} other {# routes}} updated for your preferences",
-    "waking": "The route service is waking up after a quiet period. This can take up to a minute."
+    "waking": "The route service is waking up after a quiet period. This can take up to a minute.",
+    "chooseProfile": "How you get around",
+    "customProfile": "Custom",
+    "locate": "Show my location and follow it",
+    "locationDenied": "Location is off for this site. Turn it on in your browser to see yourself on the map.",
+    "locationUnavailable": "Your location is not available right now."
   },
   "route": {
     "label": "Route {label}",
@@ -289,7 +296,8 @@
       "surface_unknown": "Surface: no data",
       "width_narrow": "Narrow section",
       "steps": "Steps",
-      "hazard_reported": "Reported hazard"
+      "hazard_reported": "Reported hazard",
+      "aps_unknown": "Signal: accessible signal not recorded"
     }
   },
   "guidance": {
@@ -341,7 +349,7 @@
     "title": "Set up your preferences",
     "progress": "Step {current} of {total}",
     "skipAll": "Skip setup",
-    "profileTitle": "What do you usually travel with?",
+    "profileTitle": "How do you get around?",
     "profileHint": "This only fills in a starting point. You can change every setting.",
     "profiles": {
       "manual_wheelchair": "Manual wheelchair",
@@ -351,7 +359,8 @@
       "cane": "Cane",
       "reduced_mobility": "Reduced mobility",
       "stroller": "Stroller",
-      "custom": "Something else, or I will set it myself"
+      "custom": "Something else, or I will set it myself",
+      "blind_low_vision": "Blind or low vision"
     },
     "limitsTitle": "Your limits",
     "avoidTitle": "What to avoid",
@@ -374,7 +383,8 @@
     "avoidReportedObstacles": "Avoid reported obstacles",
     "avoidNarrow": "Avoid narrow passages",
     "preferVerified": "Prefer verified routes, even if longer",
-    "preferShorter": "Prefer shorter routes"
+    "preferShorter": "Prefer shorter routes",
+    "avoidSignalsWithoutAps": "Avoid signals without an accessible pedestrian signal (sound and vibration)"
   },
   "report": {
     "title": "Report a barrier",

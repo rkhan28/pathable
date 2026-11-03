@@ -163,7 +163,9 @@ def slopes(pieces: gpd.GeoDataFrame, area) -> pd.DataFrame:
 
 
 def aps_near(pieces: gpd.GeoDataFrame, signals: gpd.GeoDataFrame) -> pd.Series:
-    """True/None per crossing piece: an APS-equipped City signal within 30 m."""
+    """Per crossing piece, the City signal within 30 m: True if the City records an
+    accessible pedestrian signal there, "blank" if the signal's record leaves it empty
+    (which does not prove there is none), None if there is no signal at all."""
     crossings = pieces[pieces.kind == "crossing"]
     if crossings.empty:
         return pd.Series(dtype=object)
@@ -174,7 +176,15 @@ def aps_near(pieces: gpd.GeoDataFrame, signals: gpd.GeoDataFrame) -> pd.Series:
         how="left",
     )
     joined = joined[~joined.index.duplicated()]
-    return joined.AUDIBLEPEDSIGNAL.map(lambda v: True if v == 1 else None)
+    has_signal = joined.index_right.notna()
+    return pd.Series(
+        [
+            True if v == 1 else ("blank" if s else None)
+            for v, s in zip(joined.AUDIBLEPEDSIGNAL, has_signal, strict=True)
+        ],
+        index=joined.index,
+        dtype=object,
+    )
 
 
 def street_names(pieces: gpd.GeoDataFrame, ways: gpd.GeoDataFrame) -> pd.Series:
@@ -267,15 +277,16 @@ def evidence_for(row) -> list[dict]:
                 "observedOn": when if kerbs else None,
             }
         )
-        aps = row.aps if isinstance(row.aps, bool) else None
-        rows.append(
-            {
-                "attribute": "aps",
-                "value": aps,
-                "source": "toronto-traffic-signals" if aps else None,
-                "observedOn": "2026-10-31" if aps else None,
-            }
-        )
+        # Only signalled crossings carry this fact. A blank City record stays unknown (null).
+        if row.aps is True or row.aps == "blank":
+            rows.append(
+                {
+                    "attribute": "aps",
+                    "value": True if row.aps is True else None,
+                    "source": "toronto-traffic-signals",
+                    "observedOn": "2026-10-31",
+                }
+            )
     return rows
 
 

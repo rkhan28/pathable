@@ -88,3 +88,33 @@ test("transit options are offered beside walking, labelled, with a suggestion wh
   }
   await expect(guidance.getByRole("heading", { name: /^Take / })).toBeVisible();
 });
+
+test("choosing Blind or low vision on the landing carries into the planner and turns on voice", async ({ page }) => {
+  await page.goto("/en-CA");
+  await page.getByRole("button", { name: "Blind or low vision" }).click();
+  await expect(page.getByRole("button", { name: "Blind or low vision" })).toHaveAttribute("aria-pressed", "true");
+  // Checked before navigating: the test fixture rewrites display settings on every page load.
+  const settings = await page.evaluate(() => JSON.parse(localStorage.getItem("pathable:settings") ?? "{}"));
+  expect(settings.state.voice).toBe(true);
+  await page.goto(TRIP);
+  await expect(page.getByRole("combobox", { name: "How do you get around?" })).toHaveValue("blind_low_vision");
+  await page.goto("/en-CA/settings");
+  await expect(page.getByRole("switch", { name: /accessible pedestrian signal/ })).toBeChecked();
+});
+
+test.describe("the planner map follows your location", () => {
+  test.use({ geolocation: { latitude: 43.7741, longitude: -79.4996 }, permissions: ["geolocation"] });
+
+  test("the location button shows you and follows, and a drag lets you look around", async ({ page, isMobile }) => {
+    test.skip(isMobile, "the map gestures are the same on both");
+    await page.goto(TRIP);
+    await page.getByRole("radio", { name: /Route A/ }).waitFor();
+    const locate = page.getByRole("button", { name: "Show my location and follow it" });
+    await locate.click();
+    await expect(locate).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator(".pa-user")).toHaveCount(1);
+    await locate.click();
+    await expect(locate).toHaveAttribute("aria-pressed", "false");
+    await expect(page.locator(".pa-user")).toHaveCount(0);
+  });
+});

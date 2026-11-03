@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import defaults from "@/generated/fixtures/default-preferences.json";
 import type { Preferences } from "@/lib/api/contracts";
+import { useSettings } from "./settings";
 
 export const PROFILES = [
   "manual_wheelchair",
@@ -11,6 +12,7 @@ export const PROFILES = [
   "cane",
   "reduced_mobility",
   "stroller",
+  "blind_low_vision",
   "custom",
 ] as const;
 export type Profile = (typeof PROFILES)[number];
@@ -30,7 +32,23 @@ export const PROFILE_PRESETS: Record<Exclude<Profile, "custom">, Partial<Prefere
   cane: { maxRunningSlopePct: 8.3, minWidthM: 0.9, avoidStairs: false, avoidMissingRamps: false, avoidNarrow: false },
   reduced_mobility: { maxRunningSlopePct: 5, minWidthM: 0.9, avoidStairs: true, avoidMissingRamps: false },
   stroller: { maxRunningSlopePct: 6.7, minWidthM: 0.9, avoidStairs: true, avoidMissingRamps: true },
+  // Crossing safely matters more than slope or width: signals must have an accessible
+  // pedestrian signal, curb ramps (which carry the tactile plate) are wanted, and
+  // reported obstacles are avoided. Stairs are fine for most cane users.
+  blind_low_vision: {
+    maxRunningSlopePct: 8.3,
+    minWidthM: 0.9,
+    avoidStairs: false,
+    avoidMissingRamps: true,
+    avoidReportedObstacles: true,
+    avoidNarrow: false,
+    avoidSignalsWithoutAps: true,
+    preferVerified: true,
+  },
 };
+
+/** Profiles that turn on spoken guidance when chosen (it can still be turned off in settings). */
+const VOICE_FIRST: Profile[] = ["blind_low_vision"];
 
 export interface PreferencesState {
   profile: Profile | null;
@@ -52,11 +70,13 @@ export const usePreferences = create<PreferencesState>()(
       preferences: DEFAULT_PREFERENCES,
       onboarded: false,
       notes: "",
-      setProfile: (profile) =>
+      setProfile: (profile) => {
+        if (VOICE_FIRST.includes(profile)) useSettings.getState().set({ voice: true });
         set((s) => ({
           profile,
           preferences: profile === "custom" ? s.preferences : { ...DEFAULT_PREFERENCES, ...PROFILE_PRESETS[profile] },
-        })),
+        }));
+      },
       setPreference: (key, value) =>
         set((s) => ({ preferences: { ...s.preferences, [key]: value }, profile: s.profile ? "custom" : null })),
       setNotes: (notes) => set({ notes }),

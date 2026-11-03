@@ -11,6 +11,7 @@ const AVOID: (keyof Preferences)[] = [
   "avoidDamagedSurfaces",
   "avoidReportedObstacles",
   "avoidNarrow",
+  "avoidSignalsWithoutAps",
   "preferVerified",
   "preferShorter",
 ];

@@ -29,6 +29,8 @@ class Preferences(BaseModel):
     avoidNarrow: bool
     preferVerified: bool
     preferShorter: bool
+    # Older clients do not send it; off means signals are not judged at all.
+    avoidSignalsWithoutAps: bool = False
 
 
 class RouteRequest(BaseModel):

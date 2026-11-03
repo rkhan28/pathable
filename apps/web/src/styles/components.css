@@ -51,7 +51,8 @@
   .pa-fixture-detail { padding: 0 0.75rem 0.75rem; font-size: var(--type-sm); }
 
   /* ---------- Landing ---------- */
-  .pa-hero { padding-block: 2rem 4rem; }
+  /* The phone's glow and floating chip may reach past the edge; never into a sideways scroll. */
+  .pa-hero { padding-block: 2rem 4rem; overflow-x: clip; }
   .pa-hero-grid { display: grid; gap: 2rem; align-items: start; }
   @media (min-width: 64rem) { .pa-hero-grid { grid-template-columns: minmax(0, 6fr) minmax(0, 7fr); gap: 3.5rem; padding-block-start: 2rem; } }
   .pa-display { font-size: var(--type-display); letter-spacing: -0.025em; line-height: 1.02; max-inline-size: 15em; text-wrap: balance; }
@@ -114,6 +115,7 @@
   .pa-map-controls { position: absolute; inset-inline-end: 1rem; inset-block-start: 1rem; display: flex; flex-direction: column; gap: 0.5rem; z-index: 5; }
   .pa-map-button { display: inline-flex; align-items: center; justify-content: center; inline-size: 2.75rem; block-size: 2.75rem; border-radius: var(--r-control); background: var(--surface-raised); color: var(--ink); box-shadow: var(--elevation-map); border: 1px solid var(--line-subtle); }
   .pa-map-button:hover { background: var(--surface-sunken); }
+  .pa-map-button.is-active { background: var(--winter); color: #fff; border-color: transparent; }
   .pa-pick-crosshair { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; color: var(--ink); }
   .pa-marker-origin { inline-size: 18px; block-size: 18px; border-radius: 50%; background: var(--surface-raised); border: 4px solid var(--brand); box-shadow: 0 0 0 2px var(--surface-raised); }
   .pa-marker-destination { inline-size: 20px; block-size: 20px; border-radius: 50%; background: var(--brand); border: 3px solid var(--surface-raised); box-shadow: 0 1px 4px rgb(0 0 0 / 0.3); }
@@ -474,4 +476,43 @@
     .pa-page.is-entering { animation: pa-page-in 280ms var(--ease-out-cubic) backwards; }
   }
   @keyframes pa-page-in { from { opacity: 0; transform: translateY(6px); } }
+
+  /* ---------- Profile picker ---------- */
+  .pa-profile { display: grid; gap: 0.375rem; }
+  .pa-profile-field { position: relative; display: inline-flex; align-items: center; }
+  .pa-profile-select { appearance: none; min-block-size: 2.75rem; inline-size: 100%; padding-inline: 1rem 2.5rem; border-radius: var(--r-control); border: 1px solid var(--line); background: var(--surface-raised); color: var(--ink); font-weight: 700; cursor: pointer; transition: background-color var(--duration-state); }
+  .pa-profile-select:hover { background: var(--surface-sunken); }
+  .pa-profile.is-compact .pa-profile-select { padding-inline-start: 2.25rem; max-inline-size: 16rem; text-overflow: ellipsis; }
+  .pa-profile-icon { position: absolute; inset-inline-start: 0.875rem; pointer-events: none; color: var(--ink-muted); }
+  .pa-profile-chevron { position: absolute; inset-inline-end: 0.875rem; pointer-events: none; color: var(--ink-muted); }
+
+  /* ---------- Landing hero: guidance on a phone ---------- */
+  .pa-guide { display: grid; gap: 1.5rem; justify-items: center; }
+  .pa-guide-stage { position: relative; inline-size: min(100%, 22rem); }
+  .pa-guide-glow { position: absolute; inset: 8% -18% 4% -18%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--signal) 32%, transparent), transparent); filter: blur(8px); }
+  .pa-guide-phone { position: relative; aspect-ratio: 360 / 560; border-radius: 2.25rem; overflow: hidden; background: var(--map-land); border: 8px solid var(--ink); box-shadow: 0 30px 60px -20px rgb(0 0 0 / 0.45), 0 0 0 1px var(--line-subtle); }
+  [data-theme="dark"] .pa-guide-phone { border-color: #2a332e; }
+  .pa-guide-map { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; }
+  .pa-guide-banner { position: absolute; inset-block-start: 0.75rem; inset-inline: 0.75rem; min-block-size: 4.25rem; padding: 0.625rem 0.75rem; border-radius: 1.125rem; background: var(--brand); color: var(--on-brand); box-shadow: 0 8px 20px rgb(0 0 0 / 0.2); overflow: hidden; }
+  .pa-guide-icon { display: grid; place-items: center; flex: none; inline-size: 2.5rem; block-size: 2.5rem; border-radius: 0.75rem; background: rgb(255 255 255 / 0.14); }
+  .pa-guide-distance { display: block; font-size: var(--type-md); font-weight: 800; line-height: 1.1; }
+  .pa-guide-text { display: block; font-size: var(--type-sm); font-weight: 700; line-height: 1.25; }
+  .pa-guide-bar { position: absolute; inset-block-end: 0.75rem; inset-inline: 0.75rem; display: flex; align-items: baseline; gap: 0.625rem; padding: 0.625rem 0.875rem; border-radius: 1.125rem; background: var(--surface-raised); box-shadow: 0 -2px 12px rgb(0 0 0 / 0.12); }
+  .pa-guide-eta { font-size: var(--type-lg); font-weight: 800; color: var(--state-verified); }
+  .pa-guide-chip { position: absolute; display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.5rem 0.75rem; border-radius: var(--r-control); background: var(--surface-raised); color: var(--ink); font-size: var(--type-sm); font-weight: 700; box-shadow: var(--elevation-map); white-space: nowrap; }
+  .pa-guide-chip.is-transit { inset-block-start: 42%; inset-inline-end: -12%; }
+  @media (max-width: 30rem) { .pa-guide-chip.is-transit { inset-inline-end: -0.5rem; } }
+  .pa-guide-caption { max-inline-size: 22rem; text-align: center; font-size: var(--type-sm); color: var(--ink-muted); margin-block-start: -0.5rem; }
+  .pa-guide-picks { border: 0; padding: 0; inline-size: min(100%, 30rem); }
+  .pa-pick { display: inline-flex; align-items: center; gap: 0.5rem; min-block-size: 2.75rem; padding-inline: 1rem; border-radius: var(--r-control); border: 1px solid var(--line); background: var(--surface-raised); font-weight: 700; transition: background-color var(--duration-state), color var(--duration-state), border-color var(--duration-state), transform var(--duration-press) var(--ease-out-cubic); }
+  .pa-pick:hover { background: var(--surface-sunken); }
+  .pa-pick:active { transform: scale(0.96); }
+  .pa-pick.is-on { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+  @media (prefers-reduced-motion: no-preference) {
+    .pa-guide-phone { animation: pa-float 7s ease-in-out infinite; }
+    .pa-guide-chip { animation: pa-float 6s ease-in-out -2s infinite; }
+    .pa-guide-halo { animation: pa-halo-svg 2.4s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+  }
+  @keyframes pa-float { 50% { transform: translateY(-8px); } }
+  @keyframes pa-halo-svg { 0% { transform: scale(0.6); opacity: 0.5; } 100% { transform: scale(1.6); opacity: 0; } }
 }

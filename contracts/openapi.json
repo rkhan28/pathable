@@ -691,6 +691,10 @@
               },
               "preferShorter": {
                 "type": "boolean"
+              },
+              "avoidSignalsWithoutAps": {
+                "default": false,
+                "type": "boolean"
               }
             },
             "required": [
@@ -702,7 +706,8 @@
               "avoidReportedObstacles",
               "avoidNarrow",
               "preferVerified",
-              "preferShorter"
+              "preferShorter",
+              "avoidSignalsWithoutAps"
             ],
             "additionalProperties": false
           }
@@ -1085,6 +1090,7 @@
                           "enum": [
                             "aps_present",
                             "aps_absent",
+                            "aps_unknown",
                             "kerbs_lowered",
                             "kerbs_unknown",
                             "kerb_raised",
@@ -1541,6 +1547,10 @@
               },
               "preferShorter": {
                 "type": "boolean"
+              },
+              "avoidSignalsWithoutAps": {
+                "default": false,
+                "type": "boolean"
               }
             },
             "required": [
@@ -1552,7 +1562,8 @@
               "avoidReportedObstacles",
               "avoidNarrow",
               "preferVerified",
-              "preferShorter"
+              "preferShorter",
+              "avoidSignalsWithoutAps"
             ],
             "additionalProperties": false
           },
@@ -1957,6 +1968,7 @@
                                         "enum": [
                                           "aps_present",
                                           "aps_absent",
+                                          "aps_unknown",
                                           "kerbs_lowered",
                                           "kerbs_unknown",
                                           "kerb_raised",
@@ -2496,6 +2508,10 @@
           },
           "preferShorter": {
             "type": "boolean"
+          },
+          "avoidSignalsWithoutAps": {
+            "default": false,
+            "type": "boolean"
           }
         },
         "required": [
@@ -2507,7 +2523,8 @@
           "avoidReportedObstacles",
           "avoidNarrow",
           "preferVerified",
-          "preferShorter"
+          "preferShorter",
+          "avoidSignalsWithoutAps"
         ],
         "additionalProperties": false
       }

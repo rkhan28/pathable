@@ -116,3 +116,15 @@ follows something the person did or a change of state.
 **Still open:**
 - Real-device test of following and voice on a phone outdoors.
 - Transfers between two vehicles.
+
+## 2026-11-03: a picture instead of a map, a profile for blind travellers, a map that follows you
+
+**Feedback.** The map in the landing hero looked odd; the planner map should
+move with the person; there should be a choice for blind travellers.
+
+| Area | Before | After |
+| --- | --- | --- |
+| Landing hero | A live MapLibre map of three corridor routes with a ranking control | A phone showing guidance on the real York University to Finch West route: the dot walks the line and the instruction changes at each real step. Captioned as an illustration. The landing no longer loads the 1 MB map library. |
+| Profiles | Seven mobility aids, all about wheels and walking | Adds **Blind or low vision**: crossings at signals need a recorded accessible pedestrian signal, curb ramps are wanted, and voice guidance turns on. Picked from the landing, the planner or Settings. |
+| Signal data | Only "has an accessible signal" was kept; a blank City record looked the same as no signal | Three cases: recorded (verified), blank (no data), no signal (not judged). A blank record is never called a barrier. |
+| Planner map | Fits the route | A **my location** button: the map follows you, dragging lets you look around, pressing again stops. |

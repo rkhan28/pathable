@@ -31,9 +31,9 @@ await session("walkthrough-desktop", { width: 1440, height: 900 }, async (page) 
   mark("hero");
   await page.goto(`${base}/en-CA`, { waitUntil: "networkidle" });
   await pause(3500);
-  mark("rerank");
-  for (const name of ["Walker", "Cane", "Manual wheelchair"]) {
-    await page.getByRole("radio", { name }).first().check();
+  mark("profiles");
+  for (const name of ["Walker", "Blind or low vision", "Manual wheelchair"]) {
+    await page.getByRole("button", { name, exact: true }).click();
     await pause(2200);
   }
   mark("states");

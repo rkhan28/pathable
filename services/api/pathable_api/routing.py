@@ -307,8 +307,8 @@ def build_steps(route: dict, prefs: Mapping) -> list[dict]:
                 notes.append(note)
 
         for e in evidence:
-            if e["attribute"] == "aps" and e["value"] is True:
-                add("aps_present")
+            if e["attribute"] == "aps":
+                add("aps_present" if e["value"] is True else "aps_absent" if e["value"] is False else "aps_unknown")
             if e["attribute"] == "kerbs":
                 add(kerb_note(e["value"]))
             if e["attribute"] == "steps" and e["value"] is True:
