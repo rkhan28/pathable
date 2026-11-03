@@ -587,7 +587,7 @@ def main() -> None:
         {
             "osm_way": int(r.osm_id),
             "highway": r.highway,
-            "footway": r.footway,
+            "footway": r.footway if isinstance(r.footway, str) else None,
             "max_slope_2023_pct": round(r.max_slope_2023, 1),
             "max_slope_2015_pct": None
             if np.isnan(r.max_slope_2015)
@@ -596,7 +596,9 @@ def main() -> None:
         for r in has_slope.sort_values("max_slope_2023", ascending=False).head(8).itertuples()
     ]
 
-    (OUT / "reality_check.json").write_text(json.dumps(report, indent=2, default=str) + "\n")
+    (OUT / "reality_check.json").write_text(
+        json.dumps(report, indent=2, default=str, allow_nan=False) + "\n"
+    )
     draw_maps(ctx, line, buf, c, both, tagged)
     print(
         json.dumps(

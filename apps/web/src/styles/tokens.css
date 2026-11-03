@@ -1,0 +1,185 @@
+/*
+ * PathAble design tokens. The single source of colour, type, space, radius
+ * and depth. scripts/check-contrast.mjs parses the blocks marked
+ * `@theme <name>` and fails CI if any declared pair falls below WCAG 2.2 AA.
+ *
+ * The boot script in app/[locale]/layout.tsx resolves system preferences and
+ * always sets data-theme (light|dark) and data-contrast (normal|more) before
+ * first paint. The :root defaults below only matter without JavaScript.
+ */
+
+/* @theme light */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+  --surface: #f3f4f1;
+  --surface-raised: #ffffff;
+  --surface-sunken: #e6e8e3;
+  --ink: #0d1411;
+  --ink-muted: #47514c;
+  --line: #7a837e;
+  --line-subtle: #d5d9d3;
+  --brand: #0f3d2e;
+  --on-brand: #ffffff;
+  --signal: #13a06b;
+  --on-signal: #0d1411;
+  --attention: #f2c230;
+  --on-attention: #0d1411;
+  --state-verified: #0b6e49;
+  --state-barrier: #b3261e;
+  --state-unverified: #8f5600;
+  --state-unknown: #5f6964;
+  --winter: #235e9e;
+  --focus: #0f3d2e;
+  --focus-halo: #ffffff;
+  --map-land: #eceee9;
+  --map-water: #c9dbe0;
+  --map-park: #dbe5d6;
+  --map-road: #ffffff;
+  --map-road-casing: #d3d7d0;
+  --map-building: #e0e2dc;
+  --map-label: #47514c;
+  --route-casing: #ffffff;
+  --route-alt: #7a837e;
+  --dome: #d5d9d3;
+}
+
+/* @theme dark */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --surface: #0e1311;
+    --surface-raised: #18201c;
+    --surface-sunken: #080b0a;
+    --ink: #e9ede7;
+    --ink-muted: #a8b2ac;
+    --line: #6e7873;
+    --line-subtle: #2a332e;
+    --brand: #7fd1a9;
+    --on-brand: #0d1411;
+    --signal: #2bc48a;
+    --on-signal: #0d1411;
+    --attention: #f2c230;
+    --on-attention: #0d1411;
+    --state-verified: #4fd39b;
+    --state-barrier: #ff8a80;
+    --state-unverified: #f0b45a;
+    --state-unknown: #a0aaa5;
+    --winter: #8db8f0;
+    --focus: #7fd1a9;
+    --focus-halo: #0e1311;
+  }
+}
+
+/* @theme dark */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --surface: #0e1311;
+  --surface-raised: #18201c;
+  --surface-sunken: #080b0a;
+  --ink: #e9ede7;
+  --ink-muted: #a8b2ac;
+  --line: #6e7873;
+  --line-subtle: #2a332e;
+  --brand: #7fd1a9;
+  --on-brand: #0d1411;
+  --signal: #2bc48a;
+  --on-signal: #0d1411;
+  --attention: #f2c230;
+  --on-attention: #0d1411;
+  --state-verified: #4fd39b;
+  --state-barrier: #ff8a80;
+  --state-unverified: #f0b45a;
+  --state-unknown: #a0aaa5;
+  --winter: #8db8f0;
+  --focus: #7fd1a9;
+  --focus-halo: #0e1311;
+  --map-land: #141a17;
+  --map-water: #0d2228;
+  --map-park: #15211a;
+  --map-road: #2a322e;
+  --map-road-casing: #1c2420;
+  --map-building: #1b221e;
+  --map-label: #a8b2ac;
+  --route-casing: #0e1311;
+  --route-alt: #6e7873;
+  --dome: #2a332e;
+}
+
+/* @theme light-more extends light */
+[data-theme="light"][data-contrast="more"] {
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f0f1ef;
+  --ink: #000000;
+  --ink-muted: #1c211e;
+  --line: #000000;
+  --line-subtle: #4d5450;
+  --brand: #00291c;
+  --signal: #08754c;
+  --on-signal: #ffffff;
+  --state-verified: #00553a;
+  --state-barrier: #8a0f0a;
+  --state-unverified: #5c3700;
+  --state-unknown: #333936;
+  --winter: #0b3d73;
+  --focus: #000000;
+  --route-casing: #ffffff;
+  --route-alt: #4d5450;
+}
+
+/* @theme dark-more extends dark */
+[data-theme="dark"][data-contrast="more"] {
+  --surface: #000000;
+  --surface-raised: #0b0d0c;
+  --surface-sunken: #000000;
+  --ink: #ffffff;
+  --ink-muted: #f0f2f0;
+  --line: #ffffff;
+  --line-subtle: #9aa39e;
+  --brand: #a6f2cd;
+  --signal: #45e3a5;
+  --state-verified: #86f2c4;
+  --state-barrier: #ffb8b2;
+  --state-unverified: #ffd28f;
+  --state-unknown: #d6dcd9;
+  --winter: #bcd7ff;
+  --focus: #ffffff;
+  --focus-halo: #000000;
+  --route-casing: #000000;
+  --route-alt: #c4cbc7;
+}
+
+:root {
+  /* Type: rem everywhere so the text-size setting scales the whole UI. */
+  --font-body: var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
+  --font-numeric: var(--font-atkinson-mono), ui-monospace, monospace;
+  --type-xs: 0.8125rem;
+  --type-sm: 0.875rem;
+  --type-base: 1rem;
+  --type-md: 1.125rem;
+  --type-lg: 1.375rem;
+  --type-xl: 1.75rem;
+  --type-2xl: 2.5rem;
+  --type-display: clamp(2.5rem, 1.75rem + 2.6vw, 3.75rem);
+  --type-guidance: 1.75rem;
+  --measure: 68ch;
+
+  /* Radius carries hierarchy. */
+  --r-control: 999px;
+  --r-sheet: 24px;
+  --r-card: 16px;
+  --r-chip: 8px;
+
+  /* One shadow, only for surfaces layered over the map. */
+  --elevation-map: 0 1px 2px rgb(0 0 0 / 0.08), 0 8px 24px rgb(0 0 0 / 0.1);
+
+  --duration-press: 120ms;
+  --duration-state: 200ms;
+  --duration-panel: 320ms;
+  --duration-route: 560ms;
+  --ease-out-cubic: cubic-bezier(0.33, 1, 0.68, 1);
+
+  --header-height: 4rem;
+  --target: 2.75rem;
+}

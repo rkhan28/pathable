@@ -1,0 +1,125 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+@import "../styles/components.css";
+
+/* Tailwind reads colours, type and radii from the tokens, so utilities like
+   bg-surface or text-ink always follow the active theme. */
+@theme inline {
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-line: var(--line);
+  --color-line-subtle: var(--line-subtle);
+  --color-brand: var(--brand);
+  --color-on-brand: var(--on-brand);
+  --color-signal: var(--signal);
+  --color-on-signal: var(--on-signal);
+  --color-attention: var(--attention);
+  --color-on-attention: var(--on-attention);
+  --color-verified: var(--state-verified);
+  --color-barrier: var(--state-barrier);
+  --color-unverified: var(--state-unverified);
+  --color-unknown: var(--state-unknown);
+  --color-winter: var(--winter);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-numeric);
+  --text-xs: var(--type-xs);
+  --text-sm: var(--type-sm);
+  --text-base: var(--type-base);
+  --text-md: var(--type-md);
+  --text-lg: var(--type-lg);
+  --text-xl: var(--type-xl);
+  --text-2xl: var(--type-2xl);
+  --text-display: var(--type-display);
+  --radius-control: var(--r-control);
+  --radius-sheet: var(--r-sheet);
+  --radius-card: var(--r-card);
+  --radius-chip: var(--r-chip);
+  --shadow-over-map: var(--elevation-map);
+}
+
+@layer base {
+  html {
+    /* The text-size setting (100–150%) sets --text-scale; every rem follows. */
+    font-size: calc(100% * var(--text-scale, 1));
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--surface);
+    color: var(--ink);
+    font-family: var(--font-body);
+    line-height: 1.5;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4 {
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+  :where(a) { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+  :where(a:hover) { text-decoration-thickness: 2px; }
+
+  /* One designed focus style for everything: a 3 px ring with a halo so it
+     reads on the map, on emerald and on raised surfaces alike. */
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 5px var(--focus-halo);
+    border-radius: inherit;
+  }
+  [data-contrast="more"] :focus-visible { outline-width: 4px; }
+
+  .tabular { font-family: var(--font-numeric); font-variant-numeric: tabular-nums; }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root:not([data-motion="full"]) *, :root:not([data-motion="full"]) *::before, :root:not([data-motion="full"]) *::after {
+      animation-duration: 1ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 1ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  [data-motion="reduced"] *, [data-motion="reduced"] *::before, [data-motion="reduced"] *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  @media (forced-colors: active) {
+    :focus-visible { outline-color: Highlight; box-shadow: none; }
+  }
+}
+
+@layer components {
+  /* Truncated-dome texture. Allowed only in the hero, empty states, the
+     onboarding finish and the app icon (docs/DESIGN_DIRECTION.md). */
+  .domes {
+    background-image: radial-gradient(circle at center, var(--dome) 0 4px, transparent 4.5px),
+      radial-gradient(circle at center, transparent 0 5px, var(--dome) 5.5px 6px, transparent 6.5px);
+    background-size: 24px 24px;
+  }
+
+  .skip-link {
+    position: fixed;
+    inset-inline-start: 1rem;
+    inset-block-start: 1rem;
+    z-index: 100;
+    transform: translateY(-200%);
+    background: var(--surface-raised);
+    color: var(--ink);
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--r-control);
+    font-weight: 700;
+    box-shadow: var(--elevation-map);
+  }
+  .skip-link:focus-visible { transform: none; }
+}
+
+@utility sr-only-focusable {
+  &:not(:focus-visible) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}

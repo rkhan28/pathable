@@ -339,42 +339,42 @@
     {
       "osm_way": 591907744,
       "highway": "pedestrian",
-      "footway": NaN,
+      "footway": null,
       "max_slope_2023_pct": 43.6,
       "max_slope_2015_pct": 43.5
     },
     {
       "osm_way": 591907744,
       "highway": "pedestrian",
-      "footway": NaN,
+      "footway": null,
       "max_slope_2023_pct": 31.2,
       "max_slope_2015_pct": 31.1
     },
     {
       "osm_way": 591108133,
       "highway": "pedestrian",
-      "footway": NaN,
+      "footway": null,
       "max_slope_2023_pct": 29.4,
       "max_slope_2015_pct": 30.1
     },
     {
       "osm_way": 930904263,
       "highway": "footway",
-      "footway": NaN,
+      "footway": null,
       "max_slope_2023_pct": 29.2,
       "max_slope_2015_pct": 36.5
     },
     {
       "osm_way": 591108133,
       "highway": "pedestrian",
-      "footway": NaN,
+      "footway": null,
       "max_slope_2023_pct": 28.4,
       "max_slope_2015_pct": 35.8
     },
     {
       "osm_way": 613144324,
       "highway": "pedestrian",
-      "footway": NaN,
+      "footway": null,
       "max_slope_2023_pct": 27.0,
       "max_slope_2015_pct": 1.4
     }
