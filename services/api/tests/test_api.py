@@ -207,3 +207,21 @@ def test_concurrent_preferences_do_not_interfere(client):
     with ThreadPoolExecutor(8) as pool:
         together = list(pool.map(ask, variants * 3))
     assert together == alone * 3
+
+
+def test_a_second_data_version_with_the_same_edge_ids_loads(migrated):
+    """Graph builds reuse edge ids; versions must coexist so a new build can be loaded beside the live one."""
+    from pathable_api.db import load_graph
+
+    doc = json.loads((ROOT / "contracts/fixtures/graph-york-u-finch-west.json").read_text())
+    hazards = doc["hazards"][:2]
+    keep = {h["edge_id"] for h in hazards}
+    edges = [e for e in doc["edges"] if e["id"] in keep] + [e for e in doc["edges"] if e["id"] not in keep][
+        : 50 - len(keep)
+    ]
+    load_graph(migrated, "test-second-build", doc["coverage_wkt"], edges, hazards, notes="test")
+    with psycopg.connect(migrated) as c:
+        counts = dict(c.execute("SELECT data_version, count(*) FROM edges GROUP BY 1").fetchall())
+        assert counts["test-second-build"] == 50
+        assert counts["test-york-u-finch-west"] == len(doc["edges"])
+        c.execute("DELETE FROM data_versions WHERE id = 'test-second-build'")

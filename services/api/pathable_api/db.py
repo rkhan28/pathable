@@ -43,7 +43,8 @@ class Database:
             for h in c.execute(
                 """SELECT id, kind, status, source, observed_on, expires_at, edge_id,
                           ST_X(geom) AS lon, ST_Y(geom) AS lat FROM hazards
-                   WHERE edge_id IS NOT NULL AND (expires_at IS NULL OR expires_at > now())"""
+                   WHERE data_version = %s AND edge_id IS NOT NULL AND (expires_at IS NULL OR expires_at > now())""",
+                (version,),
             ):
                 hazards.setdefault(h["edge_id"], []).append(_hazard(h))
             rows = c.execute(
@@ -69,6 +70,7 @@ class Database:
                 """SELECT id, kind, status, source, observed_on, expires_at, edge_id,
                           ST_X(geom) AS lon, ST_Y(geom) AS lat
                    FROM hazards WHERE geom && ST_MakeEnvelope(%s, %s, %s, %s, 4326)
+                   AND data_version = (SELECT id FROM data_versions ORDER BY built_at DESC LIMIT 1)
                    AND (expires_at IS NULL OR expires_at > now())""",
                 bbox,
             ).fetchall()
@@ -178,10 +180,11 @@ def load_graph(
                 ],
             )
             cur.executemany(
-                """INSERT INTO hazards (id, kind, status, source, observed_on, expires_at, edge_id, geom)
-                   VALUES (%s, %s, %s, %s, %s, %s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326))""",
+                """INSERT INTO hazards (data_version, id, kind, status, source, observed_on, expires_at, edge_id, geom)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326))""",
                 [
                     (
+                        version,
                         h["id"],
                         h["kind"],
                         h["status"],
