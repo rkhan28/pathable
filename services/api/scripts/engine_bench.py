@@ -19,6 +19,7 @@ Usage (PostGIS+pgRouting on 5433 loaded with the corridor, Valhalla on 8002):
 
 from __future__ import annotations
 
+import itertools
 import json
 import statistics
 import sys
@@ -89,7 +90,7 @@ class Judge:
     def score(self, coords: list) -> dict:
         out = {"verified": 0.0, "barrier": 0.0, "unknown": 0.0, "unmatched": 0.0, "steps": 0}
         seen_steps = set()
-        for a, b in zip(coords, coords[1:], strict=False):
+        for a, b in itertools.pairwise(coords):
             seg = metres(a, b)
             n = max(1, int(seg // SAMPLE_M))
             for i in range(n):
