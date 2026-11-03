@@ -19,6 +19,8 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,
+  // Keep `next dev` from writing generated guidance files into the project.
+  agentRules: false,
   output: "standalone",
   reactStrictMode: true,
   turbopack: {
