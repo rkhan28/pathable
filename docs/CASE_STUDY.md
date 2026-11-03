@@ -104,11 +104,12 @@ All measured on 2026-11-03:
 | `/v1/routes` latency | p95 121 ms, p99 137 ms on 50 corridor trips (6 workers) |
 | `/v1/hazards` latency | p95 4.6 ms |
 | Colour contrast | 156 token pairs pass WCAG AA, and AAA in high contrast |
+| Routing engines, 50 trips | Known-barrier share of route length: evidence router 3.9%, Valhalla 14.5%, OpenTripPlanner 13.6% |
 
 ## What I'd do next
 
-- **Run the routing engine benchmark** (Valhalla, OpenTripPlanner and pgRouting)
-  on the 50 trips.
+- **Re-run the engine benchmark on all of North York,** and give OpenTripPlanner
+  and Valhalla the lidar terrain model.
 - **Build the full North York graph.** Only the corridor is loaded today.
 - **Deploy the live demo,** and run Lighthouse and a field test on a mid-range
   Android phone.

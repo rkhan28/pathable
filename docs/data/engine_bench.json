@@ -69,6 +69,25 @@
       },
       "total_km": 117.03,
       "evidence_cost_km": 187.26
+    },
+    "opentripplanner": {
+      "routes": 50,
+      "failures": 0,
+      "latency_ms": {
+        "p50": 8.9,
+        "p95": 21.8,
+        "p99": 152.3
+      },
+      "routes_with_barriers": 47,
+      "routes_using_steps": 3,
+      "share_pct": {
+        "verified": 25.7,
+        "barrier": 13.6,
+        "unknown": 47.6,
+        "unmatched": 13.2
+      },
+      "total_km": 116.62,
+      "evidence_cost_km": 194.43
     }
   }
 }

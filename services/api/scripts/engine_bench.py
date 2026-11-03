@@ -7,6 +7,7 @@ preferences:
   pathable   in-process A* over the evidence graph (pathable_api.routing)
   pgrouting  pgr_dijkstra, edge costs computed in SQL from the evidence per request
   valhalla   pedestrian costing, type=wheelchair (Valhalla has no evidence states)
+  opentripplanner  walk with wheelchair=true, graph from the same OSM extract (no elevation)
 
 Correctness: each route's geometry is sampled every 5 m and matched to the
 nearest evidence edge within 8 m; the matched length is classified with the
@@ -146,7 +147,18 @@ def run_pgrouting(conn, trip) -> tuple[list, float]:
     return [list(r) for r in rows], time.perf_counter() - start
 
 
-def decode_polyline6(s: str) -> list:
+OTP = "http://localhost:8080/otp/gtfs/v1"
+OTP_QUERY = """
+query ($fromLat: Float!, $fromLon: Float!, $toLat: Float!, $toLon: Float!) {
+  plan(from: {lat: $fromLat, lon: $fromLon}, to: {lat: $toLat, lon: $toLon},
+       transportModes: [{mode: WALK}], wheelchair: true, numItineraries: 1) {
+    itineraries { legs { legGeometry { points } } }
+  }
+}"""
+
+
+def decode_polyline(s: str, precision: int) -> list:
+    factor = 10**precision
     coords, index, lat, lon = [], 0, 0, 0
     while index < len(s):
         for which in (0, 1):
@@ -163,8 +175,25 @@ def decode_polyline6(s: str) -> list:
                 lat += delta
             else:
                 lon += delta
-        coords.append([lon / 1e6, lat / 1e6])
+        coords.append([lon / factor, lat / factor])
     return coords
+
+
+def run_otp(client: httpx.Client, trip) -> tuple[list, float]:
+    (ox, oy), (dx, dy) = trip["origin"], trip["destination"]
+    body = {"query": OTP_QUERY, "variables": {"fromLat": oy, "fromLon": ox, "toLat": dy, "toLon": dx}}
+    start = time.perf_counter()
+    res = client.post(OTP, json=body)
+    elapsed = time.perf_counter() - start
+    itineraries = (
+        (res.json().get("data") or {}).get("plan", {}).get("itineraries") or [] if res.status_code == 200 else []
+    )
+    if not itineraries:
+        return [], elapsed
+    coords: list = []
+    for leg in itineraries[0]["legs"]:
+        coords.extend(decode_polyline(leg["legGeometry"]["points"], 5))
+    return coords, elapsed
 
 
 def run_valhalla(client: httpx.Client, trip) -> tuple[list, float]:
@@ -182,7 +211,7 @@ def run_valhalla(client: httpx.Client, trip) -> tuple[list, float]:
     if res.status_code != 200:
         return [], elapsed
     shape = res.json()["trip"]["legs"][0]["shape"]
-    return decode_polyline6(shape), elapsed
+    return decode_polyline(shape, 6), elapsed
 
 
 def main() -> None:
@@ -195,7 +224,10 @@ def main() -> None:
             "pathable": lambda t: run_pathable(graph, t),
             "pgrouting": lambda t: run_pgrouting(conn, t),
             "valhalla": lambda t: run_valhalla(client, t),
+            "opentripplanner": lambda t: run_otp(client, t),
         }
+        only = set(sys.argv[1:])
+        runners = {k: v for k, v in runners.items() if not only or k in only}
         for name, run in runners.items():
             times, scores, failures = [], [], 0
             for trip in TRIPS:

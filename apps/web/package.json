@@ -17,7 +17,8 @@
     "check": "npm run contrast && npm run check:copy && npm run lint && npm run typecheck && npm run test",
     "test:e2e": "playwright test",
     "contracts": "node --experimental-strip-types scripts/build-openapi.mjs",
-    "lighthouse": "node scripts/lighthouse.mjs"
+    "lighthouse": "node scripts/lighthouse.mjs",
+    "case-study": "node scripts/build-case-study.mjs"
   },
   "dependencies": {
     "@fontsource/atkinson-hyperlegible-mono": "^5.3.0",

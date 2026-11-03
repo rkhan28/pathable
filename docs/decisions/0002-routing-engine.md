@@ -1,6 +1,6 @@
 # 0002. Routing engine: keep the in-process evidence router
 
-- Status: accepted. Benchmarked 2026-11-03 against pgRouting and Valhalla; OpenTripPlanner not yet run.
+- Status: accepted. Benchmarked 2026-11-03 against pgRouting, Valhalla and OpenTripPlanner.
 - Date: 2026-11-03
 - Evidence: `docs/data/engine_bench.json` (from `services/api/scripts/engine_bench.py`), [PERFORMANCE.md](../PERFORMANCE.md)
 
@@ -80,6 +80,7 @@ cannot drift apart. A test asserts they agree.
 | PathAble in-process | shared rules, cached per preference set | 2.5 ms | 9.5 ms | 10.1 ms | 64.9% | 3.9% | 31.2% | 0% | 34 / 50 | 5 | 158.0 km |
 | pgRouting 4.0.2 | the same rules in PL/pgSQL, per request | 510 ms | 726 ms | 739 ms | 64.8% | 3.9% | 31.3% | 0% | 35 / 50 | 5 | 158.0 km |
 | Valhalla 3.9.1 | `pedestrian`, `type: wheelchair` | 3.0 ms | 5.1 ms | 5.5 ms | 22.3% | 14.5% | 40.6% | 22.6% | 43 / 50 | 2 | 187.3 km |
+| OpenTripPlanner 2.6.0 | walk, `wheelchair: true`, OSM only | 8.9 ms | 21.8 ms | 152 ms | 25.7% | 13.6% | 47.6% | 13.2% | 47 / 50 | 3 | 194.4 km |
 
 **Correctness check for pgRouting.** The PL/pgSQL state function agrees with
 the Python and TypeScript rules on all 24 shared segment cases. It also finds
@@ -109,9 +110,15 @@ reproduced faithfully.
 North York graph is loaded, and if a preference set needs hard constraints
 rather than costs.
 
-**Not yet benchmarked: OpenTripPlanner 2.** Its wheelchair model reads slope
-from its own elevation input. A fair run means building its graph with the same
-lidar terrain model, which is still to do.
+- **OpenTripPlanner** is also fast. Its wheelchair routes are close to
+  Valhalla's by PathAble's evidence: 13.6% barrier, 25.7% verified, and the
+  highest evidence cost of the four (194.4 km).
+  - Caveat: its graph was built from OpenStreetMap only. OTP can read slope from
+    a terrain model, and this run did not give it the lidar model, so it could
+    not avoid steep stretches it never saw.
+  - Valhalla was also run without elevation. Elevation alone would not give
+    either engine PathAble's four states, the measurement margins, or the
+    two-survey rule.
 
 **Product finding.** With the default preferences, 5 of 50 PathAble routes
 still use steps, and 34 of 50 cross at least one barrier. Barriers are a cost

@@ -1,4 +1,4 @@
-// Generated from docs/CASE_STUDY.md; edit the markdown, then regenerate.
+// Generated from docs/CASE_STUDY.md by scripts/build-case-study.mjs. Edit the markdown, then rerun.
 export const CASE_STUDY = [
  {
   "t": "h1",
@@ -35,7 +35,7 @@ export const CASE_STUDY = [
  },
  {
   "t": "p",
-  "text": "**What exists:**; OpenStreetMap represents 88.8% of the City's sidewalk inventory by length.; Only 48% of sidewalk length has a surface tag.; Only 7.3% of crossings have curb ramps mapped at both ends.; Width can be estimated from City sidewalk outlines. The validation is weak, and the report says so.; Running slope comes from two lidar surveys, flown in 2015 and 2023. They put a stretch on the same side of 5% for 95% of corridor edges, so I count slope only where they agree."
+  "text": "**What exists:** - OpenStreetMap represents 88.8% of the City's sidewalk inventory by length. - Only 48% of sidewalk length has a surface tag. - Only 7.3% of crossings have curb ramps mapped at both ends. - Width can be estimated from City sidewalk outlines. The validation is weak, and the report says so. - Running slope comes from two lidar surveys, flown in 2015 and 2023. They put a stretch on the same side of 5% for 95% of corridor edges, so I count slope only where they agree."
  },
  {
   "t": "p",
@@ -58,7 +58,7 @@ export const CASE_STUDY = [
  },
  {
   "t": "p",
-  "text": "Colour is never the only signal.; **Design review rounds with real screenshots** (DESIGN_LOG.md). Round 2 rebuilt every landing section to show the real product: a real route card, a state specimen table tied to the corridor map, and the measured numbers with their sources. Before and after are in `docs/screenshots/r1-*` and `r2-*`."
+  "text": "Colour is never the only signal. - **Design review rounds with real screenshots** (DESIGN_LOG.md). Round 2 rebuilt every landing section to show the real product: a real route card, a state specimen table tied to the corridor map, and the measured numbers with their sources. Before and after are in `docs/screenshots/r1-*` and `r2-*`."
  },
  {
   "t": "h2",
@@ -79,7 +79,7 @@ export const CASE_STUDY = [
  },
  {
   "t": "p",
-  "text": "These are real bugs, and each one is fixed: MapLibre's own CSS collapsed the map container to zero height.; A language button whose accessible name didn't contain its visible text (WCAG 2.5.3).; A language switch that dropped the selected route, because the trip seeded before the session store rehydrated.; `new Date()` frozen into the report form at build time.; A router that mutated shared graph weights on every request, so concurrent requests with different preferences could corrupt each other. The k6 benchmark exposed it."
+  "text": "These are real bugs, and each one is fixed: - MapLibre's own CSS collapsed the map container to zero height. - A language button whose accessible name didn't contain its visible text (WCAG 2.5.3). - A language switch that dropped the selected route, because the trip seeded before the session store rehydrated. - `new Date()` frozen into the report form at build time. - A router that mutated shared graph weights on every request, so concurrent requests with different preferences could corrupt each other. The k6 benchmark exposed it."
  },
  {
   "t": "h2",
@@ -96,7 +96,7 @@ export const CASE_STUDY = [
  {
   "t": "ul",
   "items": [
-   "**Run the routing engine benchmark** (Valhalla, OpenTripPlanner and pgRouting) on the 50 trips.",
+   "**Re-run the engine benchmark on all of North York,** and give OpenTripPlanner and Valhalla the lidar terrain model.",
    "**Build the full North York graph.** Only the corridor is loaded today.",
    "**Deploy the live demo,** and run Lighthouse and a field test on a mid-range Android phone.",
    "**Field-check the 10 slope sites.** Then run the five-participant user study.",

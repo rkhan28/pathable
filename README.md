@@ -119,9 +119,12 @@ make bench      # k6 against a running API
 - **No GIFs or screen recording yet.** The screenshots above are real.
 - **Only the demo corridor is loaded into PostGIS.** The full North York graph
   build has not been run.
-- **The routing engine benchmark** (Valhalla, OpenTripPlanner and pgRouting) is
-  still to do. The API uses an interim in-process router that meets the latency
-  targets ([ADR 0002](docs/decisions/0002-routing-engine.md)).
+- **Engine choice is measured, not assumed.** On 50 corridor trips, the
+  in-process evidence router chose the same routes as pgRouting (same rules in
+  SQL) with a p95 about 75 times lower. Valhalla's and OpenTripPlanner's
+  wheelchair routes had 3.5–3.7 times the known-barrier share (14.5% and 13.6%,
+  against 3.9%). Both ran without elevation input
+  ([ADR 0002](docs/decisions/0002-routing-engine.md)).
 - **Width estimates** come from City outlines. They were validated only against
   OSM tags, which are weak evidence. Poles and signs are not subtracted.
 - **Slope has not been field-checked.** The 10 sites and the protocol are

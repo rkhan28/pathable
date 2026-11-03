@@ -1,0 +1,14 @@
+# Vercel only needs apps/web plus the shared contracts and the data report JSON.
+data/
+pipelines/
+services/
+infra/
+ml/
+docs/screenshots/
+docs/lighthouse/
+**/node_modules/
+**/.venv/
+**/.next/
+**/__pycache__/
+apps/web/test-results/
+apps/web/playwright-report/
