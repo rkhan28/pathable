@@ -15,6 +15,7 @@ import { RouteCard } from "@/components/route/route-card";
 import { RouteDetails } from "@/components/route/route-details";
 import { FixtureBanner } from "@/components/site/fixture-banner";
 import { LanguageSwitcher } from "@/components/site/language-switcher";
+import { CommandPalette } from "@/components/palette/command-palette";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import type { LonLat, RouteResponse } from "@/lib/api/contracts";
 import { PathAbleError } from "@/lib/api/errors";
@@ -335,6 +336,7 @@ export function Planner() {
   return (
     <div className="pa-planner">
       <CoveragePatterns />
+      <CommandPalette />
       <div id="map" className="pa-planner-map">
         <RouteMap
           routes={routes}

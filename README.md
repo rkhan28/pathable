@@ -52,7 +52,7 @@ shares of walkable length are:
 | Check | Result |
 | --- | --- |
 | axe-core (WCAG 2.2 AA tags) | **0 violations**: 13 pages × 2 languages × 4 themes, plus open menus, dialogs, details and guidance |
-| End-to-end (Playwright, production build) | **144 passing**: keyboard flows, 390 px at 150% text, 44 px targets, language switch keeps the trip, honest unavailable states |
+| End-to-end (Playwright, production build) | **146 passing**: keyboard flows, 390 px at 150% text, 44 px targets, language switch keeps the trip, honest unavailable states |
 | Web unit tests (Vitest) | 50, including shared ranking cases and contract checks of every fixture |
 | API integration tests (pytest, PostGIS via testcontainers) | 22; every response validated against the generated OpenAPI |
 | Pipeline tests | 25 |
@@ -131,7 +131,7 @@ make bench      # k6 against a running API
   and blurring of faces and plates. Photo analysis is honestly unavailable.
 - **No WCAG conformance is claimed.** There has been no manual audit and no user
   testing; [the plan is written](docs/ACCESSIBILITY_TESTING.md).
-- **Not built yet:** the command palette, OpenTelemetry tracing and a CSP.
+- **Not built yet:** OpenTelemetry tracing and a CSP.
 
 ## Documentation
 

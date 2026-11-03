@@ -4,6 +4,7 @@ import { Wordmark } from "@/components/brand/wordmark";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./language-switcher";
 import { MobileMenu } from "./mobile-menu";
+import { CommandPalette } from "@/components/palette/command-palette";
 
 export function SiteHeader() {
   const t = useTranslations("nav");
@@ -30,6 +31,7 @@ export function SiteHeader() {
           </ul>
         </nav>
         <div className="ms-auto flex items-center gap-2">
+          <CommandPalette withButton />
           <Suspense>
             <LanguageSwitcher />
           </Suspense>

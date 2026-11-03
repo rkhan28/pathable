@@ -311,3 +311,16 @@
 @layer components {
   .pa-table-scroll { max-inline-size: 100%; }
 }
+
+@layer components {
+  /* ---------- Command palette ---------- */
+  .pa-palette { position: fixed; inset-block-start: 12vh; inset-inline: 1rem; max-inline-size: 36rem; margin-inline: auto; border-radius: var(--r-card); background: var(--surface-raised); box-shadow: var(--elevation-map); border: 1px solid var(--line-subtle); z-index: 60; overflow: hidden; }
+  .pa-palette-input { inline-size: 100%; min-block-size: 3.5rem; padding-inline: 1.25rem; border: 0; border-block-end: 1px solid var(--line-subtle); background: transparent; color: var(--ink); font-size: var(--type-md); }
+  .pa-palette-input:focus-visible { outline: none; box-shadow: inset 0 -2px 0 var(--focus); }
+  .pa-palette-list { max-block-size: 50vh; overflow: auto; padding: 0.5rem; }
+  .pa-palette-group [cmdk-group-heading] { padding: 0.75rem 0.75rem 0.25rem; font-size: var(--type-sm); color: var(--ink-muted); }
+  .pa-palette-item { display: flex; align-items: center; gap: 0.75rem; min-block-size: 2.75rem; padding-inline: 0.75rem; border-radius: var(--r-chip); cursor: pointer; }
+  .pa-palette-item[data-selected="true"] { background: var(--surface-sunken); box-shadow: inset 3px 0 0 var(--ink); }
+  .pa-palette-item > svg { color: var(--ink-muted); }
+  .pa-palette-empty { padding: 1rem; color: var(--ink-muted); }
+}

@@ -64,3 +64,12 @@ test.describe("axe: open states", () => {
     await expectNoAxeViolations(page, "alert dialog");
   });
 });
+
+test("axe: command palette open", async ({ page, isMobile }) => {
+  test.skip(isMobile, "desktop shortcut");
+  await useSettings(page, { theme: "dark" });
+  await page.goto("/en-CA");
+  await page.keyboard.press("ControlOrMeta+k");
+  await page.getByPlaceholder("Type a command or search").waitFor();
+  await expectNoAxeViolations(page, "command palette");
+});

@@ -13,7 +13,7 @@ Each library was judged on four criteria:
 | **Motion for React** | Yes: card and details `layoutId` morph, sheet springs | Springs with velocity hand-off for the sheet. All tokens live in `src/lib/motion.ts`, and reduced motion is respected. MIT. |
 | **Lucide** | Yes | Consistent 1.5 px stroke icons, tree-shaken. ISC. |
 | **Sonner** | Yes, for non-critical toasts only | Small. Errors that block a task use the assertive live region and inline messages, never toasts. MIT. |
-| **cmdk** | Planned (command palette) | The palette is not built yet. cmdk would be lazy-loaded behind ⌘K / Ctrl+K. MIT. |
+| **cmdk** | Yes: the command palette | Opens with ⌘K or Ctrl+K and loads on first use, so none of it ships with the page. MIT. |
 | **Ark UI** | No | Strong state machines, but it would duplicate Radix. MIT. |
 | **Magic UI** | No | Its components are decorative motion (marquees, number tickers, shimmer), which the design direction bans. MIT. |
 | **Aceternity UI** | No | Its signature effects (aurora, spotlight, glowing cards) are on the banned list. |

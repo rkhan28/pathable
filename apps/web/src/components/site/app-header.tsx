@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Wordmark } from "@/components/brand/wordmark";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./language-switcher";
+import { CommandPalette } from "@/components/palette/command-palette";
 
 /** Compact header for app surfaces that are not the full-screen planner. */
 export function AppHeader() {
@@ -16,6 +17,7 @@ export function AppHeader() {
         <nav aria-label={t("primary")} className="ms-auto flex items-center gap-2">
           <Link href="/navigate" className="pa-nav-link">{t("planner")}</Link>
           <Link href="/settings" className="pa-nav-link max-sm:hidden">{t("settings")}</Link>
+          <CommandPalette withButton />
           <Suspense>
             <LanguageSwitcher />
           </Suspense>
