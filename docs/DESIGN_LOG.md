@@ -128,3 +128,17 @@ move with the person; there should be a choice for blind travellers.
 | Profiles | Seven mobility aids, all about wheels and walking | Adds **Blind or low vision**: crossings at signals need a recorded accessible pedestrian signal, curb ramps are wanted, and voice guidance turns on. Picked from the landing, the planner or Settings. |
 | Signal data | Only "has an accessible signal" was kept; a blank City record looked the same as no signal | Three cases: recorded (verified), blank (no data), no signal (not judged). A blank record is never called a barrier. |
 | Planner map | Fits the route | A **my location** button: the map follows you, dragging lets you look around, pressing again stops. |
+
+## 2026-11-03: the landing walks the route as you scroll
+
+**Feedback.** The phone animation in the hero was not good; make it cleaner
+and driven by scrolling.
+
+| Area | Before | After |
+| --- | --- | --- |
+| Hero | Headline beside a floating phone that looped a walk on its own, with a glow and a drifting chip | One calm column: headline, search, Find your route, and the four "How do you get around?" choices. Nothing moves after the entrance. |
+| Walk-through | None (the loop played whether you looked or not) | A section below the hero where the phone holds still and the route advances with the page. Five chapters stop at real steps: a crossing with recorded curb ramps, one where the City's signal record is blank, one with an accessible signal, the turn where Line 1 would save 19 minutes (computed from the transit fixture, not typed in), and the arrival. On a phone the current chapter's text sits under the picture; on a wide screen the chapters scroll past on the left. |
+| Planner map | The dot could fail to appear if your position arrived before the map had started | The dot and follow camera wait for the map and then catch up. |
+
+**Rule kept:** nothing plays on its own. Scrolling is the only thing that moves
+the walk-through, and with reduced motion it jumps from step to step.

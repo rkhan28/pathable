@@ -166,7 +166,20 @@
       "corridorLabel": "Demo corridor by walkable length, 5% slope limit and 1.5 m minimum width"
     },
     "profileSaved": "Saved on this device. Change it any time in the planner.",
-    "guideCaption": "Illustration of guidance on a route the planner computed, York University to Finch West."
+    "story": {
+      "title": "Follow along, one step at a time",
+      "lede": "Scroll to walk a route the planner computed, from York University to Finch West.",
+      "instructionTitle": "One clear instruction",
+      "instructionBody": "Large type, the distance to go, and a map that follows you. Voice can read each step aloud.",
+      "unknownTitle": "Unknown stays unknown",
+      "unknownBody": "Where nobody has recorded the curb ramps or the signal, the step says so instead of guessing.",
+      "signalTitle": "Signals you can hear",
+      "signalBody": "Accessible pedestrian signals are marked, so you know which crossings beep and vibrate.",
+      "transitTitle": "The subway, when it helps",
+      "transitBody": "When a step-free trip is quicker, the planner says so. On this trip: {line}.",
+      "arriveTitle": "And you are there",
+      "arriveBody": "Choose how you get around above, then plan your own route."
+    }
   },
   "search": {
     "label": "Destination",

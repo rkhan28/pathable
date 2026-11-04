@@ -2,9 +2,10 @@ import type { CSSProperties } from "react";
 import { getTranslations } from "next-intl/server";
 import { CoveragePatterns } from "@/components/route/coverage-bar";
 import { ExampleCard } from "@/components/landing/example-card";
-import { HeroGuide } from "@/components/landing/hero-guide";
+import { GuideStory } from "@/components/landing/guide-story";
 import { IntroMark, introScript } from "@/components/landing/intro";
 import { LandingSearch } from "@/components/landing/landing-search";
+import { ProfilePicks } from "@/components/landing/profile-picks";
 import { PhotoPrivacy, TrustNumbers, WinterExample } from "@/components/landing/sections";
 import { StatesExplorer } from "@/components/landing/states-explorer";
 import { Link } from "@/i18n/navigation";
@@ -55,7 +56,7 @@ export default async function LandingPage() {
       <script dangerouslySetInnerHTML={{ __html: introScript }} />
       <IntroMark />
       <section className="pa-hero" aria-labelledby="hero-title">
-        <div className="pa-container pa-hero-grid">
+        <div className="pa-container">
           <div className="pa-hero-copy">
             <h1 id="hero-title" className="pa-display pa-rise-t" style={rise(0)}>
               {t("title")}
@@ -68,24 +69,34 @@ export default async function LandingPage() {
               <Link href="/navigate" className="pa-link-button is-primary">
                 {t("cta")}
               </Link>
-              <a href="#how-it-works" className="pa-text-link">
+              <a href="#guide" className="pa-text-link">
                 {t("secondary")}
               </a>
             </div>
-            <p className="pa-rise mt-6 text-sm text-ink-muted" style={rise(4)}>
+            <div className="pa-rise mt-10" style={rise(4)}>
+              <ProfilePicks />
+            </div>
+            <p className="pa-rise mt-6 text-sm text-ink-muted" style={rise(5)}>
               {t("pilot")}{" "}
               <Link href="/coverage" className="pa-text-link">
                 {t("coverageLink")}
               </Link>
             </p>
           </div>
-          <div className="pa-rise min-w-0" style={rise(2)}>
-            <HeroGuide data={guide} />
-          </div>
         </div>
       </section>
 
-      <section id="how-it-works" className="pa-section" aria-labelledby="how-title">
+      <section id="guide" className="pa-story" aria-labelledby="story-title">
+        <div className="pa-container">
+          <h2 id="story-title" className="pa-h2">
+            {t("story.title")}
+          </h2>
+          <p className="pa-section-lede">{t("story.lede")}</p>
+          <GuideStory data={guide} />
+        </div>
+      </section>
+
+      <section id="how-it-works" className="pa-section pa-section-rule" aria-labelledby="how-title">
         <div className="pa-container pa-split-even">
           <div className="min-w-0">
             <h2 id="how-title" className="pa-h2">

@@ -166,7 +166,20 @@
       "corridorLabel": "Corridor de démonstration selon la longueur praticable, pente maximale de 5 % et largeur minimale de 1,5 m"
     },
     "profileSaved": "Enregistré sur cet appareil. Modifiable à tout moment dans le planificateur.",
-    "guideCaption": "Illustration du guidage sur un itinéraire calculé par le planificateur, de l’Université York à Finch West."
+    "story": {
+      "title": "Suivez, une étape à la fois",
+      "lede": "Faites défiler pour parcourir un itinéraire calculé par le planificateur, de l’Université York à Finch West.",
+      "instructionTitle": "Une consigne claire",
+      "instructionBody": "Grands caractères, la distance qui reste et une carte qui vous suit. La voix peut lire chaque étape.",
+      "unknownTitle": "L’inconnu reste inconnu",
+      "unknownBody": "Là où personne n’a relevé les bateaux de trottoir ou le feu, l’étape le dit au lieu de deviner.",
+      "signalTitle": "Des feux que l’on entend",
+      "signalBody": "Les feux sonores pour piétons sont indiqués : vous savez quelles traversées émettent un son et vibrent.",
+      "transitTitle": "Le métro, quand il aide",
+      "transitBody": "Quand un trajet sans marche est plus rapide, le planificateur le dit. Pour ce trajet : {line}.",
+      "arriveTitle": "Vous êtes arrivé",
+      "arriveBody": "Choisissez votre façon de vous déplacer plus haut, puis planifiez votre itinéraire."
+    }
   },
   "search": {
     "label": "Destination",

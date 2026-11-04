@@ -390,7 +390,8 @@ export function RouteMap({
     return () => {
       cancelled = true;
     };
-  }, [user]);
+    // status: a position can arrive before the map exists; place the dot once it does.
+  }, [user, status]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -409,7 +410,8 @@ export function RouteMap({
       easing: first ? easeOutCubic : (t) => t,
       essential: true,
     });
-  }, [user, follow, followMode]);
+    // status: as above, start following once the map exists.
+  }, [user, follow, followMode, status]);
 
   // Guidance ended: level the map, drop the follow padding and frame the route again.
   useEffect(() => {

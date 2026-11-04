@@ -52,20 +52,14 @@
 
   /* ---------- Landing ---------- */
   /* The phone's glow and floating chip may reach past the edge; never into a sideways scroll. */
-  .pa-hero { padding-block: 2rem 4rem; overflow-x: clip; }
-  .pa-hero-grid { display: grid; gap: 2rem; align-items: start; }
-  @media (min-width: 64rem) { .pa-hero-grid { grid-template-columns: minmax(0, 6fr) minmax(0, 7fr); gap: 3.5rem; padding-block-start: 2rem; } }
+  .pa-hero { padding-block: 3rem 4.5rem; overflow-x: clip; }
+  @media (min-width: 64rem) { .pa-hero { padding-block: 6rem 7rem; } }
   .pa-display { font-size: var(--type-display); letter-spacing: -0.025em; line-height: 1.02; max-inline-size: 15em; text-wrap: balance; }
   .pa-lede { margin-block: 1.25rem 2rem; font-size: var(--type-md); color: var(--ink-muted); max-inline-size: 42ch; }
   .pa-hero-search { max-inline-size: 32rem; }
-  .pa-hero-map { display: grid; gap: 1rem; }
-  .pa-hero-canvas { position: relative; aspect-ratio: 16 / 11; border-radius: var(--r-sheet); overflow: hidden; background: var(--map-land); border: 1px solid var(--line-subtle); }
-  @media (max-width: 40rem) { .pa-hero-canvas { aspect-ratio: 4 / 5; } }
   .domes-edge::after { content: ""; position: absolute; inset-block: 0; inset-inline-end: 0; inline-size: 18%; pointer-events: none;
     background-image: radial-gradient(circle at center, var(--dome) 0 3px, transparent 3.5px); background-size: 16px 16px; opacity: 0.8;
     mask-image: linear-gradient(to left, black, transparent); }
-  .pa-hero-panel { display: grid; gap: 0.75rem; }
-  .pa-hero-explanation { font-size: var(--type-md); max-inline-size: var(--measure); }
 
   .pa-section { padding-block: 4rem; }
   @media (min-width: 64rem) { .pa-section { padding-block: 6rem; } }
@@ -486,33 +480,51 @@
   .pa-profile-icon { position: absolute; inset-inline-start: 0.875rem; pointer-events: none; color: var(--ink-muted); }
   .pa-profile-chevron { position: absolute; inset-inline-end: 0.875rem; pointer-events: none; color: var(--ink-muted); }
 
-  /* ---------- Landing hero: guidance on a phone ---------- */
-  .pa-guide { display: grid; gap: 1.5rem; justify-items: center; }
-  .pa-guide-stage { position: relative; inline-size: min(100%, 22rem); }
-  .pa-guide-glow { position: absolute; inset: 8% -18% 4% -18%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--signal) 32%, transparent), transparent); filter: blur(8px); }
-  .pa-guide-phone { position: relative; aspect-ratio: 360 / 560; border-radius: 2.25rem; overflow: hidden; background: var(--map-land); border: 8px solid var(--ink); box-shadow: 0 30px 60px -20px rgb(0 0 0 / 0.45), 0 0 0 1px var(--line-subtle); }
-  [data-theme="dark"] .pa-guide-phone { border-color: #2a332e; }
-  .pa-guide-map { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; }
-  .pa-guide-banner { position: absolute; inset-block-start: 0.75rem; inset-inline: 0.75rem; min-block-size: 4.25rem; padding: 0.625rem 0.75rem; border-radius: 1.125rem; background: var(--brand); color: var(--on-brand); box-shadow: 0 8px 20px rgb(0 0 0 / 0.2); overflow: hidden; }
-  .pa-guide-icon { display: grid; place-items: center; flex: none; inline-size: 2.5rem; block-size: 2.5rem; border-radius: 0.75rem; background: rgb(255 255 255 / 0.14); }
-  .pa-guide-distance { display: block; font-size: var(--type-md); font-weight: 800; line-height: 1.1; }
-  .pa-guide-text { display: block; font-size: var(--type-sm); font-weight: 700; line-height: 1.25; }
-  .pa-guide-bar { position: absolute; inset-block-end: 0.75rem; inset-inline: 0.75rem; display: flex; align-items: baseline; gap: 0.625rem; padding: 0.625rem 0.875rem; border-radius: 1.125rem; background: var(--surface-raised); box-shadow: 0 -2px 12px rgb(0 0 0 / 0.12); }
-  .pa-guide-eta { font-size: var(--type-lg); font-weight: 800; color: var(--state-verified); }
-  .pa-guide-chip { position: absolute; display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.5rem 0.75rem; border-radius: var(--r-control); background: var(--surface-raised); color: var(--ink); font-size: var(--type-sm); font-weight: 700; box-shadow: var(--elevation-map); white-space: nowrap; }
-  .pa-guide-chip.is-transit { inset-block-start: 42%; inset-inline-end: -12%; }
-  @media (max-width: 30rem) { .pa-guide-chip.is-transit { inset-inline-end: -0.5rem; } }
-  .pa-guide-caption { max-inline-size: 22rem; text-align: center; font-size: var(--type-sm); color: var(--ink-muted); margin-block-start: -0.5rem; }
-  .pa-guide-picks { border: 0; padding: 0; inline-size: min(100%, 30rem); }
+  /* ---------- Landing: guidance you scroll through ---------- */
+  /* The phone holds still (sticky) while the chapters scroll past it; the page's scroll moves the route. */
+  .pa-story { padding-block: 4rem 2rem; border-block-start: 1px solid var(--line-subtle); }
+  .pa-story-grid { display: grid; margin-block-start: 2rem; }
+  /* Phone width: the picture and the current chapter fill the screen; the list beneath only sets the scroll length. */
+  .pa-story-stage { position: sticky; inset-block-start: var(--header-height); z-index: 1; display: grid; grid-template-rows: minmax(0, 1fr) auto; justify-items: center; gap: 1.25rem; block-size: calc(100svh - var(--header-height)); padding-block: 1rem 1.5rem; background: var(--surface); }
+  .pa-story-phone { position: relative; block-size: 100%; max-block-size: 36rem; aspect-ratio: 360 / 560; border-radius: 2rem; overflow: hidden; background: var(--map-land); border: 7px solid var(--ink); box-shadow: 0 24px 48px -24px rgb(0 0 0 / 0.4), 0 0 0 1px var(--line-subtle); }
+  [data-theme="dark"] .pa-story-phone { border-color: #2a332e; }
+  .pa-story-caption { inline-size: 100%; max-inline-size: 30rem; min-block-size: 8.5rem; }
+  .pa-story-caption .pa-story-title { font-size: var(--type-lg); }
+  .pa-story-caption .pa-story-body { margin-block-start: 0.375rem; font-size: var(--type-base); }
+  .pa-story-map { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; }
+  .pa-story-banner { position: absolute; inset-block-start: 0.625rem; inset-inline: 0.625rem; padding: 0.625rem 0.75rem; border-radius: 1rem; background: var(--brand); color: var(--on-brand); box-shadow: 0 8px 20px rgb(0 0 0 / 0.18); }
+  .pa-story-icon { display: grid; place-items: center; flex: none; inline-size: 2.5rem; block-size: 2.5rem; border-radius: 0.75rem; background: rgb(255 255 255 / 0.14); }
+  .pa-story-distance { display: block; font-size: var(--type-md); font-weight: 800; line-height: 1.1; }
+  .pa-story-text { display: block; font-size: var(--type-sm); font-weight: 700; line-height: 1.25; }
+  .pa-story-notes { display: flex; flex-wrap: wrap; gap: 0.25rem; margin-block-start: 0.5rem; }
+  .pa-story-notes span { padding: 0.125rem 0.5rem; border-radius: 999px; background: rgb(255 255 255 / 0.16); font-size: var(--type-xs); font-weight: 700; }
+  .pa-story-notes span.is-unknown { background: transparent; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.5); }
+  .pa-story-chip { position: absolute; inset-block-end: 4.25rem; inset-inline: 0.625rem; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; border-radius: 0.875rem; background: var(--surface-raised); color: var(--ink); font-size: var(--type-sm); font-weight: 700; box-shadow: var(--elevation-map); }
+  .pa-story-bar { position: absolute; inset-block-end: 0.625rem; inset-inline: 0.625rem; display: flex; align-items: baseline; gap: 0.625rem; padding: 0.625rem 0.875rem; border-radius: 1rem; background: var(--surface-raised); box-shadow: 0 -2px 12px rgb(0 0 0 / 0.1); }
+  .pa-story-eta { font-size: var(--type-lg); font-weight: 800; color: var(--state-verified); }
+  .pa-story-chapters { list-style: none; margin: 0; padding: 0; }
+  .pa-story-chapter { position: relative; min-block-size: 55svh; }
+  .pa-story-chapter .pa-story-card { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .pa-story-cta { display: none; }
+  .pa-story-after { padding-block: 1.5rem 0; }
+  .pa-story-num { display: block; margin-block-end: 0.5rem; font-size: var(--type-sm); font-weight: 800; color: var(--brand); letter-spacing: 0.06em; }
+  .pa-story-title { font-size: var(--type-xl); font-weight: 800; line-height: 1.15; letter-spacing: -0.015em; text-wrap: balance; }
+  .pa-story-body { margin-block-start: 0.75rem; font-size: var(--type-md); color: var(--ink-muted); max-inline-size: 36ch; }
+  /* Wide screens: chapters scroll past on the left while the phone holds still on the right. */
+  @media (min-width: 64rem) {
+    .pa-story-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4rem; margin-block-start: 0; }
+    .pa-story-stage { grid-column: 2; grid-row: 1; grid-template-rows: minmax(0, 1fr); align-items: center; background: none; padding-block: 2.5rem; }
+    .pa-story-caption, .pa-story-after { display: none; }
+    .pa-story-chapters { grid-column: 1; grid-row: 1; padding-block: 15svh 35svh; }
+    .pa-story-chapter { display: flex; align-items: center; min-block-size: 70svh; }
+    .pa-story-chapter .pa-story-card { position: static; inline-size: auto; block-size: auto; overflow: visible; clip-path: none; white-space: normal; max-inline-size: 30rem; opacity: 0.3; transition: opacity 320ms var(--ease-out-cubic); }
+    .pa-story-chapter[data-active] .pa-story-card { opacity: 1; }
+    .pa-story-cta { display: inline-flex; }
+  }
+
+  .pa-picks { border: 0; padding: 0; margin: 0; }
   .pa-pick { display: inline-flex; align-items: center; gap: 0.5rem; min-block-size: 2.75rem; padding-inline: 1rem; border-radius: var(--r-control); border: 1px solid var(--line); background: var(--surface-raised); font-weight: 700; transition: background-color var(--duration-state), color var(--duration-state), border-color var(--duration-state), transform var(--duration-press) var(--ease-out-cubic); }
   .pa-pick:hover { background: var(--surface-sunken); }
   .pa-pick:active { transform: scale(0.96); }
   .pa-pick.is-on { background: var(--ink); color: var(--surface); border-color: var(--ink); }
-  @media (prefers-reduced-motion: no-preference) {
-    .pa-guide-phone { animation: pa-float 7s ease-in-out infinite; }
-    .pa-guide-chip { animation: pa-float 6s ease-in-out -2s infinite; }
-    .pa-guide-halo { animation: pa-halo-svg 2.4s ease-out infinite; transform-box: fill-box; transform-origin: center; }
-  }
-  @keyframes pa-float { 50% { transform: translateY(-8px); } }
-  @keyframes pa-halo-svg { 0% { transform: scale(0.6); opacity: 0.5; } 100% { transform: scale(1.6); opacity: 0; } }
 }
