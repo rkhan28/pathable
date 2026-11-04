@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { CoveragePatterns } from "@/components/route/coverage-bar";
 import { ExampleCard } from "@/components/landing/example-card";
 import { GuideStory } from "@/components/landing/guide-story";
-import { IntroMark, introScript } from "@/components/landing/intro";
+import { IntroMark } from "@/components/landing/intro";
 import { LandingSearch } from "@/components/landing/landing-search";
 import { ProfilePicks } from "@/components/landing/profile-picks";
 import { HeroNetwork } from "@/components/landing/network/hero-network";
@@ -56,7 +56,6 @@ export default async function LandingPage() {
   return (
     <>
       <CoveragePatterns />
-      <script dangerouslySetInnerHTML={{ __html: introScript }} />
       <IntroMark />
       <section className="pa-hero" aria-labelledby="hero-title">
         <div className="pa-container pa-hero-grid">

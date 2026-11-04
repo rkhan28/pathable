@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import { INTRO_KEY as KEY } from "./intro-script";
 
-const KEY = "pathable:intro";
 /** Matches the length of the CSS intro in components.css (draw, then lift). */
 const INTRO_MS = 1500;
 
@@ -16,8 +16,6 @@ const INTRO_MS = 1500;
  * it from the start, so it neither blocks a quick click nor delays the page's
  * largest paint.
  */
-export const introScript = `try{var d=document.documentElement;if(sessionStorage.getItem("${KEY}"))d.dataset.intro="seen";else d.dataset.intro="play"}catch(e){document.documentElement.dataset.intro="seen"}`;
-
 export function IntroMark() {
   useEffect(() => {
     const root = document.documentElement;

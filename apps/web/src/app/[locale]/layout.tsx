@@ -3,8 +3,10 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { Toaster } from "sonner";
+import { BootScript } from "@/components/site/boot-script";
 import { LiveRegions } from "@/components/site/live-regions";
 import { ENABLED_LOCALES, localeInfo } from "@/i18n/locales";
+import { introScript } from "@/components/landing/intro-script";
 import { bootScript } from "@/stores/settings";
 import { atkinson, atkinsonMono } from "../fonts";
 import { Providers } from "../providers";
@@ -49,8 +51,9 @@ export default async function LocaleLayout({ children }: { children: ReactNode }
       suppressHydrationWarning
     >
       <head>
-        {/* Applies theme, contrast, motion and text size before first paint. */}
-        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
+        {/* Applies theme, contrast, motion and text size before first paint, and decides
+            whether the landing's intro plays. */}
+        <BootScript code={bootScript + introScript} />
       </head>
       <body>
         <a href="#main" className="skip-link">
