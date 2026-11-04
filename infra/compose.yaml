@@ -33,7 +33,10 @@ services:
       # Traces go to a collector only when one is named; `make trace` starts Jaeger and sets this.
       OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
       # Local stack only: end-to-end loops send several reports a minute. Production keeps the default of 6.
-      REPORTS_PER_MINUTE: "60"
+      REPORTS_PER_MINUTE: ${REPORTS_PER_MINUTE:-60}
+      # `make bench` lifts these for the length of a run, then restores them.
+      ROUTES_PER_MINUTE: ${ROUTES_PER_MINUTE:-60}
+      HAZARDS_PER_MINUTE: ${HAZARDS_PER_MINUTE:-120}
     ports: ["8000:8000"]
     depends_on: { db: { condition: service_healthy }, redis: { condition: service_started }, s3: { condition: service_started } }
   # Optional: `make trace`, then http://localhost:16686 to see web, API, database and router spans.

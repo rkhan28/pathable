@@ -25,11 +25,13 @@ can use any S3 provider.
 
 ## Consequences
 
-- The photo pipeline is not built yet:
-  - upload;
-  - server-side EXIF stripping;
-  - face and licence-plate blurring before anything is public.
+- The photo pipeline was not built when this was decided. Since then:
+  - upload (`POST /v1/photos`) and server-side re-encoding without metadata
+    are built and tested; a report's `photoId` must name a stored photo;
+  - the local bucket has an S3 identity, so it refuses anonymous reads;
+  - face and licence-plate blurring is still not built, so no photo is ever
+    served publicly.
 
-  Reports carry `photoId: null`. Client-side EXIF removal exists (`src/lib/photo.ts`).
+  Client-side EXIF removal also runs first (`src/lib/photo.ts`).
 - Blurring needs a licensed detector. It will be evaluated under the same rules
   as `ML_PLAN.md`.

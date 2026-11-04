@@ -11,7 +11,9 @@ contracts/fixtures/graph-york-u-finch-west.json) and the routing fixtures.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+from datetime import UTC, datetime
 from pathlib import Path
 
 import geopandas as gpd
@@ -107,6 +109,24 @@ def pieces(doc: dict) -> list[Piece]:
     ]
 
 
+def data_version(area: str) -> str:
+    """Name a build after its inputs, so the same inputs always give the same version.
+
+    The date is the OpenStreetMap extract's; the suffix fingerprints every
+    downloaded source (name, size, modification time). Re-running on unchanged
+    data replaces that version in place; a new download of any source makes a
+    new version, and the API serves the newest.
+    """
+    files = sorted(p for p in RAW.rglob("*") if p.is_file() and p.suffix != ".md5")
+    digest = hashlib.sha256()
+    for f in files:
+        st = f.stat()
+        digest.update(f"{f.relative_to(RAW)}:{st.st_size}:{int(st.st_mtime)}\n".encode())
+    extract = RAW / "osm" / "ontario-latest.osm.pbf"
+    osm_date = datetime.fromtimestamp(extract.stat().st_mtime, UTC).date()
+    return f"{area}-{osm_date}-{digest.hexdigest()[:8]}"
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--area", default="corridor")
@@ -117,7 +137,7 @@ def main() -> None:
     ways, nodes = osm.load(RAW / "osm" / "north_york.osm.pbf")
     ways, nodes = ways.to_crs(METRIC), nodes.to_crs(METRIC)
     doc = export(
-        area_for(args.area, ways, nodes), ways, nodes, args.version or f"{args.area}-2026-11-03"
+        area_for(args.area, ways, nodes), ways, nodes, args.version or data_version(args.area)
     )
     print(f"{args.area}: {len(doc['edges'])} edges, {len(doc['hazards'])} hazards")
     if args.out:

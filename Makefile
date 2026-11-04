@@ -53,8 +53,10 @@ check-pipelines:
 e2e:
 	cd apps/web && NEXT_PUBLIC_DEV_FIXTURES=true npm run build && npx playwright test
 
-bench:         ## k6 latency benchmark against a running API
-	k6 run infra/k6/routes.js
+bench:         ## k6 latency benchmark: lifts the API's rate limits for the run, saves the summary
+	ROUTES_PER_MINUTE=1000000 HAZARDS_PER_MINUTE=1000000 $(COMPOSE) up -d --wait api
+	k6 run --summary-export docs/data/k6-summary.json infra/k6/routes.js; status=$$?; \
+	$(COMPOSE) up -d --wait api; exit $$status
 
 screenshots:
 	cd apps/web && node scripts/screenshots.mjs http://localhost:3100 ../../docs/screenshots latest

@@ -1,0 +1,35 @@
+[
+  {
+    "id": "corridor",
+    "origin": [
+      -79.499629,
+      43.774123
+    ],
+    "destination": [
+      -79.410915,
+      43.761452
+    ]
+  },
+  {
+    "id": "york-u-finch-west",
+    "origin": [
+      -79.499629,
+      43.774123
+    ],
+    "destination": [
+      -79.491542,
+      43.763974
+    ]
+  },
+  {
+    "id": "north-york-centre-sheppard-yonge",
+    "origin": [
+      -79.41263,
+      43.768679
+    ],
+    "destination": [
+      -79.410915,
+      43.761452
+    ]
+  }
+]

@@ -50,6 +50,34 @@ Run 3 meets all three.
     p95, and routes improve too.
   - The API image now defaults to `WEB_CONCURRENCY=4`, set per deployment.
 
+### On the Docker stack (`make bench`)
+
+The script used to time every response, including 429s. Against the stack
+from `make up`, whose limit is 60 routes a minute, most requests were refused
+in a few milliseconds and the latency thresholds still passed. (The runs above
+were made with the limit raised, and their success column shows it.) It now
+times only successful responses, fails the run if more than 1% of requests
+fail, warms every worker first, and adds a scenario for the three demo trips
+end to end. `make bench` lifts the API's limits for the run, restores them
+after, and saves k6's summary.
+
+- **Setup:** the `api` container (4 uvicorn workers) with PostGIS and Redis,
+  in Colima with **4 CPUs**; corridor graph; tracing off.
+- **Run date:** 2026-11-04.
+
+| Profile | `/v1/routes` p95 | `/v1/routes` p99 | Demo trips p95 | `/v1/hazards` p95 | Failed | Throughput | Summary |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| 4 route + 2 hazard users (as above) | 107 ms | 147 ms | n/a | **112 ms (fails < 100 ms)** | 0% | 124 req/s | [`k6-summary-corridor-profile.json`](data/k6-summary-corridor-profile.json) |
+| plus 1 user on the demo trips | 194 ms | 251 ms | 220 ms | **120 ms (fails)** | 0% | 115 req/s | [`k6-summary.json`](data/k6-summary.json) |
+
+Routes meet their targets. Hazards do not, here. One hazards query takes about
+5 ms on the idle stack; under this load the four CPUs are fully busy with
+routing, which is CPU-bound Python, and hazard requests wait for a core. Run 3
+above passed with 6 workers on a 10-core machine, that is, with cores to
+spare. A host that must hold the hazards target under full routing load needs
+more cores than route requests in flight, or routing moved off the request
+workers; neither is done.
+
 ### With the full North York graph
 
 - **Graph:** 105,069 edges and 1,396 measured hazards.

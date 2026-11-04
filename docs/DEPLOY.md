@@ -53,6 +53,15 @@ You run these, signed in to your own accounts:
    - `DATABASE_URL`
    - `CORS_ORIGINS=https://<your-vercel-domain>`
    - `WEB_CONCURRENCY=1`
+   - `TRUSTED_PROXY_HOPS=1`: Render puts one proxy in front of the service. With
+     the default of 0 every request would count against the proxy's address,
+     so all visitors would share one rate limit.
+   - `REDIS_URL`, if a free Redis is attached; without it the limit is counted
+     per process, which is right for one instance.
+   - Optional: `OTEL_EXPORTER_OTLP_ENDPOINT` and `OTEL_EXPORTER_OTLP_HEADERS` for
+     a hosted trace collector. Unset, tracing costs nothing.
+   - Photo upload stays off unless `S3_BUCKET`, `S3_ENDPOINT`, `S3_ACCESS_KEY`
+     and `S3_SECRET_KEY` name a private bucket.
 
 ## Not done yet
 

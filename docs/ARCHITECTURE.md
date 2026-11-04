@@ -116,6 +116,18 @@ deployment.
 
 - North York is fully built (105,069 edges). Each API worker holds the graph in
   memory, about 596 MB, which is more than free tiers allow.
-- The photo upload pipeline is not built (ADR 0003).
-- OpenTelemetry tracing is not wired yet. Responses carry `x-request-id` and
-  `server-timing` headers.
+- Photos are uploaded, re-encoded without metadata and stored privately, but
+  faces and plates are not blurred, so no photo is ever served (ADR 0003).
+- A free host holds only the corridor. `GET /v1/coverage` says which area is
+  loaded, and the coverage page and planner name it.
+
+## Tracing
+
+One trace runs from the browser to the router. The web app sends a W3C
+`traceparent` with every API call (two random ids, no tracing library in the
+bundle) and uses the trace id as the request id. The API continues the trace
+with FastAPI and psycopg instrumentation and its own `router.route` and
+`router.transit` spans, and exports over OTLP only when
+`OTEL_EXPORTER_OTLP_ENDPOINT` is set. `make trace` starts Jaeger on
+http://localhost:16686. Responses still carry `x-request-id` and
+`server-timing`.
