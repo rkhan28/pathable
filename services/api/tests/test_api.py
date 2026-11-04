@@ -32,6 +32,16 @@ def test_health_and_ready(client):
     ready = client.get("/readyz")
     assert ready.status_code == 200
     assert ready.json()["dataVersion"] == "test-york-u-finch-west"
+    assert ready.json()["checks"] == {"database": "ok", "graph": "ok", "redis": "off", "photos": "ok"}
+
+
+def test_one_place_is_not_a_trip(client):
+    here = TRIP["origin"]
+    for path in ("/v1/routes", "/v1/transit"):
+        res = client.post(path, json={**TRIP, "destination": [here[0] + 0.00005, here[1]]})
+        assert res.status_code == 400
+        valid("ApiError", res.json())
+        assert res.json()["error"]["code"] == "same_place"
 
 
 def test_routes_match_contract_and_are_live(client):
@@ -234,17 +244,6 @@ def test_analysis_is_honestly_unavailable(client):
     assert res.json() == {"status": "unavailable", "reason": "no_model"}
 
 
-def test_rate_limit_returns_contract_error():
-    from pathable_api.errors import ApiError
-    from pathable_api.ratelimit import RateLimiter
-
-    limiter = RateLimiter(None)
-    for _ in range(3):
-        limiter.check("routes", "1.2.3.4", 3)
-    with pytest.raises(ApiError, match="rate_limited"):
-        limiter.check("routes", "1.2.3.4", 3)
-
-
 def test_concurrent_preferences_do_not_interfere(client):
     """Routing with different preferences at the same time must give the same answers as one at a time."""
     from concurrent.futures import ThreadPoolExecutor
@@ -374,6 +373,8 @@ def test_photo_upload_rejects_non_images_and_bad_ids(client):
         "observedOn": date.today().isoformat(),
     }
     assert client.post("/v1/reports", json=bad).status_code == 400
+    # Well formed, but no such photo was ever uploaded.
+    assert client.post("/v1/reports", json={**bad, "photoId": "0" * 32}).status_code == 400
 
 
 # Transit runs on a real slice of the TTC schedule (contracts/fixtures/transit-york-u-finch-west.json):

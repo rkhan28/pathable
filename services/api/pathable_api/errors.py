@@ -5,10 +5,12 @@ import logging
 from fastapi import Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException
 
 STATUS = {
     "outside_coverage": 422,
     "no_route": 404,
+    "same_place": 400,
     "invalid_request": 400,
     "rate_limited": 429,
     "unavailable": 503,
@@ -35,7 +37,22 @@ def body(code: str, request_id: str | None) -> dict:
 def install(app) -> None:
     @app.exception_handler(ApiError)
     async def _api(request: Request, exc: ApiError):
-        return JSONResponse(body(exc.code, getattr(request.state, "request_id", None)), status_code=STATUS[exc.code])
+        return JSONResponse(
+            body(exc.code, getattr(request.state, "request_id", None)),
+            status_code=STATUS[exc.code],
+            headers=getattr(exc, "headers", None),
+        )
+
+    @app.exception_handler(HTTPException)
+    async def _http(request: Request, exc: HTTPException):
+        # Unknown paths and wrong methods come from the framework, not our code; they get
+        # the contract's error shape too, keeping their own status.
+        code = "not_found" if exc.status_code == 404 else "invalid_request"
+        return JSONResponse(
+            body(code, getattr(request.state, "request_id", None)),
+            status_code=exc.status_code,
+            headers=getattr(exc, "headers", None),
+        )
 
     @app.exception_handler(RequestValidationError)
     async def _invalid(request: Request, _exc: RequestValidationError):

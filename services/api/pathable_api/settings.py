@@ -22,3 +22,7 @@ class Settings:
     # Requests per minute per client for /v1/routes; reports are stricter.
     routes_per_minute: int = int(os.environ.get("ROUTES_PER_MINUTE", "60"))
     reports_per_minute: int = int(os.environ.get("REPORTS_PER_MINUTE", "6"))
+    hazards_per_minute: int = int(os.environ.get("HAZARDS_PER_MINUTE", "120"))
+    # How many proxies in front of the API append to X-Forwarded-For (1 on most hosts, 0 locally).
+    # Only their entries are believed; with 0 the header is ignored, so it cannot dodge the limit.
+    trusted_proxy_hops: int = int(os.environ.get("TRUSTED_PROXY_HOPS", "0"))

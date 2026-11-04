@@ -194,6 +194,8 @@ class EvidenceGraph:
 
         def overlap(p, q):
             lp, lq = lengths(p), lengths(q)
+            if not lp or not lq:
+                return 1.0  # an empty path (both ends on one node) is the same as any other
             shared = sum(min(v, lq.get(k, 0)) for k, v in lp.items())
             return shared / max(1e-9, min(sum(lp.values()), sum(lq.values())))
 

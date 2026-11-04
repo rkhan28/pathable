@@ -352,6 +352,7 @@
     "outside_coverage": "Ce trajet est hors du secteur que PathAble couvre en ce moment. La page Couverture indique où il fonctionne.",
     "no_route": "Aucun itinéraire praticable n’a été trouvé entre ces points.",
     "no_route_fixture": "Les données de développement ne couvrent que les trajets de démonstration. Choisissez-en un ci-dessous ou branchez le service en direct.",
+    "same_place": "Le départ et l’arrivée sont au même endroit. Choisissez une autre destination.",
     "invalid_request": "La demande n’est pas valide. Vérifiez le départ et l’arrivée.",
     "rate_limited": "Trop de demandes. Patientez un instant, puis réessayez.",
     "unavailable": "Le service d’itinéraires n’est pas offert pour le moment.",

@@ -2477,6 +2477,7 @@
                 "enum": [
                   "outside_coverage",
                   "no_route",
+                  "same_place",
                   "invalid_request",
                   "rate_limited",
                   "unavailable",

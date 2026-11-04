@@ -52,6 +52,12 @@ class LocalStorage:
         (self.root / f"{photo_id}.jpg").write_bytes(data)
         return photo_id
 
+    def exists(self, photo_id: str) -> bool:
+        return (self.root / f"{photo_id}.jpg").is_file()
+
+    def ping(self) -> bool:
+        return self.root.is_dir()
+
 
 class S3Storage:
     """Any S3-compatible store (SeaweedFS locally). The bucket is private."""
@@ -81,3 +87,21 @@ class S3Storage:
         photo_id = uuid.uuid4().hex
         self.client.put_object(Bucket=self.bucket, Key=f"reports/{photo_id}.jpg", Body=data, ContentType="image/jpeg")
         return photo_id
+
+    def exists(self, photo_id: str) -> bool:
+        from botocore.exceptions import ClientError
+
+        try:
+            self.client.head_object(Bucket=self.bucket, Key=f"reports/{photo_id}.jpg")
+            return True
+        except ClientError:
+            return False
+
+    def ping(self) -> bool:
+        from botocore.exceptions import BotoCoreError, ClientError
+
+        try:
+            self.client.head_bucket(Bucket=self.bucket)
+            return True
+        except (BotoCoreError, ClientError):
+            return False

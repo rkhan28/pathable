@@ -27,7 +27,7 @@ import { PathAbleError } from "@/lib/api/errors";
 import { getService, serviceKind } from "@/lib/api/select-service";
 import { announce } from "@/lib/announce";
 import { formatLonLat, parseLinkParam } from "@/lib/geo";
-import { type Journey, fromRoute, fromTransit } from "@/lib/journey";
+import { type Journey, fromRoute, fromTransit, metres } from "@/lib/journey";
 import { spring } from "@/lib/motion";
 import { usePreferences } from "@/stores/preferences";
 import { useTrip, type Place } from "@/stores/trip";
@@ -41,6 +41,8 @@ import { HazardMarker } from "@/components/map/hazard-marker";
 import type { Hazard } from "@/lib/api/contracts";
 
 const renderHazard = (h: Hazard) => <HazardMarker hazard={h} />;
+/** Same threshold as the API's: closer than this, there is no trip to plan. */
+const SAME_PLACE_M = 15;
 const NO_HAZARDS: Hazard[] = [];
 const followBreak = () => navCamera.set({ follow: false });
 
@@ -183,7 +185,9 @@ export function Planner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [origin?.position[0], origin?.position[1], destination?.position[0], destination?.position[1]]);
 
-  const request = origin && destination ? { origin: origin.position, destination: destination.position, preferences } : null;
+  // The API refuses a trip whose ends are one place; say so here instead of asking it.
+  const samePlace = Boolean(origin && destination && metres(origin.position, destination.position) < SAME_PLACE_M);
+  const request = origin && destination && !samePlace ? { origin: origin.position, destination: destination.position, preferences } : null;
   const query = useQuery<RouteResponse, PathAbleError>({
     queryKey: ["routes", request],
     queryFn: async ({ signal }) => (await getService()).routes(request!, signal),
@@ -385,6 +389,12 @@ export function Planner() {
                   </ul>
                 </>
               )}
+            </div>
+          )}
+
+          {samePlace && (
+            <div className="pa-notice is-error mt-4" role="alert">
+              <p>{t("errors.same_place")}</p>
             </div>
           )}
 

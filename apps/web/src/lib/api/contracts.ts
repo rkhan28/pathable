@@ -307,6 +307,7 @@ export type AnalysisResponse = z.infer<typeof AnalysisResponse>;
 export const ErrorCode = z.enum([
   "outside_coverage",
   "no_route",
+  "same_place",
   "invalid_request",
   "rate_limited",
   "unavailable",

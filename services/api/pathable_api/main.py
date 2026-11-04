@@ -20,13 +20,15 @@ from .db import Database
 from .errors import ApiError
 from .models import ReportCreate, RouteRequest, TransitRequest, WithdrawRequest
 from .photos import MAX_BYTES, InvalidPhoto, LocalStorage, S3Storage, clean_jpeg
-from .ratelimit import RateLimiter
-from .routing import EvidenceGraph
+from .ratelimit import RateLimiter, client_address
+from .routing import EvidenceGraph, metres
 from .settings import Settings
 from .transit import TransitPlanner
 
 log = logging.getLogger("pathable.api")
 NORTH_YORK_BBOX = (-79.5853, 43.6929, -79.2991, 43.8157)
+# Closer than this, start and destination are one place: there is no trip to rank.
+SAME_PLACE_M = 15.0
 
 
 class State:
@@ -87,8 +89,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return response
 
     def client(request: Request) -> str:
-        return request.headers.get("x-forwarded-for", "").split(",")[0].strip() or (
-            request.client.host if request.client else "unknown"
+        return client_address(
+            request.headers.get("x-forwarded-for"),
+            request.client.host if request.client else None,
+            settings.trusted_proxy_hops,
         )
 
     @app.get("/healthz")
@@ -97,13 +101,21 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.get("/readyz")
     def readyz():
+        # Ready means routes can be served: the graph is loaded and the database answers.
+        # Redis and photo storage are reported but do not fail readiness: rate limiting
+        # falls back to counting per process, and only photo uploads need storage.
         try:
             ready = state.graph is not None and state.db.ready()
         except psycopg.Error:
             ready = False
         if not ready:
             return JSONResponse({"status": "not_ready"}, status_code=503)
-        return {"status": "ready", "dataVersion": state.version}
+        photos = "off" if state.photos is None else ("ok" if state.photos.ping() else "down")
+        return {
+            "status": "ready",
+            "dataVersion": state.version,
+            "checks": {"database": "ok", "graph": "ok", "redis": state.limiter.redis_status(), "photos": photos},
+        }
 
     @app.post("/v1/routes")
     async def routes(body: RouteRequest, request: Request):
@@ -114,6 +126,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             w, s, e, n = NORTH_YORK_BBOX
             if not (w <= lon <= e and s <= lat <= n) or not state.db.in_coverage(state.version, lon, lat):
                 raise ApiError("outside_coverage")
+        if metres(tuple(body.origin), tuple(body.destination)) < SAME_PLACE_M:
+            raise ApiError("same_place")
         prefs = body.preferences.model_dump()
         (ox, oy), (dx, dy) = body.origin, body.destination
         margin = 0.02  # about 2 km: alternatives can stray beyond the straight line
@@ -144,6 +158,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             w, s, e, n = NORTH_YORK_BBOX
             if not (w <= lon <= e and s <= lat <= n) or not state.db.in_coverage(state.version, lon, lat):
                 raise ApiError("outside_coverage")
+        if metres(tuple(body.origin), tuple(body.destination)) < SAME_PLACE_M:
+            raise ApiError("same_place")
         options = await run_in_threadpool(
             state.transit.plan, tuple(body.origin), tuple(body.destination), body.preferences.model_dump(), when
         )
@@ -155,7 +171,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         }
 
     @app.get("/v1/hazards")
-    def hazards(bbox: str = Query(pattern=r"^-?\d+(\.\d+)?(,-?\d+(\.\d+)?){3}$")):
+    def hazards(request: Request, bbox: str = Query(pattern=r"^-?\d+(\.\d+)?(,-?\d+(\.\d+)?){3}$")):
+        state.limiter.check("hazards", client(request), settings.hazards_per_minute)
         w, s, e, n = (float(v) for v in bbox.split(","))
         if not (w < e and s < n) or (e - w) * (n - s) > 0.05:
             raise ApiError("invalid_request")
@@ -172,6 +189,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         w, s, e, n = NORTH_YORK_BBOX
         if not (w <= lon <= e and s <= lat <= n):
             raise ApiError("outside_coverage")
+        # A photo id must name a photo this service stored, not just look like one.
+        if body.photoId is not None and (state.photos is None or not state.photos.exists(body.photoId)):
+            raise ApiError("invalid_request")
         try:
             return state.db.create_report(body.kind, lon, lat, body.description.strip(), body.photoId, body.observedOn)
         except psycopg.errors.CheckViolation as exc:
@@ -205,7 +225,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             raise ApiError("invalid_request") from exc
 
     @app.post("/v1/reports/analyze")
-    def analyze():
+    def analyze(request: Request):
+        state.limiter.check("analyze", client(request), settings.hazards_per_minute)
         # No model has passed the evaluation in docs/ML_PLAN.md, so analysis is honestly unavailable.
         return {"status": "unavailable", "reason": "no_model"}
 

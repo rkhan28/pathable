@@ -352,6 +352,7 @@
     "outside_coverage": "That trip is outside the area PathAble covers right now. The coverage page shows where it works.",
     "no_route": "No walkable route was found between these points.",
     "no_route_fixture": "Development data only covers the demo trips. Choose one below, or connect the live service.",
+    "same_place": "The start and the destination are the same place. Choose a different destination.",
     "invalid_request": "Something in the request was not valid. Check the start and destination.",
     "rate_limited": "Too many requests. Wait a moment, then try again.",
     "unavailable": "The route service is not available right now.",
