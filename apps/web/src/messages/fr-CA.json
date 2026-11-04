@@ -391,7 +391,7 @@
   },
   "preferences": {
     "maxRunningSlopePct": "Pente maximale",
-    "maxRunningSlopeHint": "5 % est la limite ontarienne pour les parcours extérieurs; 8,3 % est un maximum courant pour les rampes.",
+    "maxRunningSlopeHint": "5 % (1:20) est la limite ontarienne pour les parcours extérieurs; les rampes peuvent atteindre 6,7 % (1:15).",
     "minWidthM": "Largeur minimale",
     "minWidthHint": "Mesurée à partir de la cartographie municipale. Les poteaux et panneaux ne sont pas soustraits.",
     "avoidStairs": "Éviter les escaliers",

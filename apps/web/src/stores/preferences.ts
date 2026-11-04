@@ -22,7 +22,10 @@ export const DEFAULT_PREFERENCES: Preferences = defaults;
 /**
  * A profile only pre-fills preferences; every value stays editable and the
  * profile itself is never sent to the API. Starting points, not assumptions:
- * 5% is the Ontario exterior path limit and 8.3% (1:12) a common ramp maximum.
+ * 5% (1:20) is the Ontario limit for exterior paths and 6.7% (1:15) for
+ * exterior ramps (O. Reg. 191/11, ss. 80.23 and 80.24). The looser 8.3% (1:12)
+ * used for cane and low-vision users is the common indoor ramp maximum: for
+ * them slope seldom decides whether a route works.
  */
 export const PROFILE_PRESETS: Record<Exclude<Profile, "custom">, Partial<Preferences>> = {
   manual_wheelchair: { maxRunningSlopePct: 5, minWidthM: 1.2, avoidStairs: true, avoidMissingRamps: true },

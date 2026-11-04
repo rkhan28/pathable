@@ -391,7 +391,7 @@
   },
   "preferences": {
     "maxRunningSlopePct": "Steepest slope",
-    "maxRunningSlopeHint": "5% is the Ontario limit for outdoor paths; 8.3% is a common ramp maximum.",
+    "maxRunningSlopeHint": "5% (1 in 20) is the Ontario limit for outdoor paths; ramps may go up to 6.7% (1 in 15).",
     "minWidthM": "Narrowest width",
     "minWidthHint": "Measured from City mapping. Poles and signs are not subtracted.",
     "avoidStairs": "Avoid stairs",
