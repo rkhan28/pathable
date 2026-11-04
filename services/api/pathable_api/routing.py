@@ -287,6 +287,9 @@ def kerb_note(value) -> str:
 # few metres between a crossing and the next name change.
 FLAP_M = 40.0
 STUB_M = 12.0
+# Just after a crossing, the corner of the street crossed is often mapped under its
+# name ("cross Fine Arts Road, then 17 m along Fine Arts Road"); that is not a step.
+AFTER_CROSSING_STUB_M = 25.0
 
 
 def group_steps(segments: list[dict]) -> list[dict]:
@@ -329,7 +332,8 @@ def group_steps(segments: list[dict]) -> list[dict]:
         g = groups[i]
         before = groups[i - 1] if i > 0 else None
         after = groups[i + 1] if i + 1 < len(groups) else None
-        if i > 0 and walk(g) and length(g) < STUB_M:
+        limit = AFTER_CROSSING_STUB_M if before is not None and before["crossing"] else STUB_M
+        if i > 0 and walk(g) and length(g) < limit:
             if walk(before):
                 before["segs"] += g["segs"]
                 del groups[i]

@@ -547,8 +547,12 @@
     .pa-story-caption, .pa-story-after { display: none; }
     .pa-story-chapters { grid-column: 1; grid-row: 1; padding-block: 15svh 35svh; }
     .pa-story-chapter { display: flex; align-items: center; min-block-size: 70svh; }
-    .pa-story-chapter .pa-story-card { position: static; inline-size: auto; block-size: auto; overflow: visible; clip-path: none; white-space: normal; max-inline-size: 30rem; opacity: 0.3; transition: opacity 320ms var(--ease-out-cubic); }
-    .pa-story-chapter[data-active] .pa-story-card { opacity: 1; }
+    .pa-story-chapter .pa-story-card { position: static; inline-size: auto; block-size: auto; overflow: visible; clip-path: none; white-space: normal; max-inline-size: 30rem; }
+    /* Chapters away from the reading line step back in colour, not opacity: faded text
+       would fall below AA, and every chapter must stay readable. */
+    .pa-story-chapter .pa-story-card :is(.pa-story-num, .pa-story-title) { color: var(--ink-muted); transition: color 320ms var(--ease-out-cubic); }
+    .pa-story-chapter[data-active] .pa-story-num { color: var(--brand); }
+    .pa-story-chapter[data-active] .pa-story-title { color: var(--ink); }
     .pa-story-cta { display: inline-flex; }
   }
 

@@ -96,12 +96,12 @@ shares of walkable length are:
 | --- | --- |
 | axe-core (WCAG 2.2 AA tags) | **0 violations**: 13 pages × 2 languages × 4 themes, plus open menus, dialogs, details and guidance |
 | End-to-end (Playwright, production build) | **153 passing**: guidance, transit, profile and follow-my-location flows, keyboard flows, 390 px at 150% text, 44 px targets, language switch keeps the trip, honest unavailable states |
-| Web unit tests (Vitest) | 66, including shared ranking cases, contract checks of every fixture, and position matching along a journey |
-| API integration tests (pytest, PostGIS via testcontainers) | 34, zero warnings, transit on a real slice of the TTC schedule; every response validated against the generated OpenAPI |
+| Web unit tests (Vitest) | 68, including shared ranking cases, contract checks of every fixture, position matching along a journey, and trace headers |
+| API integration tests (pytest, PostGIS and Redis via testcontainers) | 56, zero warnings: transit on a real slice of the TTC schedule, report ownership and audit guards, rate limits on real Redis, one trace from request to router; every response validated against the generated OpenAPI |
 | Live end-to-end (production web image, API, PostGIS, object storage) | **14 passing**: live routes, live TTC transit with guidance, search, report with photo, map pick, withdraw, coverage refusal, French |
-| Pipeline tests | 27 |
-| `/v1/routes` latency, 50 corridor trips, k6 | p95 **121 ms**, p99 **137 ms**, 6 workers ([details](docs/PERFORMANCE.md)) |
-| `/v1/hazards` latency | p95 **4.6 ms** |
+| Pipeline tests | 28 |
+| `/v1/routes` latency, 50 corridor trips, k6 | p95 **121 ms**, p99 **137 ms** with 6 workers on 10 cores; p95 **107 ms**, p99 **147 ms** on the 4-CPU Docker stack ([details](docs/PERFORMANCE.md)) |
+| `/v1/hazards` latency | p95 **4.6 ms** with cores to spare; **112 ms on the 4-CPU Docker stack, missing the 100 ms target** |
 | `/v1/routes` on the full North York graph | p95 **273 ms**, p99 **345 ms**, 50 borough-wide trips |
 | Colour contrast | 156 token pairs pass AA, and AAA text in high-contrast themes |
 | Lighthouse, landing | mobile **88** (target 85), desktop **100**; Accessibility 100; CLS 0 ([details](docs/PERFORMANCE.md)) |
@@ -180,11 +180,16 @@ afterwards (about 10 minutes).
 - **Slope has not been field-checked.** The 10 sites and the protocol are
   published.
 - **Curb ramps are known for about 7% of crossings.**
-- **The photo pipeline is not built yet:** upload, server-side EXIF stripping,
-  and blurring of faces and plates. Photo analysis is honestly unavailable.
+- **Photos are not blurred.** Upload, server-side re-encoding without metadata
+  and private storage are built; blurring faces and plates needs a licensed
+  detector, so no photo is ever served. Photo analysis is honestly unavailable.
+- **Hazards latency misses its target under full load on 4 CPUs:** p95 112 ms
+  against 100 ms on the Docker stack, because routing saturates the cores.
+  It passes with cores to spare ([details](docs/PERFORMANCE.md)).
 - **No WCAG conformance is claimed.** There has been no manual audit and no user
   testing; [the plan is written](docs/ACCESSIBILITY_TESTING.md).
-- **Not built yet:** OpenTelemetry tracing and a CSP.
+- **Not built yet:** a Content-Security-Policy, which waits on final hosts.
+  Tracing is built (`make trace`); no hosted collector is set up.
 
 ## Documentation
 

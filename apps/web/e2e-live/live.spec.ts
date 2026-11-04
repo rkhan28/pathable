@@ -58,7 +58,8 @@ test("live transit: a real TTC option with its line, then guidance that says whe
   await page.getByRole("button", { name: "Start", exact: true }).click();
   const guidance = page.getByRole("region", { name: "Guidance" });
   await guidance.getByRole("button", { name: "Pause preview" }).click();
-  for (let i = 0; i < 6 && !(await guidance.getByRole("heading", { name: /Get off at/ }).count()); i++) {
+  // The walk to the stop can be a short one or eight steps, depending on which option is first at this hour.
+  for (let i = 0; i < 20 && !(await guidance.getByRole("heading", { name: /Get off at/ }).count()); i++) {
     await guidance.getByRole("button", { name: "Next step" }).click();
   }
   await expect(guidance.getByRole("heading", { name: /Get off at/ })).toBeVisible();
@@ -124,7 +125,8 @@ test("a report location can be picked on the map", async ({ page, isMobile }) =>
 
 test("outside the covered area is refused, not guessed", async ({ page }) => {
   await page.goto("/en-CA/navigate?from=43.80,-79.30&to=43.76397,-79.49154");
-  await expect(page.getByText(/outside the area PathAble covers/)).toBeVisible({ timeout: 15000 });
+  // The message names the area this service has loaded (the corridor on the local stack).
+  await expect(page.getByText(/That trip is outside the demo corridor/)).toBeVisible({ timeout: 15000 });
 });
 
 test("French interface with live data", async ({ page }) => {

@@ -51,6 +51,22 @@ def test_a_stub_after_a_crossing_joins_the_next_step_and_keeps_its_turn_point():
     assert groups[2]["anchor"] == 1
 
 
+def test_the_corner_after_a_crossing_is_not_a_step():
+    groups = group_steps(
+        [
+            seg(0, "Ian Macdonald Boulevard", 100),
+            seg(1, "Fine Arts Road", 18, "crossing"),
+            seg(2, "Fine Arts Road", 17),
+            seg(3, "Ian Macdonald Boulevard", 144),
+        ]
+    )
+    assert names(groups) == [
+        ("Ian Macdonald Boulevard", False),
+        ("Fine Arts Road", True),
+        ("Ian Macdonald Boulevard", False),
+    ]
+
+
 def test_crossings_are_never_merged_away():
     groups = group_steps([seg(0, "A Street", 50), seg(1, "B Street", 5, "crossing"), seg(2, "A Street", 50)])
     assert names(groups) == [("A Street", False), ("B Street", True), ("A Street", False)]
