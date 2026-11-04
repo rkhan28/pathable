@@ -280,24 +280,79 @@ def kerb_note(value) -> str:
     return "kerbs_lowered" if all(k in ("lowered", "flush", "no") for k in ends) else "kerbs_unknown"
 
 
+# Below these lengths a change of street name is mapping noise, not a step a
+# person would act on: a sidewalk corner tagged with the side street, or the
+# few metres between a crossing and the next name change.
+FLAP_M = 40.0
+STUB_M = 12.0
+
+
+def group_steps(segments: list[dict]) -> list[dict]:
+    """Group consecutive segments into steps, then smooth out steps nobody would act on.
+
+    Each group keeps `anchor`, the segment where its maneuver is measured. It is
+    usually the first, but when a stub is folded into the step after it, the
+    turn is still measured where the street actually changes.
+    """
+    groups: list[dict] = []
+    for s in segments:
+        crossing = s["kind"] == "crossing"
+        last = groups[-1] if groups else None
+        if last and last["crossing"] == crossing and last["name"] == s["streetName"]:
+            last["segs"].append(s)
+        else:
+            groups.append({"segs": [s], "crossing": crossing, "name": s["streetName"], "anchor": 0})
+
+    def length(g: dict) -> float:
+        return sum(s["lengthM"] for s in g["segs"])
+
+    def walk(g: dict | None) -> bool:
+        return g is not None and not g["crossing"]
+
+    # A short stretch under another name between two stretches of the same street
+    # ("Ian Macdonald, Fine Arts for 20 m, Ian Macdonald") is one step along that street.
+    i = 1
+    while i < len(groups) - 1:
+        a, b, c = groups[i - 1], groups[i], groups[i + 1]
+        if walk(a) and walk(b) and walk(c) and a["name"] == c["name"] and length(b) < FLAP_M:
+            a["segs"] += b["segs"] + c["segs"]
+            del groups[i : i + 2]
+        else:
+            i += 1
+
+    # A few metres of walking with a name of its own joins its neighbour: the step
+    # before it if that is walking too, otherwise the one after.
+    i = 0
+    while i < len(groups):
+        g = groups[i]
+        before = groups[i - 1] if i > 0 else None
+        after = groups[i + 1] if i + 1 < len(groups) else None
+        if i > 0 and walk(g) and length(g) < STUB_M:
+            if walk(before):
+                before["segs"] += g["segs"]
+                del groups[i]
+                continue
+            if walk(after):
+                after["anchor"] = len(g["segs"])
+                after["segs"] = g["segs"] + after["segs"]
+                del groups[i]
+                continue
+        i += 1
+    return groups
+
+
 def build_steps(route: dict, prefs: Mapping) -> list[dict]:
     coords = route["geometry"]
-    groups: list[list[dict]] = []
-    for s in route["segments"]:
-        crossing = s["kind"] == "crossing"
-        if (
-            groups
-            and (groups[-1][0]["kind"] == "crossing") == crossing
-            and groups[-1][0]["streetName"] == s["streetName"]
-        ):
-            groups[-1].append(s)
-        else:
-            groups.append([s])
+    groups = group_steps(route["segments"])
     steps, prev = [], None
-    for i, grp in enumerate(groups):
+    for i, group in enumerate(groups):
+        grp = group["segs"]
         start, end = grp[0]["from"], grp[-1]["to"]
-        first = bearing(coords[start], coords[min(start + 1, len(coords) - 1)])
-        maneuver = "depart" if i == 0 else "cross" if grp[0]["kind"] == "crossing" else turn(prev, first)
+        # The direction coming into the anchor, compared with the direction leaving it.
+        pivot = grp[group["anchor"]]["from"]
+        incoming = prev if group["anchor"] == 0 else bearing(coords[max(pivot - 1, 0)], coords[pivot])
+        first = bearing(coords[pivot], coords[min(pivot + 1, len(coords) - 1)])
+        maneuver = "depart" if i == 0 else "cross" if group["crossing"] else turn(incoming, first)
         prev = bearing(coords[max(end - 1, 0)], coords[end])
         notes: list[str] = []
         evidence = [e for s in grp for e in s["evidence"]]
@@ -327,7 +382,7 @@ def build_steps(route: dict, prefs: Mapping) -> list[dict]:
         steps.append(
             {
                 "maneuver": maneuver,
-                "streetName": grp[0]["streetName"],
+                "streetName": group["name"],
                 "distanceM": round(sum(s["lengthM"] for s in grp), 1),
                 "segmentIds": [s["id"] for s in grp],
                 "at": start,
