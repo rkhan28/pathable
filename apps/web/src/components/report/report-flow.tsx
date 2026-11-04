@@ -75,7 +75,7 @@ export function ReportFlow() {
       return service.createReport({ ...values, location: place!.position as LonLat, photoId });
     },
     onSuccess: (receipt, values) => {
-      upsert({ localId: receipt.id, ...values, location: place!.position, createdAt: new Date().toISOString(), serverId: receipt.id, status: receipt.status });
+      upsert({ localId: receipt.id, ...values, location: place!.position, createdAt: new Date().toISOString(), serverId: receipt.id, status: receipt.status, withdrawToken: receipt.withdrawToken ?? null });
       setSentMessage(t("report.sent"));
       announce(t("report.sent"));
     },

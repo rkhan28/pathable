@@ -2,9 +2,13 @@
 
 from __future__ import annotations
 
+import hashlib
+import hmac
 import json
+import secrets
 from datetime import UTC, datetime
 
+import psycopg
 from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
 
@@ -102,20 +106,39 @@ class Database:
     def create_report(
         self, kind: str, lon: float, lat: float, description: str, photo_id: str | None, observed_on
     ) -> dict:
+        """Store a report and return its receipt, including the one-time withdraw token."""
+        token = secrets.token_urlsafe(24)
         with self.pool.connection() as c, c.transaction():
             r = c.execute(
-                """INSERT INTO reports (kind, description, photo_id, observed_on, expires_at, geom)
+                """INSERT INTO reports (kind, description, photo_id, observed_on, expires_at, geom, withdraw_token_hash)
                    VALUES (%s, %s, %s, %s,
                            CASE WHEN %s = ANY(%s) THEN now() + interval '48 hours' END,
-                           ST_SetSRID(ST_MakePoint(%s, %s), 4326))
+                           ST_SetSRID(ST_MakePoint(%s, %s), 4326), %s)
                    RETURNING id::text, status, received_at""",
-                (kind, description, photo_id, observed_on, kind, list(WINTER), lon, lat),
+                (kind, description, photo_id, observed_on, kind, list(WINTER), lon, lat, _token_hash(token)),
             ).fetchone()
             c.execute(
                 "INSERT INTO report_events (report_id, from_status, to_status, actor)"
                 " VALUES (%s, NULL, 'received', 'reporter')",
                 (r["id"],),
             )
+        return {**_receipt(r), "withdrawToken": token}
+
+    def withdraw(self, report_id: str, token: str) -> dict:
+        """Withdraw a report for the person holding its token.
+
+        A wrong token raises the same NoDataFound as an unknown id, so a report's
+        existence is not confirmed to someone who only saw its id on the map.
+        """
+        with self.pool.connection() as c, c.transaction():
+            row = c.execute("SELECT withdraw_token_hash FROM reports WHERE id = %s::uuid", (report_id,)).fetchone()
+            stored = row and row["withdraw_token_hash"]
+            if not stored or not hmac.compare_digest(bytes(stored), _token_hash(token)):
+                raise psycopg.errors.NoDataFound("report not found")
+            r = c.execute(
+                "SELECT id::text, status, received_at FROM transition_report(%s::uuid, 'withdrawn', 'reporter')",
+                (report_id,),
+            ).fetchone()
         return _receipt(r)
 
     def transition(self, report_id: str, to_status: str, actor: str) -> dict:
@@ -145,6 +168,10 @@ def _hazard(h: dict) -> dict:
         "expiresAt": h["expires_at"].astimezone(UTC).isoformat() if h["expires_at"] else None,
         "segmentId": h["edge_id"],
     }
+
+
+def _token_hash(token: str) -> bytes:
+    return hashlib.sha256(token.encode()).digest()
 
 
 def _receipt(r: dict) -> dict:

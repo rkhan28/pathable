@@ -18,7 +18,7 @@ from starlette.concurrency import run_in_threadpool
 from . import errors
 from .db import Database
 from .errors import ApiError
-from .models import ReportCreate, RouteRequest, TransitRequest
+from .models import ReportCreate, RouteRequest, TransitRequest, WithdrawRequest
 from .photos import MAX_BYTES, InvalidPhoto, LocalStorage, S3Storage, clean_jpeg
 from .ratelimit import RateLimiter
 from .routing import EvidenceGraph
@@ -191,10 +191,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return {"photoId": await run_in_threadpool(state.photos.put, cleaned)}
 
     @app.post("/v1/reports/{report_id}/withdraw")
-    def withdraw(report_id: str):
+    def withdraw(report_id: str, body: WithdrawRequest, request: Request):
+        # Only the reporter can withdraw: report ids are public on the map, the token is not.
+        state.limiter.check("withdraw", client(request), settings.reports_per_minute)
         try:
             uuid.UUID(report_id)
-            return state.db.transition(report_id, "withdrawn", "reporter")
+            return state.db.withdraw(report_id, body.withdrawToken)
         except ValueError as exc:
             raise ApiError("not_found") from exc
         except psycopg.errors.NoDataFound as exc:

@@ -275,8 +275,17 @@ export const ReportReceipt = z.object({
   id: z.string(),
   status: ReportStatus,
   receivedAt: IsoDateTime,
+  /**
+   * Returned once, when the report is created. Report ids are public on the map;
+   * this token is what proves a later withdrawal comes from the person who sent it.
+   * It stays on their device and is never shown.
+   */
+  withdrawToken: z.string().min(16).optional(),
 });
 export type ReportReceipt = z.infer<typeof ReportReceipt>;
+
+export const WithdrawRequest = z.object({ withdrawToken: z.string().min(1).max(200) });
+export type WithdrawRequest = z.infer<typeof WithdrawRequest>;
 
 /** A stored report photo. The server re-encodes it with no metadata and never serves it publicly. */
 export const PhotoReceipt = z.object({ photoId: z.string().regex(/^[0-9a-f]{32}$/) });

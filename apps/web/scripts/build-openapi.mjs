@@ -13,6 +13,7 @@ const schemas = {
   HazardsResponse: c.HazardsResponse,
   ReportCreate: c.ReportCreate,
   ReportReceipt: c.ReportReceipt,
+  WithdrawRequest: c.WithdrawRequest,
   PhotoReceipt: c.PhotoReceipt,
   TransitRequest: c.TransitRequest,
   TransitResponse: c.TransitResponse,
@@ -51,7 +52,12 @@ const doc = {
       },
     },
     "/v1/reports/{id}/withdraw": {
-      post: { operationId: "withdrawReport", parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }], responses: { 200: { description: "Withdrawn", ...json("ReportReceipt") }, ...errors } },
+      post: {
+        operationId: "withdrawReport",
+        parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+        requestBody: { required: true, ...json("WithdrawRequest") },
+        responses: { 200: { description: "Withdrawn", ...json("ReportReceipt") }, ...errors },
+      },
     },
     "/v1/reports/analyze": { post: { operationId: "analyzePhoto", responses: { 200: { description: "Analysis or unavailable", ...json("AnalysisResponse") }, ...errors } } },
   },

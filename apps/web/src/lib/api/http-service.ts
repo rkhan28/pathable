@@ -73,8 +73,8 @@ export function createHttpService(baseUrl: string, fetchImpl: typeof fetch = fet
     async createReport(report: ReportCreate) {
       return parseResponse(await send("/v1/reports", json(report)), ReportReceipt);
     },
-    async withdrawReport(id: string) {
-      return parseResponse(await send(`/v1/reports/${encodeURIComponent(id)}/withdraw`, { method: "POST" }), ReportReceipt);
+    async withdrawReport(id: string, withdrawToken: string) {
+      return parseResponse(await send(`/v1/reports/${encodeURIComponent(id)}/withdraw`, json({ withdrawToken })), ReportReceipt);
     },
     async analyzePhoto(photo: Blob) {
       const form = new FormData();

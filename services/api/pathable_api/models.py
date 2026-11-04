@@ -51,3 +51,8 @@ class ReportCreate(BaseModel):
     description: str = Field(max_length=500)
     photoId: str | None = Field(pattern=r"^[0-9a-f]{32}$")
     observedOn: date
+
+
+class WithdrawRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    withdrawToken: str = Field(min_length=1, max_length=200)

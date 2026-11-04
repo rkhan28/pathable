@@ -120,10 +120,12 @@ def test_report_lifecycle_is_audited_and_append_only(client, migrated):
     assert mine["status"] == "reported"
     assert mine["expiresAt"] is not None
 
-    withdrawn = client.post(f"/v1/reports/{receipt['id']}/withdraw").json()
+    token = {"withdrawToken": receipt["withdrawToken"]}
+    withdrawn = client.post(f"/v1/reports/{receipt['id']}/withdraw", json=token).json()
     valid("ReportReceipt", withdrawn)
     assert withdrawn["status"] == "withdrawn"
-    assert client.post(f"/v1/reports/{receipt['id']}/withdraw").status_code == 400  # withdrawn is final
+    assert "withdrawToken" not in withdrawn  # handed out once, at creation
+    assert client.post(f"/v1/reports/{receipt['id']}/withdraw", json=token).status_code == 400  # withdrawn is final
 
     with psycopg.connect(migrated) as c:
         events = c.execute(
@@ -133,6 +135,54 @@ def test_report_lifecycle_is_audited_and_append_only(client, migrated):
         assert events == [(None, "received"), ("received", "withdrawn")]
         with pytest.raises(psycopg.errors.RaiseException, match="append-only"):
             c.execute("UPDATE report_events SET actor = 'x' WHERE report_id = %s", (receipt["id"],))
+    with psycopg.connect(migrated) as c, pytest.raises(psycopg.errors.RaiseException, match="append-only"):
+        c.execute("TRUNCATE report_events CASCADE")
+
+
+def test_only_the_reporter_can_withdraw(client, migrated):
+    receipt = client.post(
+        "/v1/reports",
+        json={
+            "kind": "obstacle",
+            "location": [-79.49, 43.77],
+            "description": "",
+            "photoId": None,
+            "observedOn": date.today().isoformat(),
+        },
+    ).json()
+    url = f"/v1/reports/{receipt['id']}/withdraw"
+    # The id is public on the map; without the token it looks like any unknown report.
+    wrong = client.post(url, json={"withdrawToken": "x" * 32})
+    assert wrong.status_code == 404
+    valid("ApiError", wrong.json())
+    assert client.post(url).status_code == 400
+    assert client.post(url, json={"withdrawToken": receipt["withdrawToken"]}).status_code == 200
+    with psycopg.connect(migrated) as c:
+        stored = c.execute("SELECT withdraw_token_hash FROM reports WHERE id = %s::uuid", (receipt["id"],)).fetchone()[
+            0
+        ]
+        assert receipt["withdrawToken"].encode() not in bytes(stored)  # only the hash is kept
+
+
+def test_status_changes_only_through_the_audited_function(client, migrated):
+    receipt = client.post(
+        "/v1/reports",
+        json={
+            "kind": "obstacle",
+            "location": [-79.49, 43.77],
+            "description": "",
+            "photoId": None,
+            "observedOn": date.today().isoformat(),
+        },
+    ).json()
+    with psycopg.connect(migrated) as c, pytest.raises(psycopg.errors.InsufficientPrivilege):
+        c.execute("UPDATE reports SET status = 'verified' WHERE id = %s::uuid", (receipt["id"],))
+    with psycopg.connect(migrated) as c:
+        # Other columns can still change, and the function's own flag does not outlive its transaction.
+        c.execute("UPDATE reports SET description = 'edited' WHERE id = %s::uuid", (receipt["id"],))
+        c.execute("SELECT * FROM transition_report(%s::uuid, 'under_review', 'moderator')", (receipt["id"],))
+        with pytest.raises(psycopg.errors.InsufficientPrivilege):
+            c.execute("UPDATE reports SET status = 'verified' WHERE id = %s::uuid", (receipt["id"],))
 
 
 def test_moderation_transitions_are_enforced(migrated, client):
@@ -173,8 +223,9 @@ def test_reports_reject_future_dates_and_unknown_ids(client):
         },
     )
     assert res.status_code == 400
-    assert client.post("/v1/reports/00000000-0000-0000-0000-000000000000/withdraw").status_code == 404
-    assert client.post("/v1/reports/not-a-uuid/withdraw").status_code == 404
+    token = {"withdrawToken": "x" * 32}
+    assert client.post("/v1/reports/00000000-0000-0000-0000-000000000000/withdraw", json=token).status_code == 404
+    assert client.post("/v1/reports/not-a-uuid/withdraw", json=token).status_code == 404
 
 
 def test_analysis_is_honestly_unavailable(client):
@@ -267,7 +318,7 @@ def test_open_reports_are_avoided_or_shown(client):
         else:
             assert best["geometry"] != base["geometry"]
     finally:
-        client.post(f"/v1/reports/{receipt['id']}/withdraw")
+        client.post(f"/v1/reports/{receipt['id']}/withdraw", json={"withdrawToken": receipt["withdrawToken"]})
     after = client.post("/v1/routes", json=off).json()["routes"]
     assert all(h["id"] != receipt["id"] for r in after for h in r["hazards"])
 
@@ -310,7 +361,7 @@ def test_photo_upload_strips_metadata_and_stores_privately(client):
     }
     receipt = client.post("/v1/reports", json=report)
     assert receipt.status_code == 201
-    client.post(f"/v1/reports/{receipt.json()['id']}/withdraw")
+    client.post(f"/v1/reports/{receipt.json()['id']}/withdraw", json={"withdrawToken": receipt.json()["withdrawToken"]})
 
 
 def test_photo_upload_rejects_non_images_and_bad_ids(client):

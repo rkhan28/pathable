@@ -442,7 +442,8 @@
       "draft": "Brouillon, non envoyé"
     },
     "locationNeeded": "Cherchez le lieu, utilisez votre position ou choisissez-le sur la carte.",
-    "dateInvalid": "Indiquez la date où vous l’avez vu, aujourd’hui ou avant."
+    "dateInvalid": "Indiquez la date où vous l’avez vu, aujourd’hui ou avant.",
+    "withdrawNoToken": "Ce signalement a été envoyé avant que le retrait exige une preuve qu’il est le vôtre : pour le retirer, écrivez-nous."
   },
   "settings": {
     "title": "Paramètres",

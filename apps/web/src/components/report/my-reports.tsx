@@ -16,7 +16,7 @@ export function MyReports() {
   const upsert = useReports((s) => s.upsert);
   const remove = useReports((s) => s.remove);
   const withdraw = useMutation({
-    mutationFn: async (r: LocalReport) => (await getService()).withdrawReport(r.serverId!),
+    mutationFn: async (r: LocalReport) => (await getService()).withdrawReport(r.serverId!, r.withdrawToken!),
     onSuccess: (receipt, r) => upsert({ ...r, status: receipt.status }),
     onError: (e) => toast(t(`errors.${e instanceof PathAbleError ? e.code : "internal"}`)),
   });
@@ -34,8 +34,10 @@ export function MyReports() {
               <p className="font-bold">{t(`hazards.kinds.${r.kind}`)}</p>
               <p className="text-sm">{t(`report.status.${r.status}`)}</p>
               <p className="text-sm text-ink-muted">{f.date(r.observedOn)}</p>
+              {/* Sent before withdrawals needed proof of ownership: nothing on this device can prove it now. */}
+              {r.serverId && r.status !== "withdrawn" && !r.withdrawToken && <p className="mt-2 text-sm text-ink-muted">{t("report.withdrawNoToken")}</p>}
               <div className="mt-3 flex flex-wrap gap-2">
-                {r.serverId && r.status !== "withdrawn" && (
+                {r.serverId && r.status !== "withdrawn" && r.withdrawToken && (
                   <button type="button" className="pa-chip-button" onClick={() => withdraw.mutate(r)} disabled={withdraw.isPending}>
                     {t("report.withdraw")}
                   </button>

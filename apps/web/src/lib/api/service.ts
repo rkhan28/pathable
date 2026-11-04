@@ -21,6 +21,6 @@ export interface PathAbleService {
   hazards(bbox: [number, number, number, number], signal?: AbortSignal): Promise<HazardsResponse>;
   uploadPhoto(photo: Blob): Promise<PhotoReceipt>;
   createReport(report: ReportCreate): Promise<ReportReceipt>;
-  withdrawReport(id: string): Promise<ReportReceipt>;
+  withdrawReport(id: string, withdrawToken: string): Promise<ReportReceipt>;
   analyzePhoto(photo: Blob): Promise<AnalysisResponse>;
 }

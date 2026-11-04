@@ -11,6 +11,8 @@ export interface LocalReport {
   createdAt: string;
   /** null while it exists only on this device (a draft that was not sent). */
   serverId: string | null;
+  /** Proof for withdrawing it later; reports sent before tokens existed have none. */
+  withdrawToken?: string | null;
   status: ReportStatus | "draft";
 }
 
