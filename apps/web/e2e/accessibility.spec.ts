@@ -1,4 +1,4 @@
-import { TRIP, expectNoAxeViolations, test, useSettings, type Settings } from "./fixtures";
+import { TRIP, expect, expectNoAxeViolations, test, useSettings, type Settings } from "./fixtures";
 
 const PAGES = ["", "/navigate", "/settings", "/onboarding", "/report", "/coverage", "/help", "/accessibility", "/ai", "/contact", "/privacy", "/terms", "/does-not-exist"];
 const THEMES: [string, Settings][] = [
@@ -42,7 +42,11 @@ test.describe("axe: open states", () => {
     await page.getByRole("tab", { name: "Hazards" }).click();
     await expectNoAxeViolations(page, "hazards");
     await page.getByRole("button", { name: "Start", exact: true }).click();
-    await page.getByRole("region", { name: "Guidance" }).waitFor();
+    const guidance = page.getByRole("region", { name: "Guidance" });
+    await guidance.waitFor();
+    // The bar slides and fades in; contrast measured mid-fade would blend it with the map behind.
+    await guidance.evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
+    await expect(page.locator(".pa-nav-bar")).toHaveCSS("opacity", "1");
     await expectNoAxeViolations(page, "guidance");
   });
 

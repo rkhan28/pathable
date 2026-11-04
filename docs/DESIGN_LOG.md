@@ -142,3 +142,30 @@ and driven by scrolling.
 
 **Rule kept:** nothing plays on its own. Scrolling is the only thing that moves
 the walk-through, and with reduced motion it jumps from step to step.
+
+## 2026-11-03: the hero's right side is the network, alive
+
+**Feedback.** The right side of the landing was empty; it wanted something
+dynamic, and it had to stay smooth.
+
+**What it is.** The real corridor graph between York University and Finch
+West (about 2,700 sidewalks, paths and crossings), tilted in perspective and
+coloured by what is known about each under the default limits. Pulses move
+along the streets in the colour of the stretch they are on. The planner's
+routes for that trip draw themselves in turn (Route A, then Line 1 with its
+walks to and from the platforms, then B and C), and a small card names each
+one with its real time. Nothing on it is invented.
+
+**How it stays smooth.**
+- The canvas is handed to a worker (`OffscreenCanvas`), so drawing never
+  competes with scrolling, typing or taps. Measured at 1440 px: the page held
+  60 fps with no long tasks, and no frame over 25 ms across 960 frames of
+  scrolling.
+- Each frame is two image copies and a handful of batched strokes, however
+  many pulses there are. No canvas shadows, no backdrop blur.
+- The tilt, slow drift and lean toward the pointer are CSS transforms,
+  animated by the compositor.
+- The geometry (88 KB) is a prerendered file the worker fetches after first
+  paint, so it adds nothing to the page's first load.
+- It stops off screen and in background tabs; under reduced motion it is one
+  still frame with Route A drawn.

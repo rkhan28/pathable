@@ -6,6 +6,7 @@ import { GuideStory } from "@/components/landing/guide-story";
 import { IntroMark, introScript } from "@/components/landing/intro";
 import { LandingSearch } from "@/components/landing/landing-search";
 import { ProfilePicks } from "@/components/landing/profile-picks";
+import { HeroNetwork } from "@/components/landing/network/hero-network";
 import { PhotoPrivacy, TrustNumbers, WinterExample } from "@/components/landing/sections";
 import { StatesExplorer } from "@/components/landing/states-explorer";
 import { Link } from "@/i18n/navigation";
@@ -17,6 +18,7 @@ const rise = (i: number) => ({ "--i": i }) as CSSProperties;
 import { RouteResponse } from "@/lib/api/contracts";
 import { heroData } from "@/lib/hero-data";
 import { guideData } from "@/lib/guide-data";
+import { heroNetworkMeta } from "@/lib/hero-network";
 import realityCheck from "@/generated/reality-check.json";
 import sample from "@/generated/fixtures/routes/york-u-finch-west.json";
 
@@ -31,6 +33,7 @@ export default async function LandingPage() {
   const t = await getTranslations("landing");
   const data = heroData();
   const guide = guideData();
+  const network = heroNetworkMeta();
   const s = realityCheck.corridor_states_pct_length;
   const shares = { verified: s.known_accessible, barrier: s.known_barrier, unverified: s.reported_unverified, unknown: s.no_data };
   const steps = (["s1", "s2", "s3", "s4"] as const).map((k) => ({ title: t(`how.${k}Title`), body: t(`how.${k}Body`) }));
@@ -56,7 +59,7 @@ export default async function LandingPage() {
       <script dangerouslySetInnerHTML={{ __html: introScript }} />
       <IntroMark />
       <section className="pa-hero" aria-labelledby="hero-title">
-        <div className="pa-container">
+        <div className="pa-container pa-hero-grid">
           <div className="pa-hero-copy">
             <h1 id="hero-title" className="pa-display pa-rise-t" style={rise(0)}>
               {t("title")}
@@ -82,6 +85,9 @@ export default async function LandingPage() {
                 {t("coverageLink")}
               </Link>
             </p>
+          </div>
+          <div className="pa-hero-visual pa-rise" style={rise(2)}>
+            <HeroNetwork aspect={network.aspect} captions={network.captions} />
           </div>
         </div>
       </section>

@@ -179,6 +179,10 @@
       "transitBody": "When a step-free trip is quicker, the planner says so. On this trip: {line}.",
       "arriveTitle": "And you are there",
       "arriveBody": "Choose how you get around above, then plan your own route."
+    },
+    "network": {
+      "trip": "York University to Finch West",
+      "line": "{mode, select, bus {{line} bus} streetcar {{line} streetcar} other {Line {line}}}"
     }
   },
   "search": {

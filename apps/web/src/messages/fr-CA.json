@@ -179,6 +179,10 @@
       "transitBody": "Quand un trajet sans marche est plus rapide, le planificateur le dit. Pour ce trajet : {line}.",
       "arriveTitle": "Vous êtes arrivé",
       "arriveBody": "Choisissez votre façon de vous déplacer plus haut, puis planifiez votre itinéraire."
+    },
+    "network": {
+      "trip": "De l’Université York à Finch West",
+      "line": "{mode, select, bus {Autobus {line}} streetcar {Tramway {line}} other {Ligne {line}}}"
     }
   },
   "search": {

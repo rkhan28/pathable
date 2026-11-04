@@ -54,6 +54,9 @@
   /* The phone's glow and floating chip may reach past the edge; never into a sideways scroll. */
   .pa-hero { padding-block: 3rem 4.5rem; overflow-x: clip; }
   @media (min-width: 64rem) { .pa-hero { padding-block: 6rem 7rem; } }
+  .pa-hero-grid { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 64rem) { .pa-hero-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 1.5rem; } }
+  .pa-hero-visual { min-inline-size: 0; }
   .pa-display { font-size: var(--type-display); letter-spacing: -0.025em; line-height: 1.02; max-inline-size: 15em; text-wrap: balance; }
   .pa-lede { margin-block: 1.25rem 2rem; font-size: var(--type-md); color: var(--ink-muted); max-inline-size: 42ch; }
   .pa-hero-search { max-inline-size: 32rem; }
@@ -479,6 +482,45 @@
   .pa-profile.is-compact .pa-profile-select { padding-inline-start: 2.25rem; max-inline-size: 16rem; text-overflow: ellipsis; }
   .pa-profile-icon { position: absolute; inset-inline-start: 0.875rem; pointer-events: none; color: var(--ink-muted); }
   .pa-profile-chevron { position: absolute; inset-inline-end: 0.875rem; pointer-events: none; color: var(--ink-muted); }
+
+  /* ---------- Landing hero: the live street network ----------
+     The canvas is drawn in a worker. Everything that moves here is a transform or opacity,
+     which the compositor animates without touching the page's main thread. No backdrop blur:
+     it would re-blur the canvas on every frame. */
+  .pa-net { --px: 0; --py: 0; position: relative; inline-size: 100%; max-inline-size: 40rem; margin-inline: auto; aspect-ratio: 1 / 1; }
+  .pa-net-stage { position: absolute; inset: 0; display: grid; place-items: center; perspective: 1600px; pointer-events: none;
+    -webkit-mask-image: radial-gradient(closest-side, #000 66%, transparent); mask-image: radial-gradient(closest-side, #000 66%, transparent); }
+  .pa-net-drift { inline-size: 88%; transform-style: preserve-3d; }
+  .pa-net-plane { position: relative; inline-size: 100%; opacity: 0; transform: rotateX(calc(40deg - var(--py) * 5deg)) rotateZ(calc(-16deg + var(--px) * 7deg)); transition: transform 1.4s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 1.2s ease; will-change: transform; }
+  .pa-net[data-ready] .pa-net-plane { opacity: 1; }
+  .pa-net-canvas { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; }
+  .pa-net-card { position: absolute; z-index: 1; padding: 0.75rem 0.875rem; border-radius: 1rem; border: 1px solid var(--line-subtle); background: color-mix(in srgb, var(--surface-raised) 94%, transparent); box-shadow: var(--elevation-map); opacity: 0; transition: opacity 600ms ease 400ms; }
+  .pa-net[data-ready] .pa-net-card { opacity: 1; }
+  .pa-net-card.is-route { inset-inline-start: 2%; inset-block-end: 9%; min-inline-size: 14.5rem; }
+  .pa-net-card.is-legend { inset-inline-end: 2%; inset-block-start: 8%; display: grid; gap: 0.3rem; font-size: var(--type-xs); font-weight: 700; }
+  .pa-net-trip { display: block; margin-block-end: 0.375rem; font-size: var(--type-xs); font-weight: 700; color: var(--ink-muted); }
+  .pa-net-route { display: flex; align-items: center; gap: 0.625rem; white-space: nowrap; }
+  .pa-net-badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.5rem; border-radius: 0.5rem; font-size: var(--type-sm); font-weight: 800; }
+  .pa-net-badge.is-walk { background: var(--signal); color: #04150e; }
+  .pa-net-time { font-size: var(--type-lg); font-weight: 800; line-height: 1; }
+  .pa-net-meta { font-size: var(--type-sm); color: var(--ink-muted); }
+  .pa-net-key { display: flex; align-items: center; gap: 0.5rem; }
+  .pa-net-key i { inline-size: 1rem; block-size: 0.25rem; border-radius: 1rem; }
+  .pa-net-key i.is-verified { background: var(--state-verified); }
+  .pa-net-key i.is-barrier { background: var(--state-barrier); }
+  .pa-net-key i.is-unverified { background: var(--state-unverified); }
+  .pa-net-key i.is-unknown { background: var(--state-unknown); opacity: 0.6; }
+  @media (max-width: 30rem) {
+    .pa-net-card.is-route { min-inline-size: 0; inset-block-end: 4%; }
+    .pa-net-card.is-legend { inset-block-start: 3%; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .pa-net-drift { animation: pa-net-drift 24s ease-in-out infinite alternate; }
+    .pa-net-card.is-route { animation: pa-float 8s ease-in-out infinite; }
+    .pa-net-card.is-legend { animation: pa-float 9s ease-in-out -3s infinite; }
+  }
+  @keyframes pa-net-drift { from { transform: translate3d(-2%, 2%, 0) scale(1.04); } to { transform: translate3d(2%, -2%, 0) scale(1.1); } }
+  @keyframes pa-float { 50% { transform: translateY(-6px); } }
 
   /* ---------- Landing: guidance you scroll through ---------- */
   /* The phone holds still (sticky) while the chapters scroll past it; the page's scroll moves the route. */
