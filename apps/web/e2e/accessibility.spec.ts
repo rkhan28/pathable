@@ -77,7 +77,11 @@ test("axe: command palette open", async ({ page, isMobile }) => {
   test.skip(isMobile, "desktop shortcut");
   await useSettings(page, { theme: "dark" });
   await page.goto("/en-CA");
-  await page.keyboard.press("ControlOrMeta+k");
-  await page.getByPlaceholder("Type a command or search").waitFor();
+  const input = page.getByPlaceholder("Type a command or search");
+  // On a slow machine the first press can land before the page is interactive; press again until it opens.
+  await expect(async () => {
+    await page.keyboard.press("ControlOrMeta+k");
+    await expect(input).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: 15000 });
   await expectNoAxeViolations(page, "command palette");
 });

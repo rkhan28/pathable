@@ -291,6 +291,7 @@
   .pa-corridor-part.is-unknown { background: radial-gradient(circle, var(--state-unknown) 0 2.5px, transparent 3px) 0 50% / 10px 10px repeat-x, var(--surface-sunken); }
   .pa-corridor-part[style*="flex-basis: 0%"] { display: none; }
   .pa-table-scroll { overflow-x: auto; }
+  .pa-table-scroll:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
   .pa-table { inline-size: 100%; border-collapse: collapse; font-size: var(--type-sm); }
   .pa-table th { text-align: start; font-weight: 700; color: var(--ink-muted); padding: 0.625rem 1rem 0.625rem 0; border-block-end: 1px solid var(--line); white-space: nowrap; }
   .pa-table td { padding: 0.75rem 1rem 0.75rem 0; border-block-end: 1px solid var(--line-subtle); vertical-align: top; }

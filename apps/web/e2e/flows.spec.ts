@@ -52,7 +52,8 @@ test("outside North York is refused honestly", async ({ page }) => {
   await page.goto("/en-CA");
   await page.getByRole("combobox", { name: "Where to?" }).fill("43.6532, -79.3832");
   await page.keyboard.press("Enter");
-  await expect(page.getByText(/outside North York/)).toBeVisible();
+  // The message under the field (the same words also go to the screen reader's live region).
+  await expect(page.locator(".pa-field-message", { hasText: /outside North York/ })).toBeVisible();
 });
 
 test("start opens guidance that steps through the route and ends back on the planner", async ({ page }) => {

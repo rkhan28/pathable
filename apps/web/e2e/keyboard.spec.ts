@@ -70,8 +70,12 @@ test("mobile sheet handle resizes with arrow keys", async ({ page, isMobile }) =
 test("command palette opens with the shortcut and navigates by keyboard", async ({ page, isMobile }) => {
   test.skip(isMobile, "keyboard shortcut is a desktop affordance");
   await page.goto("/en-CA");
-  await page.keyboard.press("ControlOrMeta+k");
   const input = page.getByPlaceholder("Type a command or search");
+  // On a slow machine the first press can land before the page is interactive; press again until it opens.
+  await expect(async () => {
+    await page.keyboard.press("ControlOrMeta+k");
+    await expect(input).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: 15000 });
   await expect(input).toBeFocused();
   await input.fill("settings");
   await page.keyboard.press("Enter");

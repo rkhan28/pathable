@@ -1,5 +1,6 @@
 import { CloudSnow } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { ScrollRegion } from "@/components/site/scroll-region";
 import { Link } from "@/i18n/navigation";
 
 const REMOVED = ["gps", "altitude", "time", "camera", "software", "thumbnail"] as const;
@@ -93,8 +94,9 @@ export async function TrustNumbers({ shares, sources }: { shares: Record<"verifi
         </figcaption>
       </figure>
       <div>
-        <h3 className="font-bold">{t("sourcesTitle")}</h3>
-        <div className="pa-table-scroll mt-3">
+        <h3 id="sources-title" className="font-bold">{t("sourcesTitle")}</h3>
+        {/* On a narrow screen the table scrolls sideways; as a focusable region, keyboard users can scroll it too. */}
+        <ScrollRegion labelledBy="sources-title" className="mt-3">
           <table className="pa-table">
             <thead>
               <tr>
@@ -115,7 +117,7 @@ export async function TrustNumbers({ shares, sources }: { shares: Record<"verifi
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollRegion>
         <Link href="/coverage" className="pa-text-link mt-6 inline-block">
           {t("report")}
         </Link>
