@@ -27,6 +27,13 @@ and wrong methods (405 `invalid_request`):
 - A 429 carries `Retry-After`, in seconds, until the client's window resets.
 - `requestId` is the trace id when the client sent one (see Tracing).
 
+**Caching.** A set of routes is reused for up to `ROUTE_CACHE_TTL_S` seconds
+(600 by default; 0 turns it off) when the data version, both ends, every
+preference and the open reports near the trip are all the same. A new or
+withdrawn report changes that, so it is never answered from before it
+existed. The cache is Redis, shared by every worker, or a bounded in-process
+LRU without Redis. Responses say `x-cache: hit` or `miss`.
+
 **Rate limits** are per client per minute, counted in Redis (or per process if
 Redis is down): routes and transit 60, reports, photos and withdrawals 6,
 hazards and analysis 120. The client is the address the connection came from.

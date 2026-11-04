@@ -108,9 +108,13 @@ that, a language switch lost the selected route; an e2e test caught it.
 - HSTS
 - a restrictive `Permissions-Policy`
 
-**Content-Security-Policy: TODO.** The production API and tile hosts are not
-final, and a wrong CSP silently breaks the map. It will be added with the
-deployment.
+It also sets a **Content-Security-Policy**. Scripts, styles, fonts and workers
+come only from the site itself; the browser may connect only to the API (from
+`NEXT_PUBLIC_PATHABLE_API_URL`), the tile and glyph host and the geocoder (each
+from the same variable the app reads); nothing may frame the site. Inline
+scripts are allowed because Next.js streams page data in them and the theme
+boot script runs before first paint; per-request nonces would make every page
+dynamic.
 
 ## Known gaps
 

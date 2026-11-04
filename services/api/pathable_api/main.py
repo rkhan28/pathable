@@ -16,6 +16,7 @@ from fastapi.responses import JSONResponse
 from starlette.concurrency import run_in_threadpool
 
 from . import errors, telemetry
+from .cache import RouteCache, route_key
 from .db import Database
 from .errors import ApiError
 from .models import ReportCreate, RouteRequest, TransitRequest, WithdrawRequest
@@ -36,6 +37,7 @@ class State:
     graph: EvidenceGraph | None = None
     version: str | None = None
     limiter: RateLimiter
+    route_cache: RouteCache
     photos: LocalStorage | S3Storage | None = None
     transit: TransitPlanner | None = None
 
@@ -48,6 +50,7 @@ def create_app(settings: Settings | None = None, span_exporter=None) -> FastAPI:
     async def lifespan(_app: FastAPI):
         state.db = Database(settings.database_url)
         state.limiter = RateLimiter(settings.redis_url)
+        state.route_cache = RouteCache(settings.redis_url, settings.route_cache_ttl_s)
         if settings.s3_bucket:
             state.photos = S3Storage(
                 settings.s3_endpoint, settings.s3_bucket, settings.s3_access_key, settings.s3_secret_key
@@ -120,7 +123,7 @@ def create_app(settings: Settings | None = None, span_exporter=None) -> FastAPI:
         }
 
     @app.post("/v1/routes")
-    async def routes(body: RouteRequest, request: Request):
+    async def routes(body: RouteRequest, request: Request, response: Response):
         state.limiter.check("routes", client(request), settings.routes_per_minute)
         if state.graph is None or state.version is None:
             raise ApiError("unavailable")
@@ -136,12 +139,18 @@ def create_app(settings: Settings | None = None, span_exporter=None) -> FastAPI:
         reports = state.db.open_reports(
             (min(ox, dx) - margin, min(oy, dy) - margin, max(ox, dx) + margin, max(oy, dy) + margin)
         )
-        with tracer.start_as_current_span("router.route") as span:
-            result = await run_in_threadpool(
-                state.graph.route, tuple(body.origin), tuple(body.destination), prefs, reports
-            )
-            span.set_attribute("pathable.routes", len(result or []))
-            span.set_attribute("pathable.open_reports", len(reports))
+        key = route_key(state.version, body.origin, body.destination, prefs, reports)
+        result = state.route_cache.get(key)
+        response.headers["x-cache"] = "hit" if result is not None else "miss"
+        if result is None:
+            with tracer.start_as_current_span("router.route") as span:
+                result = await run_in_threadpool(
+                    state.graph.route, tuple(body.origin), tuple(body.destination), prefs, reports
+                )
+                span.set_attribute("pathable.routes", len(result or []))
+                span.set_attribute("pathable.open_reports", len(reports))
+            if result:
+                state.route_cache.put(key, result)
         if not result:
             raise ApiError("no_route")
         return {

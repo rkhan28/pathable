@@ -65,18 +65,30 @@ after, and saves k6's summary.
   in Colima with **4 CPUs**; corridor graph; tracing off.
 - **Run date:** 2026-11-04.
 
+Five runs on 2026-11-04, route cache off (`make bench`), each 60 s:
+
+| Run | Profile | `/v1/routes` p95 | `/v1/routes` p99 | Demo trips p95 | `/v1/hazards` p95 | Failed | Summary |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | --- |
+| 1 | 4 route + 2 hazard users | 107 ms | 147 ms | n/a | **112 ms (fails < 100 ms)** | 0% | [run 1](data/k6-summary-run1.json) |
+| 2 | plus 1 user on the demo trips | 194 ms | 251 ms | 220 ms | **120 ms (fails)** | 0% | [run 2](data/k6-summary-run2.json) |
+| 3 | same as 2 | 156 ms | 222 ms | 218 ms | 61 ms | 0% | [run 3](data/k6-summary-run3.json) |
+| 4 | same as 2 | 167 ms | 224 ms | 222 ms | 63 ms | 0% | [run 4](data/k6-summary-run4.json) |
+| 5 | same as 2 | 192 ms | 259 ms | 153 ms | 12 ms | 0% | [run 5](data/k6-summary-run5.json) |
+
+Routes meet both targets in every run. Hazards met theirs in three of five.
+One hazards query takes about 5 ms on the idle stack; under this load the
+four CPUs are busy with routing, which is CPU-bound Python, and how long a
+hazard request waits for a core varies from run to run. The 6-worker run on a
+10-core machine further up passed with cores to spare.
+
+**With the route cache on** (`make bench CACHE=on`), identical requests are
+answered from Redis without routing. The benchmark repeats 50 trips, so after
+the first minute nearly every route is a cache hit; this shows what repeated
+trips cost, not what routing costs:
+
 | Profile | `/v1/routes` p95 | `/v1/routes` p99 | Demo trips p95 | `/v1/hazards` p95 | Failed | Throughput | Summary |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| 4 route + 2 hazard users (as above) | 107 ms | 147 ms | n/a | **112 ms (fails < 100 ms)** | 0% | 124 req/s | [`k6-summary-corridor-profile.json`](data/k6-summary-corridor-profile.json) |
-| plus 1 user on the demo trips | 194 ms | 251 ms | 220 ms | **120 ms (fails)** | 0% | 115 req/s | [`k6-summary.json`](data/k6-summary.json) |
-
-Routes meet their targets. Hazards do not, here. One hazards query takes about
-5 ms on the idle stack; under this load the four CPUs are fully busy with
-routing, which is CPU-bound Python, and hazard requests wait for a core. Run 3
-above passed with 6 workers on a 10-core machine, that is, with cores to
-spare. A host that must hold the hazards target under full routing load needs
-more cores than route requests in flight, or routing moved off the request
-workers; neither is done.
+| as run 2, cache on | 70 ms | 101 ms | 91 ms | 3.6 ms | 0% | 855 req/s | [cached](data/k6-summary-cached.json) |
 
 ### With the full North York graph
 

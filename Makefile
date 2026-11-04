@@ -53,9 +53,11 @@ check-pipelines:
 e2e:
 	cd apps/web && NEXT_PUBLIC_DEV_FIXTURES=true npm run build && npx playwright test
 
+# The targets are about routing itself, so the route cache is off unless CACHE=on.
+CACHE ?= off
 bench:         ## k6 latency benchmark: lifts the API's rate limits for the run, saves the summary
-	ROUTES_PER_MINUTE=1000000 HAZARDS_PER_MINUTE=1000000 $(COMPOSE) up -d --wait api
-	k6 run --summary-export docs/data/k6-summary.json infra/k6/routes.js; status=$$?; \
+	ROUTES_PER_MINUTE=1000000 HAZARDS_PER_MINUTE=1000000 ROUTE_CACHE_TTL_S=$(if $(filter on,$(CACHE)),600,0) $(COMPOSE) up -d --build --wait api
+	k6 run --summary-export docs/data/k6-summary$(if $(filter on,$(CACHE)),-cached,).json infra/k6/routes.js; status=$$?; \
 	$(COMPOSE) up -d --wait api; exit $$status
 
 screenshots:
