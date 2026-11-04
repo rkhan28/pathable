@@ -1,11 +1,13 @@
 # Vercel only needs apps/web plus the shared contracts and the data report JSON.
-data/
-pipelines/
-services/
-infra/
-ml/
-docs/screenshots/
-docs/lighthouse/
+# Anchored with a leading slash: a bare "data/" would also drop docs/data, which the build reads.
+/data/
+/pipelines/
+/services/
+/infra/
+/ml/
+/docs/screenshots/
+/docs/lighthouse/
+/docs/media/
 **/node_modules/
 **/.venv/
 **/.next/
