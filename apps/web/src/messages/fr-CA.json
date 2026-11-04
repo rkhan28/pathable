@@ -274,7 +274,9 @@
       "unknowns": "Certains tronçons sans données",
       "incompatible": "Obstacles connus"
     },
-    "more": "Détails"
+    "more": "Détails",
+    "surveyAgrees": "{source} : {value, number, ::.0} %, ce qui concorde",
+    "surveyDisagrees": "{source} : {value, number, ::.0} %, ce qui ne concorde pas. La pente ne compte que si les deux relevés sont du même côté de votre limite."
   },
   "reasons": {
     "fewest_barriers": "{value, plural, =0 {il ne comporte aucun obstacle connu} one {il compte le moins d’obstacles connus (#)} other {il compte le moins d’obstacles connus (#)}}",
@@ -438,7 +440,9 @@
       "rejected": "Non vérifié",
       "withdrawn": "Retiré",
       "draft": "Brouillon, non envoyé"
-    }
+    },
+    "locationNeeded": "Cherchez le lieu, utilisez votre position ou choisissez-le sur la carte.",
+    "dateInvalid": "Indiquez la date où vous l’avez vu, aujourd’hui ou avant."
   },
   "settings": {
     "title": "Paramètres",
@@ -575,5 +579,38 @@
     "rideLeg": "{mode, select, bus {Autobus} streetcar {Tramway} lrt {SLR} subway {Métro} other {Train}} {line}",
     "faster": "Plus rapide",
     "loading": "Vérification du transport en commun"
+  },
+  "surfaces": {
+    "asphalt": "Asphalte",
+    "concrete": "Béton",
+    "concrete_plates": "Dalles de béton",
+    "concrete_lanes": "Bandes de béton",
+    "paving_stones": "Pavés",
+    "paved": "Revêtu",
+    "tartan": "Revêtement caoutchouté",
+    "rubber": "Caoutchouc",
+    "gravel": "Gravier",
+    "fine_gravel": "Gravier fin",
+    "dirt": "Terre",
+    "ground": "Sol nu",
+    "grass": "Herbe",
+    "sand": "Sable",
+    "mud": "Boue",
+    "earth": "Terre battue",
+    "unpaved": "Non revêtu",
+    "compacted": "Gravier compacté",
+    "pebblestone": "Galets",
+    "woodchips": "Copeaux de bois",
+    "sett": "Pavés taillés",
+    "cobblestone": "Pavés ronds",
+    "unhewn_cobblestone": "Pavés bruts",
+    "grass_paver": "Dalles gazon",
+    "rock": "Roche"
+  },
+  "kerbValues": {
+    "lowered": "Abaissé",
+    "flush": "Affleurant",
+    "raised": "Surélevé",
+    "no": "Aucune"
   }
 }

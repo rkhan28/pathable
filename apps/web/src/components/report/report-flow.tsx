@@ -12,6 +12,7 @@ import { PlaceSearch } from "@/components/planner/place-search";
 import { HazardKind, type LonLat } from "@/lib/api/contracts";
 import { PathAbleError } from "@/lib/api/errors";
 import { getService } from "@/lib/api/select-service";
+import { useRouteFormat } from "@/lib/format";
 import { announce } from "@/lib/announce";
 import { preparePhoto } from "@/lib/photo";
 import { useReports } from "@/stores/reports";
@@ -25,17 +26,24 @@ type StepName = (typeof STEPS)[number];
 const Details = z.object({
   kind: HazardKind,
   description: z.string().trim().max(500),
-  observedOn: z.iso.date().refine((d) => d <= new Date().toISOString().slice(0, 10)),
+  observedOn: z.iso.date().refine((d) => d <= today()),
 });
 type DetailsForm = z.infer<typeof Details>;
 
+/**
+ * Today's date where the person is, not in UTC: from 7 or 8 pm in Toronto UTC is
+ * already tomorrow, which would preset (and allow) a date that has not happened.
+ */
 function today() {
-  return new Date().toISOString().slice(0, 10);
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 export function ReportFlow() {
   const t = useTranslations();
   const [step, setStep] = useState<StepName>("photo");
+  const [needPlace, setNeedPlace] = useState(false);
+  const f = useRouteFormat();
   const [photo, setPhoto] = useState<Blob | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
@@ -129,7 +137,7 @@ export function ReportFlow() {
       {step === "location" && (
         <section aria-labelledby="step-title">
           <h1 id="step-title" ref={headingRef} tabIndex={-1} className="pa-step-title">{t("report.locationTitle")}</h1>
-          <div className="mt-6">
+          <div className="pa-report-location mt-6">
             <PlaceSearch label={t("report.locationTitle")} hideLabel value={place} onSelect={setPlace} onChooseOnMap={() => setPicking(true)} />
           </div>
           {(picking || place) && (
@@ -160,7 +168,20 @@ export function ReportFlow() {
               {place.label}
             </p>
           )}
-          <StepNav onBack={() => go("photo")} onNext={() => go("review")} nextDisabled={!place} />
+          {needPlace && !place && (
+            <p className="pa-field-error mt-3" role="alert">
+              {t("report.locationNeeded")}
+            </p>
+          )}
+          {/* Next stays enabled: a disabled button gives no reason, so instead it says what is missing. */}
+          <StepNav
+            onBack={() => go("photo")}
+            onNext={() => {
+              if (place) return go("review");
+              setNeedPlace(true);
+              document.querySelector<HTMLInputElement>(".pa-report-location input[role='combobox']")?.focus();
+            }}
+          />
         </section>
       )}
 
@@ -198,7 +219,20 @@ export function ReportFlow() {
             </div>
             <div>
               <label htmlFor="observedOn" className="pa-field-label">{t("report.observedOn")}</label>
-              <input id="observedOn" type="date" max={today()} className="pa-input" aria-invalid={Boolean(form.formState.errors.observedOn)} {...form.register("observedOn")} />
+              <input
+                id="observedOn"
+                type="date"
+                max={today()}
+                className="pa-input"
+                aria-invalid={Boolean(form.formState.errors.observedOn)}
+                aria-describedby={form.formState.errors.observedOn ? "observedOn-error" : undefined}
+                {...form.register("observedOn")}
+              />
+              {form.formState.errors.observedOn && (
+                <p id="observedOn-error" className="pa-field-error mt-2" role="alert">
+                  {t("report.dateInvalid")}
+                </p>
+              )}
             </div>
           </div>
           <StepNav onBack={() => go("review")} submit />
@@ -211,7 +245,7 @@ export function ReportFlow() {
           <dl className="pa-evidence mt-6">
             <div><dt>{t("report.kind")}</dt><dd>{t(`hazards.kinds.${form.getValues("kind")}`)}</dd></div>
             <div><dt>{t("report.locationTitle")}</dt><dd>{place?.label}</dd></div>
-            <div><dt>{t("report.observedOn")}</dt><dd className="tabular">{form.getValues("observedOn")}</dd></div>
+            <div><dt>{t("report.observedOn")}</dt><dd>{f.date(form.getValues("observedOn"))}</dd></div>
           </dl>
           {sentMessage ? (
             <p className="pa-notice mt-6" role="status">{sentMessage}</p>

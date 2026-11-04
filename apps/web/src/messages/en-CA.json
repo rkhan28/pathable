@@ -274,7 +274,9 @@
       "unknowns": "Some stretches have no data",
       "incompatible": "Has known barriers"
     },
-    "more": "Details"
+    "more": "Details",
+    "surveyAgrees": "{source}: {value, number, ::.0}%, which agrees",
+    "surveyDisagrees": "{source}: {value, number, ::.0}%, which does not agree. Slope only counts where both surveys fall on the same side of your limit."
   },
   "reasons": {
     "fewest_barriers": "{value, plural, =0 {it has no known barriers} one {it has the fewest known barriers (#)} other {it has the fewest known barriers (#)}}",
@@ -438,7 +440,9 @@
       "rejected": "Not verified",
       "withdrawn": "Withdrawn",
       "draft": "Draft, not sent"
-    }
+    },
+    "locationNeeded": "Search for the place, use your location or choose it on the map.",
+    "dateInvalid": "Enter the date you saw it, today or earlier."
   },
   "settings": {
     "title": "Settings",
@@ -575,5 +579,38 @@
     "rideLeg": "{mode, select, bus {Bus} streetcar {Streetcar} lrt {LRT} subway {Subway} other {Train}} {line}",
     "faster": "Faster",
     "loading": "Checking transit"
+  },
+  "surfaces": {
+    "asphalt": "Asphalt",
+    "concrete": "Concrete",
+    "concrete_plates": "Concrete slabs",
+    "concrete_lanes": "Concrete strips",
+    "paving_stones": "Paving stones",
+    "paved": "Paved",
+    "tartan": "Rubberized track",
+    "rubber": "Rubber",
+    "gravel": "Gravel",
+    "fine_gravel": "Fine gravel",
+    "dirt": "Dirt",
+    "ground": "Bare ground",
+    "grass": "Grass",
+    "sand": "Sand",
+    "mud": "Mud",
+    "earth": "Earth",
+    "unpaved": "Unpaved",
+    "compacted": "Compacted gravel",
+    "pebblestone": "Pebbles",
+    "woodchips": "Wood chips",
+    "sett": "Setts",
+    "cobblestone": "Cobblestones",
+    "unhewn_cobblestone": "Rough cobblestones",
+    "grass_paver": "Grass pavers",
+    "rock": "Rock"
+  },
+  "kerbValues": {
+    "lowered": "Lowered",
+    "flush": "Flush",
+    "raised": "Raised",
+    "no": "None"
   }
 }

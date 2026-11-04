@@ -452,8 +452,10 @@ export function Planner() {
                     data-mode={m}
                   >
                     {active && <motion.span layoutId="pa-mode-pill" className="pa-mode-pill" transition={spring.ui} />}
-                    <Icon aria-hidden size={18} />
-                    <span>{t(`transit.${m}`)}</span>
+                    <span className="pa-mode-label">
+                      <Icon aria-hidden size={18} />
+                      <span>{t(`transit.${m}`)}</span>
+                    </span>
                     <span className="pa-mode-time">
                       {s !== undefined ? t("common.minutes", { value: Math.max(1, Math.round(s / 60)) }) : m === "transit" && transitQuery.isPending ? <span className="pa-dots" aria-label={t("transit.loading")} /> : null}
                     </span>

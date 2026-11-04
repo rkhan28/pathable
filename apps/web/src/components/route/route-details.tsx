@@ -22,6 +22,14 @@ export function useStepText() {
   };
 }
 
+function codeText(t: ReturnType<typeof useTranslations>, group: "surfaces" | "kerbValues", code: string) {
+  const key = `${group}.${code.replaceAll(":", "_")}`;
+  return t.has(key) ? t(key) : code.replaceAll("_", " ");
+}
+
+/** Within this many percentage points the two lidar surveys are said to agree; their median difference is 0.17. */
+const SURVEYS_AGREE_PP = 1;
+
 function EvidenceValue({ e }: { e: Evidence }) {
   const t = useTranslations();
   const f = useRouteFormat();
@@ -29,9 +37,12 @@ function EvidenceValue({ e }: { e: Evidence }) {
   let value: string;
   if (e.attribute === "running_slope" && typeof e.value === "number") {
     value = t("common.percent", { value: e.value });
-    if (e.corroboration) value += ` / ${t("common.percent", { value: e.corroboration.value })}`;
   } else if (e.attribute === "width" && typeof e.value === "number") value = t("common.metres", { value: e.value });
   else if (typeof e.value === "boolean") value = e.value ? t("common.yes") : t("common.no");
+  // Surface and curb values are OpenStreetMap codes; they are shown in the interface
+  // language, and a code we have no word for yet is shown as it is rather than hidden.
+  else if (e.attribute === "surface" && typeof e.value === "string") value = codeText(t, "surfaces", e.value);
+  else if (e.attribute === "kerbs" && typeof e.value === "string") value = e.value.split(";").map((v) => codeText(t, "kerbValues", v)).join(" / ");
   else value = String(e.value).replaceAll(";", " / ");
   return (
     <span>
@@ -39,8 +50,17 @@ function EvidenceValue({ e }: { e: Evidence }) {
       {e.source && (
         <span className="block text-sm text-ink-muted">
           {t(`sources.${e.source}`)}
-          {e.corroboration ? `, ${t(`sources.${e.corroboration.source}`)}` : ""}
           <span className="block">{t("common.observed", { date: f.date(e.observedOn) })}</span>
+        </span>
+      )}
+      {/* The second survey is a check on the first, so it is said in words rather than shown
+          as a second number beside it. Slope only counts in ranking when both agree. */}
+      {e.attribute === "running_slope" && typeof e.value === "number" && e.corroboration && (
+        <span className="block text-sm text-ink-muted">
+          {t(Math.abs(e.corroboration.value - e.value) <= SURVEYS_AGREE_PP ? "route.surveyAgrees" : "route.surveyDisagrees", {
+            source: t(`sources.${e.corroboration.source}`),
+            value: e.corroboration.value,
+          })}
         </span>
       )}
     </span>

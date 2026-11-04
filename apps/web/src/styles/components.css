@@ -134,6 +134,7 @@
   .pa-trip-fields > .pa-combobox:last-child { grid-column: 1; }
   .pa-swap { grid-column: 2; grid-row: 1 / span 2; align-self: center; display: inline-flex; align-items: center; justify-content: center; inline-size: 2.75rem; block-size: 2.75rem; border-radius: var(--r-control); border: 1px solid var(--line); background: var(--surface-raised); margin-block-start: 1.5rem; }
   .pa-swap:disabled { opacity: 0.5; }
+  .pa-field-error { font-size: var(--type-sm); font-weight: 700; color: var(--state-barrier); }
   .pa-notice { display: flex; gap: 0.5rem; align-items: flex-start; flex-direction: column; padding: 0.75rem 1rem; border-radius: var(--r-chip); background: var(--surface-sunken); }
   .pa-notice.is-error { box-shadow: inset 4px 0 0 var(--state-barrier); }
   .pa-empty { padding: 1rem; border-radius: var(--r-card); border: 1px dashed var(--line); }
@@ -354,14 +355,17 @@
 
   /* ---------- Travel mode switch, suggestion, transit legs ---------- */
   .pa-modes { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0.25rem; padding: 0.25rem; border-radius: var(--r-control); background: var(--surface-sunken); }
-  .pa-mode { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem; min-block-size: 2.75rem; padding-inline: 0.75rem; border-radius: var(--r-control); font-weight: 700; color: var(--ink-muted); transition: color var(--duration-state); }
+  /* Label and time share a line when they fit; a longer label (French's "Transport en commun")
+     sends the time to a second line instead of overflowing the button. */
+  .pa-mode { position: relative; display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; column-gap: 0.375rem; row-gap: 0; min-block-size: 2.75rem; padding-block: 0.25rem; padding-inline: 0.75rem; line-height: 1.25; border-radius: var(--r-control); font-weight: 700; color: var(--ink-muted); transition: color var(--duration-state); }
   .pa-mode > :not(.pa-mode-pill) { position: relative; }
   .pa-mode[aria-checked="true"] { color: var(--ink); }
   .pa-mode:hover { color: var(--ink); }
   .pa-mode-pill { position: absolute; inset: 0; border-radius: var(--r-control); background: var(--surface-raised); box-shadow: 0 1px 2px rgb(0 0 0 / 0.12), 0 2px 8px rgb(0 0 0 / 0.06); }
   .pa-mode-time { font-weight: 400; color: var(--ink-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .pa-mode { white-space: nowrap; }
-  @media (max-width: 23rem) { .pa-mode > span:not(.pa-mode-time):not(.pa-mode-pill) { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); } }
+  .pa-mode > span { white-space: nowrap; }
+  .pa-mode-label { display: inline-flex; align-items: center; gap: 0.375rem; }
+  @media (max-width: 23rem) { .pa-mode-label > span { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); } }
   .pa-suggest { display: flex; inline-size: 100%; align-items: center; gap: 0.5rem; min-block-size: 2.75rem; padding: 0.5rem 0.875rem; border-radius: var(--r-card); background: color-mix(in srgb, var(--signal) 14%, var(--surface-raised)); border: 1px solid color-mix(in srgb, var(--signal) 45%, transparent); font-weight: 700; text-align: start; transition: transform var(--duration-press) var(--ease-out-cubic), background-color var(--duration-state); }
   .pa-suggest:hover { background: color-mix(in srgb, var(--signal) 22%, var(--surface-raised)); }
   .pa-suggest:active { transform: scale(0.98); }
