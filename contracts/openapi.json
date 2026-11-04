@@ -1606,6 +1606,9 @@
             "items": false,
             "minItems": 4,
             "maxItems": 4
+          },
+          "photoUploads": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -1613,7 +1616,8 @@
           "dataVersion",
           "area",
           "areaKm2",
-          "bbox"
+          "bbox",
+          "photoUploads"
         ],
         "additionalProperties": false
       },

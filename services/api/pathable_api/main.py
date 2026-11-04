@@ -192,7 +192,12 @@ def create_app(settings: Settings | None = None, span_exporter=None) -> FastAPI:
     def coverage():
         if state.version is None:
             raise ApiError("unavailable")
-        return {"source": "live", "dataVersion": state.version, **state.db.coverage(state.version)}
+        return {
+            "source": "live",
+            "dataVersion": state.version,
+            **state.db.coverage(state.version),
+            "photoUploads": state.photos is not None,
+        }
 
     @app.get("/v1/hazards")
     def hazards(request: Request, bbox: str = Query(pattern=r"^-?\d+(\.\d+)?(,-?\d+(\.\d+)?){3}$")):

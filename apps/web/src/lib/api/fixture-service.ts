@@ -112,5 +112,5 @@ export const fixtureService: PathAbleService = {
   withdrawReport: () => Promise.reject(new PathAbleError("unavailable", false)),
   analyzePhoto: () => Promise.resolve({ status: "unavailable", reason: "no_model" }),
   // Fixtures cover the demo trips only; "demo-trips" lets the UI say exactly that.
-  coverage: () => Promise.resolve({ source: "development-fixture", dataVersion: "fixture", area: "demo-trips", areaKm2: 0, bbox: [-79.505, 43.757, -79.405, 43.778] }),
+  coverage: () => Promise.resolve({ source: "development-fixture", dataVersion: "fixture", area: "demo-trips", areaKm2: 0, bbox: [-79.505, 43.757, -79.405, 43.778], photoUploads: false }),
 };

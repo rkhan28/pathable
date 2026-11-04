@@ -299,6 +299,8 @@ export const CoverageResponse = z.object({
   areaKm2: z.number().nonnegative(),
   /** [west, south, east, north] */
   bbox: z.tuple([z.number(), z.number(), z.number(), z.number()]),
+  /** Whether this deployment stores report photos; a small one may have no private storage. */
+  photoUploads: z.boolean(),
 });
 export type CoverageResponse = z.infer<typeof CoverageResponse>;
 export type WithdrawRequest = z.infer<typeof WithdrawRequest>;

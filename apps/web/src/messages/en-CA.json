@@ -444,7 +444,8 @@
     },
     "locationNeeded": "Search for the place, use your location or choose it on the map.",
     "dateInvalid": "Enter the date you saw it, today or earlier.",
-    "withdrawNoToken": "This report was sent before withdrawals needed proof that it is yours, so it can only be withdrawn by contacting us."
+    "withdrawNoToken": "This report was sent before withdrawals needed proof that it is yours, so it can only be withdrawn by contacting us.",
+    "photosOff": "This server does not store photos right now, so a report goes without one. Everything else works: describe what you found in the details step."
   },
   "settings": {
     "title": "Settings",

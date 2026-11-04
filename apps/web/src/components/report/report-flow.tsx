@@ -13,6 +13,7 @@ import { HazardKind, type LonLat } from "@/lib/api/contracts";
 import { PathAbleError } from "@/lib/api/errors";
 import { getService } from "@/lib/api/select-service";
 import { useRouteFormat } from "@/lib/format";
+import { useCoverage } from "@/components/site/live-coverage";
 import { announce } from "@/lib/announce";
 import { preparePhoto } from "@/lib/photo";
 import { useReports } from "@/stores/reports";
@@ -44,6 +45,8 @@ export function ReportFlow() {
   const [step, setStep] = useState<StepName>("photo");
   const [needPlace, setNeedPlace] = useState(false);
   const f = useRouteFormat();
+  const coverage = useCoverage();
+  const photosOff = coverage.data?.photoUploads === false;
   const [photo, setPhoto] = useState<Blob | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
@@ -101,7 +104,12 @@ export function ReportFlow() {
         <section aria-labelledby="step-title">
           <h1 id="step-title" ref={headingRef} tabIndex={-1} className="pa-step-title">{t("report.photoTitle")}</h1>
           <p className="mt-2 max-w-(--measure) text-ink-muted">{t("report.photoHint")}</p>
-          {photoUrl ? (
+          {/* Said before a photo is chosen, not discovered when sending: this server keeps no photos. */}
+          {photosOff ? (
+            <p className="pa-notice mt-6" role="status">
+              {t("report.photosOff")}
+            </p>
+          ) : photoUrl ? (
             <div className="mt-6">
               {/* eslint-disable-next-line @next/next/no-img-element -- local blob preview, never optimised */}
               <img src={photoUrl} alt="" className="max-h-72 rounded-card" />

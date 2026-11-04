@@ -444,7 +444,8 @@
     },
     "locationNeeded": "Cherchez le lieu, utilisez votre position ou choisissez-le sur la carte.",
     "dateInvalid": "Indiquez la date où vous l’avez vu, aujourd’hui ou avant.",
-    "withdrawNoToken": "Ce signalement a été envoyé avant que le retrait exige une preuve qu’il est le vôtre : pour le retirer, écrivez-nous."
+    "withdrawNoToken": "Ce signalement a été envoyé avant que le retrait exige une preuve qu’il est le vôtre : pour le retirer, écrivez-nous.",
+    "photosOff": "Ce serveur ne conserve pas de photos en ce moment; le signalement part donc sans photo. Tout le reste fonctionne : décrivez ce que vous avez trouvé à l’étape des détails."
   },
   "settings": {
     "title": "Paramètres",

@@ -42,6 +42,7 @@ def test_coverage_names_the_loaded_area(client):
     body = res.json()
     assert body["dataVersion"] == "test-york-u-finch-west"
     assert body["area"] == "york-u-finch-west"
+    assert body["photoUploads"] is True  # the test app stores photos in a temporary folder
     w, s, e, n = body["bbox"]
     lon, lat = TRIP["origin"]
     assert w <= lon <= e and s <= lat <= n
