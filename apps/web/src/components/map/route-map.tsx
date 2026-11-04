@@ -444,6 +444,25 @@ export function RouteMap({
     return () => markers.forEach((m) => m.remove());
   }, [origin, destination, styleVersion]);
 
+  // Before there are routes, bring the chosen place (or both ends) into view, clear of the
+  // sidebar or sheet, so a destination picked on the landing page is not left off to one side.
+  const noRoutes = routes.length === 0;
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !noRoutes || (status !== "ready" && status !== "fallback-style")) return;
+    const pad = latest.current.padding;
+    const ms = prefersReducedMotion() ? 0 : 800;
+    if (origin && destination) {
+      const b: [[number, number], [number, number]] = [
+        [Math.min(origin[0], destination[0]), Math.min(origin[1], destination[1])],
+        [Math.max(origin[0], destination[0]), Math.max(origin[1], destination[1])],
+      ];
+      map.fitBounds(b, { padding: pad, maxZoom: 16, duration: ms, easing: easeOutCubic });
+    } else if (origin || destination) {
+      map.easeTo({ center: (origin ?? destination)!, zoom: Math.max(map.getZoom(), 15), padding: pad, duration: ms, easing: easeOutCubic });
+    }
+  }, [origin, destination, noRoutes, status]);
+
   // Hazard markers are React-rendered buttons; only the selected route's hazards exist, so only they are tabbable.
   useEffect(() => {
     const map = mapRef.current;
