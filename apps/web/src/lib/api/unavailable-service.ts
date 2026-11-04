@@ -11,4 +11,5 @@ export const unavailableService: PathAbleService = {
   createReport: () => Promise.reject(new PathAbleError("unavailable", false)),
   withdrawReport: () => Promise.reject(new PathAbleError("unavailable", false)),
   analyzePhoto: () => Promise.resolve({ status: "unavailable", reason: "disabled" }),
+  coverage: () => Promise.reject(new PathAbleError("unavailable", false)),
 };

@@ -285,6 +285,22 @@ export const ReportReceipt = z.object({
 export type ReportReceipt = z.infer<typeof ReportReceipt>;
 
 export const WithdrawRequest = z.object({ withdrawToken: z.string().min(1).max(200) });
+
+/**
+ * What this deployment can route over. The pipeline builds all of North York,
+ * but a small server may load only the demo corridor; the UI names the area
+ * from this rather than assuming the whole pilot.
+ */
+export const CoverageResponse = z.object({
+  source: ResponseSource,
+  dataVersion: z.string(),
+  /** "north-york", "corridor" (York University to Yonge and Sheppard), or another built area. */
+  area: z.string(),
+  areaKm2: z.number().nonnegative(),
+  /** [west, south, east, north] */
+  bbox: z.tuple([z.number(), z.number(), z.number(), z.number()]),
+});
+export type CoverageResponse = z.infer<typeof CoverageResponse>;
 export type WithdrawRequest = z.infer<typeof WithdrawRequest>;
 
 /** A stored report photo. The server re-encodes it with no metadata and never serves it publicly. */

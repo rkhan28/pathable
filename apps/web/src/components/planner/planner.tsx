@@ -32,6 +32,7 @@ import { spring } from "@/lib/motion";
 import { usePreferences } from "@/stores/preferences";
 import { useTrip, type Place } from "@/stores/trip";
 import { BottomSheet } from "./bottom-sheet";
+import { useCoverageAreaName } from "@/components/site/live-coverage";
 import { PlaceSearch } from "./place-search";
 import { useDemoTrips } from "./use-demo-trips";
 import { NearbyReports } from "./nearby-reports";
@@ -150,6 +151,7 @@ export function Planner() {
   const [settles, setSettles] = useState(0);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const kind = serviceKind();
+  const loadedArea = useCoverageAreaName();
 
   // Shareable links: ?from=lat,lon&to=lat,lon seed the trip on first load.
   // Wait for the session store to rehydrate first, and leave an identical trip
@@ -296,8 +298,12 @@ export function Planner() {
   };
 
 
-  const errorMessage = (e: PathAbleError) =>
-    e.code === "no_route" && kind === "development-fixture" ? t("errors.no_route_fixture") : t(`errors.${e.code}`);
+  const errorMessage = (e: PathAbleError) => {
+    if (e.code === "no_route" && kind === "development-fixture") return t("errors.no_route_fixture");
+    // Name the area actually loaded when it is smaller than the pilot, instead of implying all of North York.
+    if (e.code === "outside_coverage" && loadedArea && loadedArea.area !== "north-york") return t("coverageLive.outside", { area: loadedArea.name });
+    return t(`errors.${e.code}`);
+  };
 
   const panel = (
     <div className="pa-panel">

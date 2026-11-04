@@ -614,5 +614,19 @@
     "flush": "Flush",
     "raised": "Raised",
     "no": "None"
+  },
+  "coverageLive": {
+    "title": "On this service right now",
+    "northYork": "All of North York is loaded (data version {version}).",
+    "corridor": "Only the demo corridor is loaded: York University to Yonge and Sheppard, {km2, number} km² (data version {version}). The rest of North York is built, but holding it needs a larger server than this one, so trips elsewhere are refused rather than guessed.",
+    "demoTrips": "This site is running on development data, which covers only the three demo trips.",
+    "other": "The “{area}” area is loaded, {km2, number} km² (data version {version}).",
+    "unreachable": "The route service cannot be reached right now, so we cannot say which area it has loaded.",
+    "outside": "That trip is outside {area}, the area this service has loaded right now. The coverage page explains why.",
+    "areas": {
+      "north-york": "North York",
+      "corridor": "the demo corridor from York University to Yonge and Sheppard",
+      "demo-trips": "the three demo trips"
+    }
   }
 }

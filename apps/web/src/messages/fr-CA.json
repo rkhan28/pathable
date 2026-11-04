@@ -614,5 +614,19 @@
     "flush": "Affleurant",
     "raised": "Surélevé",
     "no": "Aucune"
+  },
+  "coverageLive": {
+    "title": "Sur ce service en ce moment",
+    "northYork": "Tout North York est chargé (version des données {version}).",
+    "corridor": "Seul le corridor de démonstration est chargé : de l’Université York à Yonge et Sheppard, {km2, number} km² (version des données {version}). Le reste de North York est construit, mais il faut un serveur plus puissant que celui-ci pour le charger; les trajets ailleurs sont donc refusés plutôt que devinés.",
+    "demoTrips": "Ce site fonctionne avec des données de développement, qui ne couvrent que les trois trajets de démonstration.",
+    "other": "Le secteur « {area} » est chargé, {km2, number} km² (version des données {version}).",
+    "unreachable": "Le service d’itinéraires est injoignable en ce moment; nous ne pouvons donc pas dire quel secteur il a chargé.",
+    "outside": "Ce trajet est hors {area}, le secteur que ce service a chargé en ce moment. La page Couverture explique pourquoi.",
+    "areas": {
+      "north-york": "de North York",
+      "corridor": "du corridor de démonstration entre l’Université York et Yonge et Sheppard",
+      "demo-trips": "des trois trajets de démonstration"
+    }
   }
 }

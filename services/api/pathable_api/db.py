@@ -32,6 +32,22 @@ class Database:
         with self.pool.connection() as c:
             return c.execute("SELECT id, built_at FROM data_versions ORDER BY built_at DESC LIMIT 1").fetchone()
 
+    def coverage(self, version: str) -> dict:
+        """The loaded area: its name (from the build's notes, "area=..."), size and bounds."""
+        with self.pool.connection() as c:
+            row = c.execute(
+                """SELECT notes, ST_Area(coverage::geography) / 1e6 AS km2,
+                          ST_XMin(coverage) AS w, ST_YMin(coverage) AS s, ST_XMax(coverage) AS e, ST_YMax(coverage) AS n
+                   FROM data_versions WHERE id = %s""",
+                (version,),
+            ).fetchone()
+        area = next((part[5:] for part in row["notes"].split() if part.startswith("area=")), "unknown")
+        return {
+            "area": area,
+            "areaKm2": round(row["km2"], 1),
+            "bbox": [round(row[k], 5) for k in ("w", "s", "e", "n")],
+        }
+
     def in_coverage(self, version: str, lon: float, lat: float) -> bool:
         with self.pool.connection() as c:
             row = c.execute(

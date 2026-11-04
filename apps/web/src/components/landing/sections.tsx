@@ -72,6 +72,7 @@ interface SourceRow {
 export async function TrustNumbers({ shares, sources }: { shares: Record<"verified" | "barrier" | "unverified" | "unknown", number>; sources: SourceRow[] }) {
   const t = await getTranslations("landing.trust");
   const ts = await getTranslations("states");
+  const tc = await getTranslations("common");
   const order = ["verified", "unverified", "unknown", "barrier"] as const;
   return (
     <div className="mt-10 grid grid-cols-1 gap-10">
@@ -85,7 +86,7 @@ export async function TrustNumbers({ shares, sources }: { shares: Record<"verifi
           {order.map((s) => (
             <span key={s} className="flex justify-between gap-3 border-t border-line-subtle pt-2">
               <span>{ts(s)}</span>
-              <span className="tabular">{shares[s].toFixed(1)}%</span>
+              <span className="tabular">{tc("percent", { value: shares[s] })}</span>
             </span>
           ))}
           <span className="text-ink-muted sm:col-span-4">{t("corridorLabel")}</span>

@@ -1,5 +1,6 @@
 import type {
   AnalysisResponse,
+  CoverageResponse,
   HazardsResponse,
   PhotoReceipt,
   ReportCreate,
@@ -23,4 +24,6 @@ export interface PathAbleService {
   createReport(report: ReportCreate): Promise<ReportReceipt>;
   withdrawReport(id: string, withdrawToken: string): Promise<ReportReceipt>;
   analyzePhoto(photo: Blob): Promise<AnalysisResponse>;
+  /** The area this deployment has loaded, so messages can name it. */
+  coverage(signal?: AbortSignal): Promise<CoverageResponse>;
 }

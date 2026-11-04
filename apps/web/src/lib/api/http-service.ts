@@ -1,6 +1,7 @@
 import type { z } from "zod";
 import {
   AnalysisResponse,
+  CoverageResponse,
   ApiError,
   HazardsResponse,
   PhotoReceipt,
@@ -75,6 +76,9 @@ export function createHttpService(baseUrl: string, fetchImpl: typeof fetch = fet
     },
     async withdrawReport(id: string, withdrawToken: string) {
       return parseResponse(await send(`/v1/reports/${encodeURIComponent(id)}/withdraw`, json({ withdrawToken })), ReportReceipt);
+    },
+    async coverage(signal?: AbortSignal) {
+      return parseResponse(await send("/v1/coverage", { signal }), CoverageResponse);
     },
     async analyzePhoto(photo: Blob) {
       const form = new FormData();

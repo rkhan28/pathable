@@ -40,7 +40,7 @@ export function StatesExplorer({ shares, data }: { shares: Record<KnowledgeState
               <span className="mt-1 block text-ink-muted">{t(`states.${s}Long`)}</span>
             </span>
             <span className="pa-specimen-share">
-              <span className="tabular text-md">{shares[s].toFixed(1)}%</span>
+              <span className="tabular text-md">{t("common.percent", { value: shares[s] })}</span>
               <span className="pa-share-track" aria-hidden>
                 <span className="pa-share-fill" style={{ inlineSize: `${shares[s]}%`, background: s === "verified" ? "var(--signal)" : `var(--state-${s})` }} />
               </span>

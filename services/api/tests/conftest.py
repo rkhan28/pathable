@@ -48,7 +48,7 @@ def migrated(database_url):
         doc["coverage_wkt"],
         doc["edges"],
         doc["hazards"],
-        notes="test",
+        notes="area=york-u-finch-west test",
     )
     load_transit(database_url, json.loads(TRANSIT_FIXTURE.read_text()))
     return database_url

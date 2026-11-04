@@ -170,6 +170,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "options": options,
         }
 
+    @app.get("/v1/coverage")
+    def coverage():
+        if state.version is None:
+            raise ApiError("unavailable")
+        return {"source": "live", "dataVersion": state.version, **state.db.coverage(state.version)}
+
     @app.get("/v1/hazards")
     def hazards(request: Request, bbox: str = Query(pattern=r"^-?\d+(\.\d+)?(,-?\d+(\.\d+)?){3}$")):
         state.limiter.check("hazards", client(request), settings.hazards_per_minute)

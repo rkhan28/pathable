@@ -35,6 +35,19 @@ def test_health_and_ready(client):
     assert ready.json()["checks"] == {"database": "ok", "graph": "ok", "redis": "off", "photos": "ok"}
 
 
+def test_coverage_names_the_loaded_area(client):
+    res = client.get("/v1/coverage")
+    assert res.status_code == 200
+    valid("CoverageResponse", res.json())
+    body = res.json()
+    assert body["dataVersion"] == "test-york-u-finch-west"
+    assert body["area"] == "york-u-finch-west"
+    w, s, e, n = body["bbox"]
+    lon, lat = TRIP["origin"]
+    assert w <= lon <= e and s <= lat <= n
+    assert body["areaKm2"] > 0
+
+
 def test_one_place_is_not_a_trip(client):
     here = TRIP["origin"]
     for path in ("/v1/routes", "/v1/transit"):
