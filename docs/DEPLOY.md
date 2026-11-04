@@ -1,14 +1,14 @@
 # Deploying the demo on free tiers
 
-The demo is deployed without pushing the source to GitHub. Each piece is
-uploaded straight from this machine.
+The web app deploys from GitHub on every push; the API image is built by
+Render from the same repository; the data is loaded from this machine.
 
 ## The plan
 
 | Piece | Host (free tier) | Limits that matter | How it gets there |
 | --- | --- | --- | --- |
-| Web (`apps/web`) | Vercel Hobby | Non-commercial use | `vercel deploy` from the repo root; `.vercelignore` keeps the upload to about 8 MB |
-| API (`services/api`) | Render free web service | 512 MB RAM, 0.1 CPU, sleeps after 15 min idle (about 1 min to wake) | Docker image pushed to a **private** registry repo, then pulled by Render |
+| Web (`apps/web`) | Vercel Hobby | Non-commercial use | Vercel builds from the GitHub repository (root directory `apps/web`); `.vercelignore` keeps CLI uploads small |
+| API (`services/api`) | Render free web service | 512 MB RAM, 0.1 CPU, sleeps after 15 min idle (about 1 min to wake) | Render builds `services/api/Dockerfile` from the GitHub repository |
 | Database | Render free Postgres or Neon free (with PostGIS) | About 0.5–1 GB storage; Render's free database expires after 30 days | `alembic upgrade head`, then `export_graph --load` from this machine |
 
 Limits were checked on 2026-11-03 against current free-tier comparisons. They
@@ -43,13 +43,10 @@ You run these, signed in to your own accounts:
 1. `vercel login`, then from the repository root:
    `vercel deploy --prod`. Set the root directory to `apps/web` and set
    `NEXT_PUBLIC_PATHABLE_API_URL` to the API's URL.
-2. Create the database, then load it from this machine:
-   ```bash
-   cd services/api && DATABASE_URL=<url> uv run alembic upgrade head
-   cd ../../pipelines && uv run python -m pathable_pipelines.export_graph --area corridor --load <url>
-   ```
-3. Build and push the API image to a private registry repository, then create
-   the Render web service from that image with these environment variables:
+2. Create the Neon database (direct connection, not pooled).
+3. Create the Render web service from the GitHub repository, root directory
+   `services/api`, Docker, health check `/healthz`, with these environment
+   variables (the API runs its migrations when it starts):
    - `DATABASE_URL`
    - `CORS_ORIGINS=https://<your-vercel-domain>`
    - `WEB_CONCURRENCY=1`
@@ -62,8 +59,30 @@ You run these, signed in to your own accounts:
      a hosted trace collector. Unset, tracing costs nothing.
    - Photo upload stays off unless `S3_BUCKET`, `S3_ENDPOINT`, `S3_ACCESS_KEY`
      and `S3_SECRET_KEY` name a private bucket.
+4. Load the corridor graph and the TTC schedule from this machine:
+   ```bash
+   cd pipelines && uv run python -m pathable_pipelines.export_graph --area corridor --load <url>
+   uv run python -m pathable_pipelines.transit --load <url>
+   ```
+   Then restart the Render service so it reads the new graph.
 
-## Not done yet
+## What is live (2026-11-04)
 
-Nothing is deployed. Every step above needs your sign-in, and nothing is
-published without your go-ahead.
+| Piece | Where |
+| --- | --- |
+| Web | https://pathable-tan.vercel.app (Vercel Hobby, project `pathable`, root directory `apps/web`, redeploys on every push to `main`) |
+| API | https://pathable-api-0i9k.onrender.com (Render free web service in Ohio, Docker from `services/api`, `WEB_CONCURRENCY=1`, `TRUSTED_PROXY_HOPS=1`) |
+| Database | Neon free, Postgres 18 with PostGIS 3.6, in AWS us-east-2 (Ohio), next to the API |
+
+The database URL is set only in Render's environment and in a local,
+git-ignored `.env.deploy`. The API runs its migrations on start.
+
+**Loading from a network that blocks port 5432.** Some networks block outgoing
+Postgres connections. Neon also accepts the Postgres protocol over a WebSocket
+on port 443, so `infra/neon_ws_bridge.py` listens on `127.0.0.1:55432` and
+forwards to it; point the loaders at the bridge with `sslmode=disable` (the
+WebSocket itself is TLS) and `options=endpoint%3D<endpoint id>`:
+
+```bash
+uv run --no-project --with websockets python infra/neon_ws_bridge.py <endpoint host>
+```

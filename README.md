@@ -1,5 +1,11 @@
 # PathAble
 
+[![CI](https://github.com/rkhan28/pathable/actions/workflows/ci.yml/badge.svg)](https://github.com/rkhan28/pathable/actions/workflows/ci.yml)
+
+**Live demo: [pathable-tan.vercel.app](https://pathable-tan.vercel.app)** (the API is on a free
+server that sleeps when idle; the first route after a quiet spell takes about a minute while it
+wakes, and the planner says so).
+
 **Every route should be possible.** PathAble is an accessibility-first walking
 planner for North York, Toronto. It compares routes by what is actually known
 about each sidewalk, and says plainly where nothing is known.
@@ -165,7 +171,9 @@ afterwards (about 10 minutes).
 
 ## Honest limitations
 
-- **No live demo yet.** It needs hosting accounts.
+- **The live demo holds only the demo corridor** (York University to Yonge and
+  Sheppard). All of North York is built, but holding it needs more memory than
+  a free server has; the coverage page and planner say which area is loaded.
 - **All of North York is built and loaded:** 105,069 edges, with routes p95
   273 ms across the borough. A free-tier deployment can hold only the corridor
   (about 125 MB per worker against about 596 MB for North York).
