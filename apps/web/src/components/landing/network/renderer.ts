@@ -12,6 +12,10 @@ import type { NetworkData, StateCode } from "@/lib/hero-network";
  *   base   - the network, drawn once per size or theme change
  *   trails - pulses, faded a little each frame so they leave short tails
  *   screen - base + trails + the route being drawn + the start and end rings
+ *
+ * As on the planner's map, each knowledge state has its own line as well as its
+ * colour: verified solid, barrier solid with a light centre stripe, reported
+ * dashed, no data dotted.
  */
 
 export interface Palette {
@@ -21,6 +25,8 @@ export interface Palette {
   unverified: string;
   unknown: string;
   signal: string;
+  /** The frame's own background, used for the light stripe down a barrier's middle. */
+  ground: string;
 }
 
 export interface Size {
@@ -98,21 +104,6 @@ function measure(flat: number[]) {
 
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 
-/** A small soft dot, drawn once and stamped wherever a route's head is. */
-function makeGlow(color: string, radius: number): AnyCanvas {
-  const size = Math.ceil(radius * 2);
-  const c = makeCanvas(size, size);
-  const g = c.getContext("2d") as Ctx;
-  const grad = g.createRadialGradient(radius, radius, 0, radius, radius, radius);
-  grad.addColorStop(0, color);
-  grad.addColorStop(0.25, color);
-  grad.addColorStop(1, "transparent");
-  g.globalAlpha = 0.9;
-  g.fillStyle = grad;
-  g.fillRect(0, 0, size, size);
-  return c;
-}
-
 export function createNetwork(canvas: AnyCanvas, data: NetworkData, options: NetworkOptions): Network {
   const ctx = canvas.getContext("2d") as Ctx;
   let palette = options.palette;
@@ -154,19 +145,19 @@ export function createNetwork(canvas: AnyCanvas, data: NetworkData, options: Net
   let k = 1;
   let ox = 0;
   let oy = 0;
-  let glow = makeGlow(palette.signal, 12);
 
   function fit() {
     const w = Math.max(1, Math.round(size.width * size.dpr));
     const h = Math.max(1, Math.round(size.height * size.dpr));
     canvas.width = w;
     canvas.height = h;
-    k = Math.min(w / data.w, h / data.h);
+    // Cover rather than contain: the frame and the data share a shape, and covering
+    // means a rounding difference never shows as a gap along one edge.
+    k = Math.max(w / data.w, h / data.h);
     ox = (w - data.w * k) / 2;
     oy = (h - data.h * k) / 2;
     base = makeCanvas(w, h);
     trails = makeCanvas(w, h);
-    glow = makeGlow(palette.signal, 12 * size.dpr);
     drawBase();
   }
 
@@ -176,22 +167,34 @@ export function createNetwork(canvas: AnyCanvas, data: NetworkData, options: Net
 
   function drawBase() {
     const g = base.getContext("2d") as Ctx;
+    const dpr = size.dpr;
     g.clearRect(0, 0, base.width, base.height);
     g.lineCap = "round";
     g.lineJoin = "round";
-    // Unknown first and faintest, so what is known reads on top of it.
-    for (const state of STATES) {
+    const path = (state: StateCode) => {
       g.beginPath();
       for (const e of edges) {
         if (e.state !== state) continue;
         g.moveTo(ox + e.pts[0] * k, oy + e.pts[1] * k);
         for (let i = 2; i < e.pts.length; i += 2) g.lineTo(ox + e.pts[i] * k, oy + e.pts[i + 1] * k);
       }
+    };
+    // No data first and faintest, so what is known reads on top of it.
+    for (const state of STATES) {
+      path(state);
       g.strokeStyle = colorOf(state);
-      g.globalAlpha = state === "u" ? (palette.dark ? 0.28 : 0.3) : palette.dark ? 0.75 : 0.7;
-      g.lineWidth = (state === "u" ? 0.9 : 1.4) * size.dpr;
+      g.globalAlpha = state === "u" ? (palette.dark ? 0.5 : 0.55) : 0.9;
+      g.lineWidth = (state === "u" ? 1.1 : state === "b" ? 2.8 : 1.8) * dpr;
+      g.setLineDash(state === "u" ? [0.1, 3.2 * dpr] : state === "r" ? [5 * dpr, 3.5 * dpr] : []);
       g.stroke();
+      if (state === "b") {
+        g.strokeStyle = palette.ground;
+        g.globalAlpha = 1;
+        g.lineWidth = 0.9 * dpr;
+        g.stroke();
+      }
     }
+    g.setLineDash([]);
     g.globalAlpha = 1;
   }
 
@@ -269,8 +272,9 @@ export function createNetwork(canvas: AnyCanvas, data: NetworkData, options: Net
         g.moveTo(prevX[j], prevY[j]);
         g.lineTo(ox + p.x * k, oy + p.y * k);
       }
-      g.strokeStyle = state === "u" ? palette.signal : colorOf(state);
-      g.globalAlpha = state === "u" ? 0.55 : 0.95;
+      // On streets with no data the walkers are neutral: a green dot there would read as "verified".
+      g.strokeStyle = state === "u" ? (palette.dark ? "#c9d1cc" : "#5b6560") : colorOf(state);
+      g.globalAlpha = state === "u" ? 0.6 : 0.95;
       g.stroke();
     }
     g.globalAlpha = 1;
@@ -310,19 +314,26 @@ export function createNetwork(canvas: AnyCanvas, data: NetworkData, options: Net
         g.beginPath();
         const end = trace(g, leg, Math.min(leg.len, upTo - leg.start));
         const color = leg.ride && leg.color ? leg.color : palette.signal;
-        g.strokeStyle = color;
-        // A wide faint pass under a narrow bright one reads as a glow, without the cost of a blur.
-        g.globalAlpha = alpha * (pass === 0 ? 0.2 : 1);
-        g.lineWidth = (pass === 0 ? 11 : leg.ride ? 4.5 : 3.2) * size.dpr;
+        // A wide pass in the frame's own colour under the line, so the route stands clear of the streets beneath it.
+        g.strokeStyle = pass === 0 ? palette.ground : color;
+        g.globalAlpha = alpha;
+        g.lineWidth = (pass === 0 ? 9 : leg.ride ? 5 : 4) * size.dpr;
         g.setLineDash(pass === 1 && !leg.ride && show.legs.length > 1 ? [0.1, 7 * size.dpr] : []);
         g.stroke();
         head = end;
       }
     }
     g.setLineDash([]);
+    // The line's leading end, while it is still being drawn.
     if (head && reveal < 1) {
       g.globalAlpha = alpha;
-      g.drawImage(glow, ox + head[0] * k - glow.width / 2, oy + head[1] * k - glow.height / 2);
+      g.beginPath();
+      g.arc(ox + head[0] * k, oy + head[1] * k, 5 * size.dpr, 0, Math.PI * 2);
+      g.fillStyle = palette.signal;
+      g.fill();
+      g.lineWidth = 2 * size.dpr;
+      g.strokeStyle = palette.ground;
+      g.stroke();
     }
     g.globalAlpha = 1;
   }

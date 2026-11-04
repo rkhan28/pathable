@@ -14,8 +14,9 @@ import { DEFAULT_PREFERENCES } from "@/stores/preferences";
  * and Finch West, coloured by what is known about it under the default
  * limits (5% slope, 1.5 m width), plus the planner's own routes for that trip.
  *
- * Coordinates are projected to a plane `w` wide and rounded to whole units
- * (about 2 m each), then sent as flat number arrays to keep the file small.
+ * Coordinates are projected to a 4:5 frame `w` wide, cropped around the
+ * routes, and rounded to whole units (a couple of metres each), then sent
+ * as flat number arrays to keep the file small.
  */
 export interface NetworkData {
   w: number;
@@ -45,7 +46,10 @@ export interface NetworkCaption {
 }
 
 const W = 1000;
-const PAD = 30;
+/** The frame is portrait, 4:5, because the corridor runs from north-west to south-east. */
+const ASPECT = 4 / 5;
+/** Space around the routes, as a share of their own extent, so streets show on every side. */
+const MARGIN = 0.22;
 const CODE: Record<KnowledgeState, StateCode> = { verified: "v", barrier: "b", unverified: "r", unknown: "u" };
 
 function parseLine(wkt: string): LonLat[] {
@@ -60,14 +64,38 @@ let cached: { data: NetworkData; aspect: number; captions: NetworkCaption[] } | 
 function build() {
   if (cached) return cached;
   const lines = graph.edges.map((e) => parseLine(e.wkt));
+  const routes = RouteResponse.parse(routesSample.response).routes.slice().sort((a, b) => a.rank - b.rank);
+  const transit = TransitResponse.parse(transitSample.response).options.filter((o) => o.stepFree === "yes")[0];
+
+  // Frame the picture on the routes rather than on the whole graph: the graph is a ragged
+  // buffer around the corridor, and cropping to a rectangle inside it leaves streets running
+  // off every edge, the way a map window looks, instead of a shape with a frayed outline.
   const k = Math.cos((43.77 * Math.PI) / 180);
-  const all = lines.flat();
-  const xs = all.map((p) => p[0] * k);
-  const ys = all.map((p) => p[1]);
-  const [minX, maxX, minY, maxY] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
-  const scale = (W - 2 * PAD) / (maxX - minX);
-  const H = Math.round((maxY - minY) * scale + 2 * PAD);
-  const project = ([lon, lat]: LonLat): [number, number] => [Math.round(PAD + (lon * k - minX) * scale), Math.round(PAD + (maxY - lat) * scale)];
+  const routePoints = [...routes.flatMap((r) => r.geometry), ...(transit?.legs.flatMap((l) => (l.kind === "ride" ? l.geometry : l.route.geometry)) ?? [])];
+  const xs = routePoints.map((p) => p[0] * k);
+  const ys = routePoints.map((p) => p[1]);
+  let [minX, maxX, minY, maxY] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
+  const padX = (maxX - minX) * MARGIN;
+  const padY = (maxY - minY) * MARGIN;
+  [minX, maxX, minY, maxY] = [minX - padX, maxX + padX, minY - padY, maxY + padY];
+  // Widen or heighten the box, about its centre, until it is exactly 4:5.
+  const cx = (minX + maxX) / 2;
+  const cy = (minY + maxY) / 2;
+  let spanX = maxX - minX;
+  let spanY = maxY - minY;
+  if (spanX / spanY < ASPECT) spanX = spanY * ASPECT;
+  else spanY = spanX / ASPECT;
+  minX = cx - spanX / 2;
+  maxY = cy + spanY / 2;
+  const scale = W / spanX;
+  const H = Math.round(W / ASPECT);
+  const project = ([lon, lat]: LonLat): [number, number] => [Math.round((lon * k - minX) * scale), Math.round((maxY - lat) * scale)];
+  // An edge is kept if any of it falls inside the frame (with a little slack); the canvas clips the rest.
+  const inFrame = (pts: LonLat[]) =>
+    pts.some((p) => {
+      const [x, y] = project(p);
+      return x > -40 && x < W + 40 && y > -40 && y < H + 40;
+    });
 
   // Flatten a line, dropping points that round onto the one before; the ends are always kept so edges still meet.
   const flat = (pts: LonLat[]) => {
@@ -84,14 +112,12 @@ function build() {
 
   const hazards: Hazard[] = graph.hazards.map((h) => ({ ...h, segmentId: h.edge_id }) as unknown as Hazard);
   const edges = graph.edges
-    .map((e, i) => {
+    .flatMap((e, i) => {
+      if (!inFrame(lines[i])) return [];
       const state = segmentState({ id: e.id, evidence: e.evidence as Evidence[] }, DEFAULT_PREFERENCES, hazards);
-      return [CODE[state], ...flat(lines[i])] as [StateCode, ...number[]];
+      return [[CODE[state], ...flat(lines[i])] as [StateCode, ...number[]]];
     })
     .filter((e) => e.length >= 5);
-
-  const routes = RouteResponse.parse(routesSample.response).routes.slice().sort((a, b) => a.rank - b.rank);
-  const transit = TransitResponse.parse(transitSample.response).options.filter((o) => o.stepFree === "yes")[0];
 
   const shows: NetworkShow[] = [];
   const captions: NetworkCaption[] = [];

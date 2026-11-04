@@ -8,6 +8,7 @@ import type { NetworkCaption } from "@/lib/hero-network";
 import { useRouteFormat } from "@/lib/format";
 import { prefersReducedMotion } from "@/lib/motion";
 import { inkOn } from "@/components/navigate/maneuver-icon";
+import { StateSwatch } from "@/components/route/state-icon";
 import type { Network, Palette, Size } from "./renderer";
 
 type Send = (message: { type: "resize"; size: Size } | { type: "palette"; palette: Palette } | { type: "play" } | { type: "pause" }) => void;
@@ -23,6 +24,7 @@ function readPalette(): Palette {
     unverified: v("--state-unverified"),
     unknown: v("--state-unknown"),
     signal: v("--signal"),
+    ground: v("--map-land"),
   };
 }
 
@@ -32,30 +34,31 @@ function readPalette(): Palette {
  * and the planner's routes for York University to Finch West draw themselves
  * in turn, the subway option among them.
  *
+ * It is a flat, top-down map in a frame, like the planner's own: the only
+ * things that move are the walkers and the route being drawn, so it stays
+ * calm next to the headline.
+ *
  * The drawing happens in a worker on an OffscreenCanvas where the browser
  * allows it, so the page's own thread stays free; elsewhere it runs here.
- * The tilt, drift and pointer parallax are CSS transforms, which the
- * compositor handles. It stops when off screen or in a background tab, and
- * under reduced motion it is one still frame.
+ * It stops when off screen or in a background tab, and under reduced motion
+ * it is one still frame.
  */
 export function HeroNetwork({ aspect, captions }: { aspect: number; captions: NetworkCaption[] }) {
   const t = useTranslations();
   const f = useRouteFormat();
   const rootRef = useRef<HTMLDivElement>(null);
-  const planeRef = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
   const [show, setShow] = useState(0);
 
   useEffect(() => {
     const root = rootRef.current;
-    const plane = planeRef.current;
-    if (!root || !plane) return;
+    if (!root) return;
     const reduced = prefersReducedMotion();
     // A fresh canvas each time: a canvas handed to a worker cannot be handed over again.
     const canvas = document.createElement("canvas");
     canvas.className = "pa-net-canvas";
-    plane.appendChild(canvas);
-    const size = (): Size => ({ width: plane.clientWidth, height: plane.clientHeight, dpr: Math.min(window.devicePixelRatio || 1, 2) });
+    root.prepend(canvas);
+    const size = (): Size => ({ width: root.clientWidth, height: root.clientHeight, dpr: Math.min(window.devicePixelRatio || 1, 2) });
     const url = new URL("/hero-network.json", window.location.href).href;
     let visible = false;
     let send: Send = () => {};
@@ -105,7 +108,7 @@ export function HeroNetwork({ aspect, captions }: { aspect: number; captions: Ne
       cancelAnimationFrame(resizeFrame);
       resizeFrame = requestAnimationFrame(() => send({ type: "resize", size: size() }));
     });
-    ro.observe(plane);
+    ro.observe(root);
 
     // Theme changes: the page's own toggle sets data-theme; the system setting changes the media query.
     const repaint = () => requestAnimationFrame(() => send({ type: "palette", palette: readPalette() }));
@@ -114,19 +117,6 @@ export function HeroNetwork({ aspect, captions }: { aspect: number; captions: Ne
     const scheme = matchMedia("(prefers-color-scheme: dark)");
     scheme.addEventListener("change", repaint);
 
-    // The plane leans a little toward the pointer. Only CSS variables change, once per frame at most.
-    let pointerFrame = 0;
-    const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
-    const onPointer = (e: PointerEvent) => {
-      if (pointerFrame) return;
-      pointerFrame = requestAnimationFrame(() => {
-        pointerFrame = 0;
-        root.style.setProperty("--px", ((e.clientX / window.innerWidth) * 2 - 1).toFixed(3));
-        root.style.setProperty("--py", ((e.clientY / window.innerHeight) * 2 - 1).toFixed(3));
-      });
-    };
-    if (fine && !reduced) window.addEventListener("pointermove", onPointer, { passive: true });
-
     return () => {
       disposed = true;
       io.disconnect();
@@ -134,9 +124,7 @@ export function HeroNetwork({ aspect, captions }: { aspect: number; captions: Ne
       mo.disconnect();
       scheme.removeEventListener("change", repaint);
       document.removeEventListener("visibilitychange", sync);
-      window.removeEventListener("pointermove", onPointer);
       cancelAnimationFrame(resizeFrame);
-      cancelAnimationFrame(pointerFrame);
       worker?.terminate();
       local?.destroy();
       canvas.remove();
@@ -147,12 +135,7 @@ export function HeroNetwork({ aspect, captions }: { aspect: number; captions: Ne
   const states = ["verified", "barrier", "unverified", "unknown"] as const;
 
   return (
-    <div ref={rootRef} className="pa-net" data-ready={ready || undefined} aria-hidden>
-      <div className="pa-net-stage">
-        <div className="pa-net-drift">
-          <div ref={planeRef} className="pa-net-plane" style={{ aspectRatio: aspect }} />
-        </div>
-      </div>
+    <div ref={rootRef} className="pa-net" data-ready={ready || undefined} style={{ aspectRatio: aspect }} aria-hidden>
 
       <div className="pa-net-card is-route">
         <span className="pa-net-trip">{t("landing.network.trip")}</span>
@@ -185,7 +168,7 @@ export function HeroNetwork({ aspect, captions }: { aspect: number; captions: Ne
       <div className="pa-net-card is-legend">
         {states.map((s) => (
           <span key={s} className="pa-net-key">
-            <i className={`is-${s}`} />
+            <StateSwatch state={s} width={26} />
             {t(`states.${s}`)}
           </span>
         ))}
