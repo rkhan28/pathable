@@ -36,6 +36,19 @@ export async function parseResponse<T extends z.ZodType>(res: Response, schema: 
   return parsed.data;
 }
 
+const hex = (bytes: number) => Array.from(crypto.getRandomValues(new Uint8Array(bytes)), (b) => b.toString(16).padStart(2, "0")).join("");
+
+/**
+ * Starts a trace for one API call (W3C Trace Context). The API continues it,
+ * so its spans for the request, the database and the router share this trace
+ * id, and the same id is the request id an error message shows. No tracing
+ * library is shipped to the browser for this: it is two random ids.
+ */
+export function traceHeaders(): Record<string, string> {
+  const traceId = hex(16);
+  return { traceparent: `00-${traceId}-${hex(8)}-01`, "x-request-id": traceId };
+}
+
 export function createHttpService(baseUrl: string, fetchImpl: typeof fetch = fetch): PathAbleService {
   const url = (path: string) => new URL(path, baseUrl).toString();
   // A sleeping free-tier instance can take about a minute to wake; give up after 90 s.
@@ -44,7 +57,7 @@ export function createHttpService(baseUrl: string, fetchImpl: typeof fetch = fet
     const timeout = AbortSignal.timeout(TIMEOUT_MS);
     const signal = init?.signal ? AbortSignal.any([init.signal, timeout]) : timeout;
     try {
-      return await fetchImpl(url(path), { ...init, signal });
+      return await fetchImpl(url(path), { ...init, headers: { ...traceHeaders(), ...(init?.headers as Record<string, string> | undefined) }, signal });
     } catch (e) {
       if ((e as Error).name === "AbortError" && !timeout.aborted) throw e;
       throw new PathAbleError(typeof navigator !== "undefined" && !navigator.onLine ? "offline" : "unavailable", true);

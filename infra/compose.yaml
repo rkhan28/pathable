@@ -13,11 +13,13 @@ services:
     ports: ["6379:6379"]
   # S3-compatible photo storage. MinIO no longer publishes public images, so
   # SeaweedFS (Apache-2.0) stands in locally; see docs/decisions/0003.
+  # With an identity configured, anonymous requests are refused: photos are
+  # private even on a laptop. The keys are local-only placeholders.
   s3:
-    image: chrislusf/seaweedfs:latest
-    command: server -s3 -dir=/data
+    image: chrislusf/seaweedfs:4.50
+    command: server -s3 -s3.config=/etc/seaweedfs/s3.json -dir=/data
     ports: ["8333:8333"]
-    volumes: [s3:/data]
+    volumes: [s3:/data, ./seaweedfs/s3.json:/etc/seaweedfs/s3.json:ro]
   api:
     build: { context: ../services/api }
     environment:
@@ -26,10 +28,19 @@ services:
       CORS_ORIGINS: http://localhost:3000
       S3_ENDPOINT: http://s3:8333
       S3_BUCKET: pathable-report-photos
+      S3_ACCESS_KEY: pathable-local
+      S3_SECRET_KEY: pathable-local-secret
+      # Traces go to a collector only when one is named; `make trace` starts Jaeger and sets this.
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
       # Local stack only: end-to-end loops send several reports a minute. Production keeps the default of 6.
       REPORTS_PER_MINUTE: "60"
     ports: ["8000:8000"]
     depends_on: { db: { condition: service_healthy }, redis: { condition: service_started }, s3: { condition: service_started } }
+  # Optional: `make trace`, then http://localhost:16686 to see web, API, database and router spans.
+  jaeger:
+    image: jaegertracing/all-in-one:1.62.0
+    profiles: [tracing]
+    ports: ["16686:16686", "4318:4318"]
   web:
     build:
       context: ..

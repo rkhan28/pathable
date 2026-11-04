@@ -6,7 +6,7 @@ AREA    ?= corridor
 # path inside the VM for both Docker Desktop and Colima.
 export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE ?= /var/run/docker.sock
 
-.PHONY: up down data load fixtures contracts check check-web check-api check-pipelines e2e bench screenshots
+.PHONY: up down data load fixtures contracts check check-web check-api check-pipelines e2e bench screenshots trace
 
 up:            ## Start PostGIS, Redis, S3, API and web
 	$(COMPOSE) up -d --build --wait db redis s3
@@ -17,6 +17,11 @@ up:            ## Start PostGIS, Redis, S3, API and web
 
 down:
 	$(COMPOSE) down
+
+trace:         ## Start Jaeger and send the API's traces to it (UI on http://localhost:16686)
+	$(COMPOSE) --profile tracing up -d jaeger
+	OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318 $(COMPOSE) up -d api
+	@echo "traces: http://localhost:16686 (service pathable-api)"
 
 data:          ## Download sources (Toronto Open Data, Geofabrik) and clip OSM to North York
 	cd pipelines && uv run python -m pathable_pipelines.fetch

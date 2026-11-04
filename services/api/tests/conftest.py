@@ -16,6 +16,9 @@ API = Path(__file__).resolve().parents[1]
 GRAPH_FIXTURE = ROOT / "contracts" / "fixtures" / "graph-york-u-finch-west.json"
 TRANSIT_FIXTURE = ROOT / "contracts" / "fixtures" / "transit-york-u-finch-west.json"
 POSTGIS_IMAGE = os.environ.get("POSTGIS_IMAGE", "imresamu/postgis:16-3.5")
+# Testcontainers mounts the Docker socket into a helper container. This is its path inside the
+# VM for both Docker Desktop and Colima; without it, Colima fails with a mount error.
+os.environ.setdefault("TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE", "/var/run/docker.sock")
 
 
 @pytest.fixture(scope="session")

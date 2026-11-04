@@ -15,7 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.concurrency import run_in_threadpool
 
-from . import errors
+from . import errors, telemetry
 from .db import Database
 from .errors import ApiError
 from .models import ReportCreate, RouteRequest, TransitRequest, WithdrawRequest
@@ -40,7 +40,7 @@ class State:
     transit: TransitPlanner | None = None
 
 
-def create_app(settings: Settings | None = None) -> FastAPI:
+def create_app(settings: Settings | None = None, span_exporter=None) -> FastAPI:
     settings = settings or Settings()
     state = State()
 
@@ -74,10 +74,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         CORSMiddleware,
         allow_origins=list(settings.cors_origins),
         allow_methods=["GET", "POST"],
-        allow_headers=["content-type"],
+        # traceparent carries the browser's trace into ours; x-request-id ties an error to its trace.
+        allow_headers=["content-type", "traceparent", "x-request-id"],
     )
     errors.install(app)
     app.state.pathable = state
+    tracer = telemetry.setup(app, span_exporter)
 
     @app.middleware("http")
     async def request_id(request: Request, call_next):
@@ -134,7 +136,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         reports = state.db.open_reports(
             (min(ox, dx) - margin, min(oy, dy) - margin, max(ox, dx) + margin, max(oy, dy) + margin)
         )
-        result = await run_in_threadpool(state.graph.route, tuple(body.origin), tuple(body.destination), prefs, reports)
+        with tracer.start_as_current_span("router.route") as span:
+            result = await run_in_threadpool(
+                state.graph.route, tuple(body.origin), tuple(body.destination), prefs, reports
+            )
+            span.set_attribute("pathable.routes", len(result or []))
+            span.set_attribute("pathable.open_reports", len(reports))
         if not result:
             raise ApiError("no_route")
         return {
@@ -160,9 +167,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 raise ApiError("outside_coverage")
         if metres(tuple(body.origin), tuple(body.destination)) < SAME_PLACE_M:
             raise ApiError("same_place")
-        options = await run_in_threadpool(
-            state.transit.plan, tuple(body.origin), tuple(body.destination), body.preferences.model_dump(), when
-        )
+        with tracer.start_as_current_span("router.transit") as span:
+            options = await run_in_threadpool(
+                state.transit.plan, tuple(body.origin), tuple(body.destination), body.preferences.model_dump(), when
+            )
+            span.set_attribute("pathable.options", len(options))
         return {
             "source": "live",
             "feedVersion": feed["id"],

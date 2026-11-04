@@ -1,0 +1,9 @@
+{
+  "identities": [
+    {
+      "name": "pathable-api",
+      "credentials": [{ "accessKey": "pathable-local", "secretKey": "pathable-local-secret" }],
+      "actions": ["Admin", "Read", "Write", "List", "Tagging"]
+    }
+  ]
+}
